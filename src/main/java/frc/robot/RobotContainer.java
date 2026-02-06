@@ -12,12 +12,16 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Intake;
 
 public class RobotContainer {
     public final static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -29,7 +33,7 @@ public class RobotContainer {
             .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.FieldCentricFacingAngle driveFacingTarget = new SwerveRequest.FieldCentricFacingAngle()
-            .withHeadingPID(20,0,0)
+            .withHeadingPID(10,0,0)
             .withDeadband(MaxSpeed * 0.1)
             .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
@@ -41,6 +45,8 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+    Intake intake = new Intake();
 
     public RobotContainer() {
         configureBindings();
@@ -60,6 +66,9 @@ public class RobotContainer {
             )
         );
 
+        joystick.rightTrigger(0).whileTrue(new RunCommand(() -> intake.setSpeed(joystick.getRightTriggerAxis())));
+        joystick.leftTrigger(0).whileTrue(new RunCommand(() -> intake.setSpeed(-joystick.getLeftTriggerAxis())));
+        joystick.rightTrigger(0).and(joystick.leftTrigger()).onFalse(new InstantCommand(() -> intake.setSpeed(0)));
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
