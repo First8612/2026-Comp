@@ -65,10 +65,10 @@ public class RobotContainer {
                     .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
-
-        joystick.rightTrigger(0).whileTrue(new RunCommand(() -> intake.setSpeed(joystick.getRightTriggerAxis())));
-        joystick.leftTrigger(0).whileTrue(new RunCommand(() -> intake.setSpeed(-joystick.getLeftTriggerAxis())));
-        joystick.rightTrigger(0).and(joystick.leftTrigger()).onFalse(new InstantCommand(() -> intake.setSpeed(0)));
+        joystick.rightTrigger(0.1).or(joystick.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeed(joystick.getRightTriggerAxis()-joystick.getLeftTriggerAxis())));
+        // joystick.rightTrigger(0).whileTrue(new RunCommand(() -> intake.setSpeed(joystick.getRightTriggerAxis())));
+        // joystick.leftTrigger(0).whileTrue(new RunCommand(() -> intake.setSpeed(-joystick.getLeftTriggerAxis())));
+        joystick.rightTrigger(0.1).and(joystick.leftTrigger(0.1)).onFalse(new InstantCommand(() -> intake.setSpeed(0)));
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
