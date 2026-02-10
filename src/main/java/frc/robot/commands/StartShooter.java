@@ -8,5 +8,9 @@ public class StartShooter extends Command{
     private Shooter shooter;
     
     private PIDController shooterPID = new PIDController(0, 0, 0);
+
+    // public StartShooter(double speed) {
+    //     shooter.motorSpeedGoal = speed;
+    // }
     
 }

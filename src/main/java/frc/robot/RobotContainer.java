@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -65,10 +67,12 @@ public class RobotContainer {
                     .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
-        joystick.rightTrigger(0.1).or(joystick.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeed(joystick.getRightTriggerAxis()-joystick.getLeftTriggerAxis())));
-        // joystick.rightTrigger(0).whileTrue(new RunCommand(() -> intake.setSpeed(joystick.getRightTriggerAxis())));
-        // joystick.leftTrigger(0).whileTrue(new RunCommand(() -> intake.setSpeed(-joystick.getLeftTriggerAxis())));
-        joystick.rightTrigger(0.1).and(joystick.leftTrigger(0.1)).onFalse(new InstantCommand(() -> intake.setSpeed(0)));
+        Supplier<Double> getIntakeSpeed = () -> {
+            return joystick.getRightTriggerAxis()-joystick.getLeftTriggerAxis();
+        };
+        joystick.rightTrigger(0.1).or(joystick.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeedRaw(getIntakeSpeed.get())));
+        joystick.rightTrigger(0.1).and(joystick.leftTrigger(0.1)).onFalse(new InstantCommand(() -> intake.stop()));
+
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
