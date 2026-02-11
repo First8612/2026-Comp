@@ -6,10 +6,10 @@ import frc.robot.PlaceholderCode.*;
 public class Storage extends SubsystemBase{
     private FakeMotor conveyMotor = new FakeMotor(44);
     private FakeSensor ballSensor = new FakeSensor(60);
+    
 
     public Storage() {
         super();
-
         //More Init
     }
 

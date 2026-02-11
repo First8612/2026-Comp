@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,6 +27,8 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Storage;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import frc.robot.utils.TargetTracker;
 
 public class RobotContainer {
@@ -55,6 +58,7 @@ public class RobotContainer {
     Intake intake = new Intake();
 
     public RobotContainer() {
+        NamedCommands.registerCommand("ShootSequence", shoot);
         configureBindings();
 
         Field.writeOnceToNT();
@@ -76,7 +80,7 @@ public class RobotContainer {
         };
         joystick.rightTrigger(0.1).or(joystick.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeedRaw(getIntakeSpeed.get())));
         joystick.rightTrigger(0.1).and(joystick.leftTrigger(0.1)).onFalse(new InstantCommand(() -> intake.stop()));
-
+        joystick.b().onTrue(shoot);
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();

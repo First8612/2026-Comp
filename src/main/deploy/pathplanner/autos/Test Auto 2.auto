@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start to Aim (Left)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Aim to Middle (Left)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Collect (Left to Right)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Middle to Aim2 (Right)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Aim2 to Climb (Right)"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Collect Across Autons",
+  "choreoAuto": false
+}
