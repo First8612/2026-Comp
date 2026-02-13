@@ -5,14 +5,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.FakeShooter;
 import frc.robot.subsystems.Storage;
 import frc.robot.utils.TargetTracker;
 
 // shoot sequence without controlling drivetrain.
 public class ShootSequence extends ParallelCommandGroup {
     public ShootSequence(
-        Shooter shooter,
+        FakeShooter shooter,
         Storage storage,
         TargetTracker targetTracker,
         CommandXboxController driverController,

@@ -25,9 +25,9 @@ import frc.robot.commands.ShootSequence;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.TestShooter;
+import frc.robot.subsystems.FakeShooter;
 import frc.robot.subsystems.Storage;
-import com.pathplanner.lib.auto.NamedCommands;
 
 import frc.robot.utils.TargetTracker;
 
@@ -49,8 +49,9 @@ public class RobotContainer {
     
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     private final TargetTracker targetTracker = new TargetTracker(drivetrain);
-    private final Shooter shooter = new Shooter(targetTracker);
+    private final FakeShooter shooter = new FakeShooter(targetTracker);
     private final Storage storage = new Storage();
+    private final TestShooter testShooter = new TestShooter(targetTracker);
 
     private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(joystick, drivetrain, targetTracker);
     private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, joystick, drivetrain);
@@ -60,6 +61,9 @@ public class RobotContainer {
     public RobotContainer() {
         NamedCommands.registerCommand("ShootSequence", shoot);
         configureBindings();
+
+        RobotModeTriggers.autonomous().onTrue(testShooter.getZeroCommand());
+        RobotModeTriggers.teleop().onTrue(testShooter.getZeroCommand());
 
         Field.writeOnceToNT();
     }
@@ -79,8 +83,8 @@ public class RobotContainer {
             return joystick.getRightTriggerAxis()-joystick.getLeftTriggerAxis();
         };
         joystick.rightTrigger(0.1).or(joystick.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeedRaw(getIntakeSpeed.get())));
-        joystick.rightTrigger(0.1).and(joystick.leftTrigger(0.1)).onFalse(new InstantCommand(() -> intake.stop()));
-        joystick.b().onTrue(shoot);
+        joystick.rightTrigger(0.1).and(joystick.leftTrigger(0.1)).whileFalse(new RunCommand(() -> intake.stop()));
+        // joystick.b().onTrue(shoot);
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
@@ -93,7 +97,13 @@ public class RobotContainer {
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
         joystick.a().whileTrue(driveAndFaceTarget);
-        joystick.b().whileTrue(shoot);
+
+        joystick.b().whileTrue(new RunCommand(() -> testShooter.spinUp(-1)));
+        joystick.y().whileTrue(new RunCommand(() -> testShooter.inFeed()));
+        joystick.y().onFalse(new InstantCommand(() -> testShooter.stop()));
+        joystick.b().onFalse(new InstantCommand(() -> testShooter.stop()));
+        // joystick.b().whileTrue(shoot);
+        joystick.x().whileTrue(Commands.startEnd(testShooter::enableAiming, testShooter::stop, testShooter));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

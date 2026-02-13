@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -9,7 +11,7 @@ import frc.robot.PlaceholderCode.*;
 import frc.robot.utils.TargetTracker;
 
 
-public class Shooter extends SubsystemBase{
+public class FakeShooter extends SubsystemBase{
     FakeMotor shootMotor = new FakeMotor(41);
     FakeMotor hoodMotor = new FakeMotor(42);
     FakeMotor feedMotor = new FakeMotor(43);
@@ -22,12 +24,12 @@ public class Shooter extends SubsystemBase{
     private final Debouncer flywheelReadyDebounce = new Debouncer(0.5, DebounceType.kRising);
     private TargetTracker targetTracker;
 
-    public Shooter(TargetTracker targetTracker) {
+    public FakeShooter(TargetTracker targetTracker) {
         super();
         this.targetTracker = targetTracker;
 
-        SmartDashboard.putData("Shooter/shootController", shooterPID);
-        SmartDashboard.putData("Shooter/hoodController", hoodPID);
+        SmartDashboard.putData("FakeShooter/shootController", shooterPID);
+        SmartDashboard.putData("FakeShooter/hoodController", hoodPID);
     }
     
     public void warmup() {
@@ -35,11 +37,11 @@ public class Shooter extends SubsystemBase{
     }
     
     public void inFeed() {
-        feedMotor.set(0.2);
+        feedMotor.set(0.5);
     }
 
     public void backFeed() {
-        feedMotor.set(-0.2);
+        feedMotor.set(-0.5);
     }
 
     public void stopFeed() {
@@ -94,10 +96,13 @@ public class Shooter extends SubsystemBase{
         double hoodSpeed = hoodPID.calculate(hoodEncoder.getPosition());
         hoodMotor.set(hoodSpeed);
 
-        SmartDashboard.putNumber("Shooter/shootActual", shootMotor.getSpeed());
-        SmartDashboard.putNumber("Shooter/hoodActual", hoodEncoder.getPosition());
-        SmartDashboard.putBoolean("Shooter/hoodReady", hoodReady());
-        SmartDashboard.putBoolean("Shooter/flywheelReady", flywheelReady());
-        SmartDashboard.putBoolean("Shooter/readyToShoot", readyToShoot());
+        SmartDashboard.putNumber("FakeShooter/shootActual", shootMotor.getSpeed());
+        SmartDashboard.putNumber("FakeShooter/hoodActual", hoodEncoder.getPosition());
+        SmartDashboard.putNumber("FakeShooter/shootSetpoint", shooterPID.getSetpoint());
+        SmartDashboard.putNumber("FakeShooter/hoodSetpoint", hoodPID.getSetpoint());
+        SmartDashboard.putBoolean("FakeShooter/hoodReady", hoodReady());
+        SmartDashboard.putBoolean("FakeShooter/flywheelReady", flywheelReady());
+        SmartDashboard.putBoolean("FakeShooter/readyToShoot", readyToShoot());
+        
     }
 }
