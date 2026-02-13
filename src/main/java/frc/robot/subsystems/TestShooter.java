@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.AimData;
 import frc.robot.utils.TargetTracker;
 
 public class TestShooter extends SubsystemBase{
@@ -28,6 +29,12 @@ public class TestShooter extends SubsystemBase{
     double hoodGoal = 0.6; //number to get to when pressing button
     int hoodGoalIdx = 3;
     double[] hoodPresets = {0, 0.2, 0.4, 0.6, 0.8};
+    //For aiming (pseudocode)
+    //List of limelight distances + hood poses + shooter speed
+    AimData[] shootCalc = { new AimData(0.0, 0.0, 49.0, 1.0),
+                            new AimData(1.2, 0.0, 49.0, 1.0),
+                            new AimData(4.2, 0.2, 52.5, 1.0)};
+
     double currHoodGoal = 0; //number used w/ PID
     private final Debouncer flywheelReadyDebounce = new Debouncer(0.5, DebounceType.kRising);
     private TargetTracker targetTracker;
@@ -58,7 +65,8 @@ public class TestShooter extends SubsystemBase{
                 // TODO: still iterating on what these values should be
                 .withKV(.12) // this seems right
                 .withKP(0)
-                .withKI(.1)
+                .withKI(0)
+                
         );
     }
     
@@ -143,15 +151,30 @@ public class TestShooter extends SubsystemBase{
         flywheelSpeedGoal = 0;
         if (isAiming) {
             var distance = targetTracker.getRobotToTargetTranslation().getNorm();
+            var lerpAmount = 0.0;
+            AimData setAmounts = shootCalc[0];
+            boolean hasAimed = false;
             // TODO: fancy math/algorithm here
-
+            for(var i = 1; i < shootCalc.length; i++) {
+                if(distance < shootCalc[i].getDist() && !hasAimed) {
+                    lerpAmount = (distance - shootCalc[i - 1].getDist()) / (shootCalc[i].getDist() - shootCalc[i - 1].getDist());
+                    setAmounts = shootCalc[i - 1].lerp(shootCalc[i], lerpAmount);
+                    hasAimed = true;
+                }
+            }
+            // TODO: change aiming from hardcoded to calculated
+            // currHoodGoal = setAmounts.getHood();
+            // flywheelSpeedGoal = setAmounts.getSpeed();
             currHoodGoal = hoodGoal;
-            flywheelSpeedGoal = 50; // max 100rps
+            flywheelSpeedGoal = 49; // max 100rps
         }
 
         hoodMotor.setControl(new PositionVoltage(0).withSlot(0).withPosition(currHoodGoal));
         shootMotor.setControl(new VelocityVoltage(flywheelSpeedGoal).withSlot(0));
 
+        SmartDashboard.putNumber("Shooter/Distance", targetTracker.getRobotToTargetTranslation().getNorm());
+        SmartDashboard.putNumber("Shooter/HoodPreset", hoodGoal);
+        SmartDashboard.putNumber("Shooter/ShootSpeed", shootMotor.getVelocity().getValueAsDouble());
         SmartDashboard.putBoolean("Shooter/isAiming", isAiming);
         SmartDashboard.putNumber("Shooter/shootActual", shootMotor.getVelocity().getValueAsDouble());
         SmartDashboard.putBoolean("Shooter/hoodReady", hoodReady());

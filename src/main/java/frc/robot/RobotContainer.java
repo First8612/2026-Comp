@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.time.Instant;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -26,6 +27,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.TestShooter;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.FakeShooter;
 import frc.robot.subsystems.Storage;
 
@@ -52,6 +54,7 @@ public class RobotContainer {
     private final FakeShooter shooter = new FakeShooter(targetTracker);
     private final Storage storage = new Storage();
     private final TestShooter testShooter = new TestShooter(targetTracker);
+    private final Vision vision = new Vision(drivetrain);
 
     private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(joystick, drivetrain, targetTracker);
     private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, joystick, drivetrain);
@@ -96,7 +99,7 @@ public class RobotContainer {
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
-        joystick.a().whileTrue(driveAndFaceTarget);
+        joystick.x().whileTrue(driveAndFaceTarget);
 
         joystick.b().whileTrue(new RunCommand(() -> testShooter.spinUp(-1)));
         joystick.y().whileTrue(new RunCommand(() -> testShooter.inFeed()));
@@ -112,8 +115,8 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.povLeft().onTrue(new RunCommand(() -> testShooter.cycleHoodLeft()));
-        joystick.povRight().onTrue(new RunCommand(() -> testShooter.cycleHoodRight()));
+        joystick.povLeft().onTrue(new InstantCommand(() -> testShooter.cycleHoodLeft()));
+        joystick.povRight().onTrue(new InstantCommand(() -> testShooter.cycleHoodRight()));
         // Reset the field-centric heading on left bumper press.
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
@@ -141,5 +144,7 @@ public class RobotContainer {
 
     public void robotPeriodic() {
         Target.periodic(drivetrain.getState().Pose);
+        vision.periodic();
     }
 }
+//https://github.com/LimelightVision/limelightlib-wpijava
