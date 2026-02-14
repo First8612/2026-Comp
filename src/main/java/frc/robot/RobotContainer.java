@@ -110,11 +110,11 @@ public class RobotContainer {
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
-        joystick.x().whileTrue(driveAndFaceTarget);
+        //joystick.x().whileTrue(driveAndFaceTarget);
 
         joystick.b().whileTrue(new RunCommand(() -> testShooter.spinUp(-1)));
         joystick.y().whileTrue(new RunCommand(() -> testShooter.inFeed()));
-        joystick.y().onFalse(new InstantCommand(() -> testShooter.stop()));
+        //joystick.y().onFalse(new InstantCommand(() -> testShooter.stop()));
         joystick.b().onFalse(new InstantCommand(() -> testShooter.stop()));
         // joystick.b().whileTrue(shoot);
         joystick.x().whileTrue(Commands.startEnd(testShooter::enableAiming, testShooter::stop, testShooter));
