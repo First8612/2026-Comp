@@ -34,12 +34,13 @@ public class TestShooter extends SubsystemBase{
     double[] hoodPresets = {0, 0.2, 0.4, 0.6, 0.8};
     //For aiming (pseudocode)
     //List of limelight distances + hood poses + shooter speed
+    //TODO: FURTHEST IS 5.5!!!! (& 2.7)
     AimData[] shootCalc = { new AimData(0.0, 0.0, 49.0, 1.0),
                             new AimData(1.2, 0.0, 49.0, 1.0),
                             new AimData(4.2, 0.2, 52.5, 1.0)};
 
     double currHoodGoal = 0; //number used w/ PID
-    private final Debouncer flywheelReadyDebounce = new Debouncer(0.25, DebounceType.kRising);
+    private final Debouncer flywheelReadyDebounce = new Debouncer(0.07, DebounceType.kRising);
     private TargetTracker targetTracker;
 
     public TestShooter(TargetTracker targetTracker) {
@@ -50,6 +51,10 @@ public class TestShooter extends SubsystemBase{
         mConfig.Inverted = InvertedValue.Clockwise_Positive;
         hoodMotor.getConfigurator().apply(mConfig);
         hoodMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(12).withStatorCurrentLimitEnable(true));
+
+        
+        feedMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(40).withStatorCurrentLimitEnable(false));
+        // shootMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(80).withStatorCurrentLimitEnable(true));
 
         var slot0Configs = new Slot0Configs();
         slot0Configs.kP = 10;
@@ -83,11 +88,11 @@ public class TestShooter extends SubsystemBase{
     }
     
     public void inFeed() {
-        feedDutyCycle = 0.5;
+        feedDutyCycle = 0.25;
     }
 
     public void backFeed() {
-        feedDutyCycle = -0.5;
+        feedDutyCycle = -0.25;
     }
 
     public void stopFeed() {
@@ -163,7 +168,7 @@ public class TestShooter extends SubsystemBase{
             var lerpAmount = 0.0;
             AimData setAmounts = shootCalc[0];
             boolean hasAimed = false;
-            // TODO: fancy math/algorithm here
+            // TODO: fancy math/algorithm here (leading?)
             for(var i = 1; i < shootCalc.length; i++) {
                 if(distance < shootCalc[i].getDist() && !hasAimed) {
                     lerpAmount = (distance - shootCalc[i - 1].getDist()) / (shootCalc[i].getDist() - shootCalc[i - 1].getDist());
