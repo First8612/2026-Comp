@@ -6,13 +6,13 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.utils.TargetTracker;
 
 public class DriveAndFaceTargetCommand extends Command {
     private final double maxSpeed = RobotContainer.MaxSpeed;
     private final CommandXboxController driverController;
-    private final CommandSwerveDrivetrain drivetrain;
+    private final Drivetrain drivetrain;
     private final TargetTracker targetTracker;
 
     private final SwerveRequest.FieldCentricFacingAngle driveFacingTarget = new SwerveRequest.FieldCentricFacingAngle()
@@ -21,7 +21,7 @@ public class DriveAndFaceTargetCommand extends Command {
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
         
         
-    public DriveAndFaceTargetCommand(CommandXboxController driverController, CommandSwerveDrivetrain drivetrain, TargetTracker targetTracker) {
+    public DriveAndFaceTargetCommand(CommandXboxController driverController, Drivetrain drivetrain, TargetTracker targetTracker) {
         super();
         this.driverController = driverController;
         this.drivetrain = drivetrain;

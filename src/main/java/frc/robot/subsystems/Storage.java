@@ -1,11 +1,13 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.PlaceholderCode.*;
 
 public class Storage extends SubsystemBase{
-    private FakeMotor conveyMotor = new FakeMotor(44);
-    private FakeSensor ballSensor = new FakeSensor(60);
+    private TalonFX conveyMotor; // = new TalonFX(30);
+    private double test_conveySpeed = 0;
     
 
     public Storage() {
@@ -14,22 +16,24 @@ public class Storage extends SubsystemBase{
     }
 
     public void conveyIn() {
-        conveyMotor.set(0.5);
+        test_conveySpeed = 0.5;
     }
 
     public void conveyOut() {
-        conveyMotor.set(-0.5);
+        test_conveySpeed = -0.5;
     }
 
     public void conveyStop() {
-        conveyMotor.set(0);
-    }
-
-    public double getConveySpeed() {
-        return conveyMotor.getSpeed();
+        test_conveySpeed = 0;
     }
 
     public boolean hasFuel() {
-        return ballSensor.getValue();
+        return false;
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Storage/conveySpeed", test_conveySpeed);
+        SmartDashboard.putBoolean("Storage/hasFuel", hasFuel());
     }
 }

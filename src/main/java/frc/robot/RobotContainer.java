@@ -6,16 +6,12 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.time.Instant;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,11 +24,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveAndFaceTargetCommand;
 import frc.robot.commands.ShootSequence;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.TestShooter;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.FakeShooter;
 import frc.robot.subsystems.Storage;
 
 import frc.robot.utils.TargetTracker;
@@ -46,19 +41,16 @@ public class RobotContainer {
             .withDeadband(MaxSpeed * 0.1)
             .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystickDrive = new CommandXboxController(0);
     private final CommandXboxController joystickOperate = new CommandXboxController(1);
     
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final Drivetrain drivetrain = TunerConstants.createDrivetrain();
     private final TargetTracker targetTracker = new TargetTracker(drivetrain);
-    private final FakeShooter shooter = new FakeShooter(targetTracker);
     private final Storage storage = new Storage();
-    private final TestShooter testShooter = new TestShooter(targetTracker);
+    private final Shooter shooter = new Shooter(targetTracker);
     private final Vision vision = new Vision(drivetrain);
 
     private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(joystickDrive, drivetrain, targetTracker);
@@ -77,8 +69,8 @@ public class RobotContainer {
         autonChooser = AutoBuilder.buildAutoChooser("Test Auto 11");
 
         SmartDashboard.putData("Auto Path", autonChooser);
-        RobotModeTriggers.autonomous().onTrue(testShooter.getZeroCommand());
-        RobotModeTriggers.teleop().onTrue(testShooter.getZeroCommand());
+        RobotModeTriggers.autonomous().onTrue(shooter.getZeroCommand());
+        RobotModeTriggers.teleop().onTrue(shooter.getZeroCommand());
 
         Field.writeOnceToNT();
     }
@@ -98,7 +90,7 @@ public class RobotContainer {
             return joystickOperate.getRightTriggerAxis()-joystickOperate.getLeftTriggerAxis();
         };
         //TODO: Make intake more intuitive
-        joystickOperate.rightTrigger(0.1).or(joystickOperate.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeedRaw(getIntakeSpeed.get())));
+        joystickOperate.rightTrigger(0.1).or(joystickOperate.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeedDutyCycle(getIntakeSpeed.get())));
         joystickOperate.rightTrigger(0.1).and(joystickOperate.leftTrigger(0.1)).whileFalse(new RunCommand(() -> intake.stop()));
         //  joystick.b().onTrue(shoot);
         // Idle while the robot is disabled. This ensures the configured
@@ -114,12 +106,12 @@ public class RobotContainer {
         // ));
         joystickDrive.x().whileTrue(driveAndFaceTarget);
 
-        joystickOperate.b().whileTrue(new RunCommand(() -> testShooter.spinUp(-1)));
-        joystickOperate.y().whileTrue(new RunCommand(() -> testShooter.inFeed()));
+        joystickOperate.b().whileTrue(new RunCommand(() -> shooter.spinUp(-1)));
+        joystickOperate.y().whileTrue(new RunCommand(() -> shooter.inFeed()));
         //joystick.y().onFalse(new InstantCommand(() -> testShooter.stop()));
-        joystickOperate.b().onFalse(new InstantCommand(() -> testShooter.stop()));
+        joystickOperate.b().onFalse(new InstantCommand(() -> shooter.stop()));
         // joystick.b().whileTrue(shoot);
-        joystickOperate.x().whileTrue(Commands.startEnd(testShooter::enableAiming, testShooter::stop, testShooter));
+        joystickOperate.x().whileTrue(Commands.startEnd(shooter::enableAiming, shooter::stop, shooter));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -128,8 +120,8 @@ public class RobotContainer {
         joystickDrive.start().and(joystickDrive.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystickDrive.start().and(joystickDrive.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystickOperate.povLeft().onTrue(new InstantCommand(() -> testShooter.cycleHoodLeft()));
-        joystickOperate.povRight().onTrue(new InstantCommand(() -> testShooter.cycleHoodRight()));
+        joystickOperate.povLeft().onTrue(new InstantCommand(() -> shooter.cycleHoodLeft()));
+        joystickOperate.povRight().onTrue(new InstantCommand(() -> shooter.cycleHoodRight()));
         // Reset the field-centric heading on left bumper press.
         joystickDrive.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 

@@ -3,12 +3,12 @@ package frc.robot.utils;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Target;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Drivetrain;
 
 public class TargetTracker {
-    private CommandSwerveDrivetrain drivetrain;
+    private Drivetrain drivetrain;
 
-    public TargetTracker(CommandSwerveDrivetrain drivetrain) {
+    public TargetTracker(Drivetrain drivetrain) {
         super();
         this.drivetrain = drivetrain;
     }

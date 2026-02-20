@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.AimData;
 import frc.robot.utils.TargetTracker;
 
-public class TestShooter extends SubsystemBase{
+public class Shooter extends SubsystemBase{
     TalonFX shootMotor = new TalonFX(41);
     TalonFX hoodMotor = new TalonFX(42);
     TalonFX feedMotor = new TalonFX(43);
@@ -45,7 +45,7 @@ public class TestShooter extends SubsystemBase{
     private final Debouncer flywheelReadyDebounce = new Debouncer(0.07, DebounceType.kRising);
     private TargetTracker targetTracker;
 
-    public TestShooter(TargetTracker targetTracker) {
+    public Shooter(TargetTracker targetTracker) {
         super();
         this.targetTracker = targetTracker;
         var mConfig = new MotorOutputConfigs();
@@ -56,7 +56,6 @@ public class TestShooter extends SubsystemBase{
 
         
         feedMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(40).withStatorCurrentLimitEnable(false));
-        // shootMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(80).withStatorCurrentLimitEnable(true));
 
         var slot0Configs = new Slot0Configs();
         slot0Configs.kP = 10;

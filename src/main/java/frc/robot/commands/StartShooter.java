@@ -1,11 +1,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.FakeShooter;
-import frc.robot.subsystems.TestShooter;
+import frc.robot.subsystems.Shooter;
 
 public class StartShooter extends InstantCommand {
-    public StartShooter(FakeShooter shooter) {
+    public StartShooter(Shooter shooter) {
         super(shooter::warmup, shooter);
     }
 }
