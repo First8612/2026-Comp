@@ -7,23 +7,24 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.utils.TargetTracker;
 
 public class WaitForReadyToShoot extends Command {
-    private Debouncer readyDebounce = new Debouncer(.5, DebounceType.kRising);
+    private Debouncer yawDebounce = new Debouncer(.5, DebounceType.kRising);
     private Shooter shooter;
     private TargetTracker targetTracker;
+    private boolean ignoreYaw;
 
-    public WaitForReadyToShoot(Shooter shooter, TargetTracker targetTracker) {
+    public WaitForReadyToShoot(Shooter shooter, TargetTracker targetTracker, boolean ignoreYaw) {
         super();
         this.shooter = shooter;
         this.targetTracker = targetTracker;
+        this.ignoreYaw = ignoreYaw;
     }
 
     @Override
     public boolean isFinished() {
-        var yawIsReady = Math.abs(targetTracker.getRobotToTargetRotation().getDegrees()) < 5;
+        var yawIsReady = ignoreYaw || yawDebounce.calculate(
+                Math.abs(targetTracker.getRobotToTargetRelativeRotation().getDegrees()) < 2);
         var shooterIsReady = shooter.readyToShoot();
-        
-        return readyDebounce.calculate(
-            yawIsReady && shooterIsReady
-        );
+
+        return yawIsReady && shooterIsReady;
     }
 }

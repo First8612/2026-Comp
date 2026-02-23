@@ -192,7 +192,7 @@ public class TunerConstants {
         );
 
     /**
-     * Creates a CommandSwerveDrivetrain instance.
+     * Creates a Drivetrain instance.
      * This should only be called once in your robot program,.
      */
     public static Drivetrain createDrivetrain() {

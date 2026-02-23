@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Storage extends SubsystemBase{
@@ -13,6 +14,8 @@ public class Storage extends SubsystemBase{
     public Storage() {
         super();
         //More Init
+
+        setDefaultCommand(Commands.runOnce(this::conveyStop, this));
     }
 
     public void conveyIn() {
