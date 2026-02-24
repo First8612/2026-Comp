@@ -30,7 +30,7 @@ public class Shooter extends SubsystemBase {
     Optional<Double> aimingDistOveride = Optional.empty();
     double feedDutyCycle = 0;
     double flywheelSpeedGoal = 0;
-    InterpolatingArrayTreeMap shootCalc = new InterpolatingArrayTreeMap(3);
+    InterpolatingArrayTreeMap shootCalc = new InterpolatingArrayTreeMap(2);
 
     double currHoodGoal = 0; // number used w/ PID
     private final Debouncer flywheelReadyDebounce = new Debouncer(0.07, DebounceType.kRising);
@@ -39,12 +39,12 @@ public class Shooter extends SubsystemBase {
     public Shooter(TargetTracker targetTracker) {
         super();
 
-        shootCalc.put(0.0, new double[]{0.0, 49.0, 0.0});
-        shootCalc.put(1.2, new double[]{0.0, 49.0, 1.2});
-        shootCalc.put(2.7, new double[]{0.1, 46.0, 2.7});
-        shootCalc.put(4.2, new double[]{0.2, 52.5, 4.2});
-        shootCalc.put(5.6, new double[]{0.3, 58.0, 5.6});
-        shootCalc.put(200.0, new double[]{0.3, 58.0, 200.0});
+        shootCalc.put(0.0, new double[]{0.0, 49.0});
+        shootCalc.put(1.2, new double[]{0.0, 49.0});
+        shootCalc.put(2.7, new double[]{0.1, 46.0});
+        shootCalc.put(4.2, new double[]{0.2, 52.5});
+        shootCalc.put(5.6, new double[]{0.3, 58.0});
+        shootCalc.put(200.0, new double[]{0.3, 58.0});
         
         this.targetTracker = targetTracker;
         var mConfig = new MotorOutputConfigs();
