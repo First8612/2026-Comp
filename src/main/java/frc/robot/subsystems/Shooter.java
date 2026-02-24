@@ -2,9 +2,12 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.CoastOut;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -16,28 +19,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.DixieHornCommand;
-import frc.robot.utils.AimData;
+import frc.robot.utils.InterpolatingArrayTreeMap;
 import frc.robot.utils.TargetTracker;
 
 public class Shooter extends SubsystemBase {
     TalonFX shootMotor = new TalonFX(41);
-    // TalonFX hoodMotor = new TalonFX(42);
+    TalonFX hoodMotor = new TalonFX(42);
     TalonFX feedMotor = new TalonFX(43);
     Boolean isAiming = false;
     Optional<Double> aimingDistOveride = Optional.empty();
     double feedDutyCycle = 0;
     double flywheelSpeedGoal = 0;
-    double hoodGoal = 0.2; // number to get to when pressing button
-    int hoodGoalIdx = 1;
-    double[] hoodPresets = { 0, 0.2, 0.4, 0.6, 0.8 };
-    // For aiming (pseudocode)
-    // List of limelight distances + hood poses + shooter speed
-    AimData[] shootCalc = { new AimData(0.0, 0.0, 49.0, 1.0),
-            new AimData(1.2, 0.0, 49.0, 1.0),
-            new AimData(2.7, 0.1, 46.0, 1.0),
-            new AimData(4.2, 0.2, 52.5, 1.0),
-            new AimData(5.6, 0.3, 58, 1.0),
-            new AimData(200, 0.3, 58, 1.0) };
+    InterpolatingArrayTreeMap shootCalc = new InterpolatingArrayTreeMap(3);
 
     double currHoodGoal = 0; // number used w/ PID
     private final Debouncer flywheelReadyDebounce = new Debouncer(0.07, DebounceType.kRising);
@@ -45,22 +38,23 @@ public class Shooter extends SubsystemBase {
 
     public Shooter(TargetTracker targetTracker) {
         super();
+
+        shootCalc.put(0.0, new double[]{0.0, 49.0, 0.0});
+        shootCalc.put(1.2, new double[]{0.0, 49.0, 1.2});
+        shootCalc.put(2.7, new double[]{0.1, 46.0, 2.7});
+        shootCalc.put(4.2, new double[]{0.2, 52.5, 4.2});
+        shootCalc.put(5.6, new double[]{0.3, 58.0, 5.6});
+        shootCalc.put(200.0, new double[]{0.3, 58.0, 200.0});
+        
         this.targetTracker = targetTracker;
         var mConfig = new MotorOutputConfigs();
         mConfig.NeutralMode = NeutralModeValue.Brake;
         mConfig.Inverted = InvertedValue.Clockwise_Positive;
-        // hoodMotor.getConfigurator().apply(mConfig);
-        // hoodMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(12).withStatorCurrentLimitEnable(true));
+        hoodMotor.getConfigurator().apply(mConfig);
+        hoodMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(12).withStatorCurrentLimitEnable(true));
 
         
         feedMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(40).withStatorCurrentLimitEnable(false));
-        // shootMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(80).withStatorCurrentLimitEnable(true));
-
-        // var slot0Configs = new Slot0Configs();
-        // slot0Configs.kP = 10;
-        // slot0Configs.kI = 0.1; // no output for integrated error
-        // slot0Configs.kD = 0; // A velocity of 1 rps results in 0.1 V output
-        // hoodMotor.getConfigurator().apply(slot0Configs);
 
         shootMotor.getConfigurator().apply(
             new MotorOutputConfigs()
@@ -140,44 +134,31 @@ public class Shooter extends SubsystemBase {
         return true;
     }
 
-    public void cycleHoodRight() {
-        hoodGoalIdx = (hoodGoalIdx + hoodPresets.length + 1) % hoodPresets.length;
-        hoodGoal = hoodPresets[hoodGoalIdx];
-    }
-
-    public void cycleHoodLeft() {
-        hoodGoalIdx = (hoodGoalIdx + hoodPresets.length - 1) % hoodPresets.length;
-        hoodGoal = hoodPresets[hoodGoalIdx];
-    }
-
     public void spinUp(double speed) {
         flywheelSpeedGoal = speed;
     }
 
     public Command getZeroCommand() {
-        // var command = Commands.sequence(
-        // Commands.deadline(
-        // Commands.waitUntil(() ->
-        // Math.abs(hoodMotor.getStatorCurrent().getValueAsDouble()) > 6),
-        // Commands.run(() -> hoodMotor.setControl(new DutyCycleOut(-0.1)))
-        // ),
-        // Commands.runOnce(() -> {
-        // hoodMotor.setPosition(-0.01);
-        // hoodMotor.setControl(new DutyCycleOut(0));
-        // hoodMotor.getConfigurator().apply(new HardwareLimitSwitchConfigs()
-        // .withForwardLimitAutosetPositionEnable(true)
-        // .withForwardLimitAutosetPositionValue(1.18));
-        // System.out.println("reset finished");
-        // })
-        // );
+        var command = Commands.sequence(
+        Commands.deadline(
+        Commands.waitUntil(() ->
+        Math.abs(hoodMotor.getStatorCurrent().getValueAsDouble()) > 6),
+        Commands.run(() -> hoodMotor.setControl(new DutyCycleOut(-0.1)))
+        ),
+        Commands.runOnce(() -> {
+        hoodMotor.setPosition(-0.01);
+        hoodMotor.setControl(new DutyCycleOut(0));
+        hoodMotor.getConfigurator().apply(new HardwareLimitSwitchConfigs()
+        .withForwardLimitAutosetPositionEnable(true)
+        .withForwardLimitAutosetPositionValue(1.18));
+        System.out.println("reset finished");
+        })
+        );
 
-        // command.addRequirements(this);
+        command.addRequirements(this);
 
-        // return command;
-        return Commands.none();
+        return command;
     }
-
-    // TODO: look at interperable tree map
 
     @Override
     public void periodic() {
@@ -190,28 +171,14 @@ public class Shooter extends SubsystemBase {
                 distance = aimingDistOveride.get();
             }
 
-            var lerpAmount = 0.0;
-            AimData setAmounts = shootCalc[0];
-            boolean hasAimed = false;
-            // TODO: fancy math/algorithm here (leading?)
-            for (var i = 1; i < shootCalc.length; i++) {
-                if (distance < shootCalc[i].getDist() && !hasAimed) {
-                    lerpAmount = (distance - shootCalc[i - 1].getDist())
-                            / (shootCalc[i].getDist() - shootCalc[i - 1].getDist());
-                    setAmounts = shootCalc[i - 1].lerp(shootCalc[i], lerpAmount);
-                    hasAimed = true;
-                }
-            }
-            // TODO: change aiming from hardcoded to calculated
-            currHoodGoal = setAmounts.getHood();
-            flywheelSpeedGoal = setAmounts.getSpeed();
+            double[] setAmounts = shootCalc.get(distance);
+
+            currHoodGoal = setAmounts[0];
+            flywheelSpeedGoal = setAmounts[1];
             SmartDashboard.putNumber("Shooter/speedGoal", flywheelSpeedGoal);
-            // currHoodGoal = hoodGoal;
-            // flywheelSpeedGoal = 52.5; // max 100rps
         }
 
-        // hoodMotor.setControl(new
-        // PositionVoltage(0).withSlot(0).withPosition(currHoodGoal));
+        hoodMotor.setControl(new PositionVoltage(0).withSlot(0).withPosition(currHoodGoal));
         if (flywheelSpeedGoal == 0) {
             shootMotor.setControl(new CoastOut());
         } else {
@@ -226,14 +193,12 @@ public class Shooter extends SubsystemBase {
         }
 
         SmartDashboard.putNumber("Shooter/Distance", targetTracker.getRobotToTargetTranslation().getNorm());
-        SmartDashboard.putNumber("Shooter/HoodPreset", hoodGoal);
         SmartDashboard.putNumber("Shooter/shootMotor/voltage", shootMotor.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/shootMotor/velocity", shootMotor.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/shootMotor/current", shootMotor.getStatorCurrent().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/shootMotor/value", shootMotor.get());
         SmartDashboard.putBoolean("Shooter/isAiming", isAiming);
-        // SmartDashboard.putNumber("Shooter/hoodActual",
-        // hoodMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter/hoodActual", hoodMotor.getPosition().getValueAsDouble());
         SmartDashboard.putBoolean("Shooter/hoodReady", hoodReady());
         SmartDashboard.putBoolean("Shooter/flywheelReady", flywheelReady());
         SmartDashboard.putNumber("Shooter/flywheelSpeedGoal", flywheelSpeedGoal);

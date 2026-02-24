@@ -95,10 +95,8 @@ public class RobotContainer {
             var speed = joystickOperate.getRightTriggerAxis()-joystickOperate.getLeftTriggerAxis();
             return speed;
         };
-        //TODO: Make intake more intuitive
         joystickOperate.rightTrigger(0.1).or(joystickOperate.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeedRaw(getIntakeSpeed.get()), intake));
         joystickOperate.rightTrigger(0.1).and(joystickOperate.leftTrigger(0.1)).whileFalse(new RunCommand(() -> intake.stop(), intake));
-        //  joystick.b().onTrue(shoot);
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
@@ -106,10 +104,6 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
-        //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        // ));
         joystickDrive.rightBumper().whileTrue(driveAndFaceTarget);
 
         joystickOperate.a().whileTrue(shoot);
@@ -125,9 +119,7 @@ public class RobotContainer {
         joystickDrive.back().and(joystickDrive.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         joystickDrive.start().and(joystickDrive.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystickDrive.start().and(joystickDrive.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
-        joystickOperate.povLeft().onTrue(new InstantCommand(() -> Shooter.cycleHoodLeft()));
-        joystickOperate.povRight().onTrue(new InstantCommand(() -> Shooter.cycleHoodRight()));
+        
         // Reset the field-centric heading on left bumper press.
         joystickDrive.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
@@ -135,22 +127,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // // Simple drive forward auton
-        // final var idle = new SwerveRequest.Idle();
-        // return Commands.sequence(
-        //     // Reset our field centric heading to match the robot
-        //     // facing away from our alliance station wall (0 deg).
-        //     drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-        //     // Then slowly drive forward (away from us) for 5 seconds.
-        //     drivetrain.applyRequest(() ->
-        //         drive.withVelocityX(0.5)
-        //             .withVelocityY(0)
-        //             .withRotationalRate(0)
-        //     )
-        //     .withTimeout(5.0),
-        //     // Finally idle for the rest of auton
-        //     drivetrain.applyRequest(() -> idle)
-        // );
         var auton = autonChooser.getSelected();
         auton.addRequirements(drivetrain);
         return auton;
