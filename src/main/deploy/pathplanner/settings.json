@@ -3,15 +3,10 @@
   "robotLength": 0.803,
   "holonomicMode": true,
   "pathFolders": [
-    "Aiming Paths",
-    "Climbing Paths",
-    "Collecting Paths",
-    "Traversing Paths"
+    "Aiming Paths"
   ],
   "autoFolders": [
-    "Collect Across Autons",
-    "Collect Loop Autons",
-    "Simple Autons"
+    "Collect Across Autons"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
