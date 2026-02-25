@@ -25,7 +25,6 @@ public class Field {
     public static final ByAlliance blueAlliance = new ByAlliance("Blue", blueOrigin, new Rotation2d());
     public static final ByAlliance redAlliance = new ByAlliance("Red", redOrigin, new Rotation2d(Degree.of(180)));
 
-
     public static class ByAlliance {
         public ByAlliance(String name, Pose2d origin, Rotation2d perspectiveRotation) {
             super();
@@ -52,13 +51,40 @@ public class Field {
             passingTargetLeft = origin.plus(
                 new Transform2d(passingTargetXOffset, fieldWidth.minus(passingTargetYOffset), noRotation)
             );
-        }
+
+            // trench
+            // using tag 28 from page 11
+            var trenchYOffset = Inches.of(25);
+            var trenchXOffset = Inches.of(180);
+            trenchRight = new Rectangle2d(
+                origin.transformBy(new Transform2d(trenchXOffset, trenchYOffset, noRotation)),
+                Inches.of(48),
+                trenchXOffset.times(2)
+            );
+
+            trenchLeft = new Rectangle2d(
+                origin.transformBy(new Transform2d(trenchXOffset, fieldWidth.minus(trenchYOffset), noRotation)),
+                Inches.of(48),
+                trenchXOffset.times(2)
+            );
+    }
 
         public final String name;
         public final Pose2d hub;
         public final Rectangle2d zone;
         public final Pose2d passingTargetRight;
         public final Pose2d passingTargetLeft;
+        public final Rectangle2d trenchRight;
+        public final Rectangle2d trenchLeft;
+    }
+
+    public static boolean inTrenchZone(Pose2d pose) {
+        if (blueAlliance.trenchLeft.contains(pose.getTranslation())) return true;
+        if (blueAlliance.trenchRight.contains(pose.getTranslation())) return true;
+        if (redAlliance.trenchLeft.contains(pose.getTranslation())) return true;
+        if (redAlliance.trenchRight.contains(pose.getTranslation())) return true;
+
+        return false;
     }
 
     public static void writeOnceToNT() {
