@@ -12,6 +12,11 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.event.BooleanEvent;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,10 +36,12 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Storage;
 import edu.wpi.first.cameraserver.*;
+import edu.wpi.first.vision.VisionPipeline;
 import frc.robot.utils.LeadingTargetTracker;
 import frc.robot.utils.TargetTracker;
 
 public class RobotContainer {
+    private final EventLoop loop = new EventLoop();
     public final static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public final static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -64,6 +71,9 @@ public class RobotContainer {
     private final ShootSequence shoot = new ShootSequence(Shooter, storage, targetTracker, joystickDrive, drivetrain, false);
     private final ShootSequence shootSimple = new ShootSequence(Shooter, storage, targetTracker, joystickDrive, drivetrain, true);
 
+    private final Timer gameTime = new Timer();
+    private final double[] gameEvents = {/*Start 1st Shift*/10, /*2nd Shift*/35, /*3st Shift*/60, /*4th Shift*/85, /*Start Endgame*/110, /*End of Game*/140};
+
     Intake intake = new Intake();
 
     SendableChooser<Command> autonChooser;
@@ -83,6 +93,19 @@ public class RobotContainer {
         Field.writeOnceToNT();
     }
 
+    private boolean atGameScheduleTime(double sec, double threshold) {
+        for(int i = 0; i < gameEvents.length; i++) {
+            if(Math.abs(sec - gameEvents[i]) < threshold && sec > gameEvents[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void startGameTimer() {
+        gameTime.start();
+    }
+
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
@@ -96,6 +119,7 @@ public class RobotContainer {
         );
         Supplier<Double> getIntakeSpeed = () -> {
             var speed = joystickOperate.getRightTriggerAxis()-joystickOperate.getLeftTriggerAxis();
+            // var speed = 0.0;
             return speed;
         };
         joystickOperate.rightTrigger(0.1).or(joystickOperate.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeedRaw(getIntakeSpeed.get()), intake));
@@ -128,6 +152,27 @@ public class RobotContainer {
         joystickDrive.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+        
+        BooleanEvent changeEvent = new BooleanEvent(loop, () -> atGameScheduleTime(gameTime.get(), 0.25));
+        changeEvent.rising().ifHigh(() -> {
+            joystickDrive.setRumble(RumbleType.kBothRumble, 1);
+            joystickOperate.setRumble(RumbleType.kBothRumble, 1);
+        });
+        changeEvent.falling().ifHigh(() -> {
+            joystickDrive.setRumble(RumbleType.kBothRumble, 0);
+            joystickOperate.setRumble(RumbleType.kBothRumble, 0);
+        });
+        
+        BooleanEvent aboutToChange = new BooleanEvent(loop, () -> atGameScheduleTime(gameTime.get() - 3, 0.5));
+        aboutToChange.rising().ifHigh(() -> {
+            joystickDrive.setRumble(RumbleType.kBothRumble, 0.5);
+            joystickOperate.setRumble(RumbleType.kBothRumble, 0.5);
+        });
+
+        aboutToChange.falling().ifHigh(() -> {
+            joystickDrive.setRumble(RumbleType.kBothRumble, 0);
+            joystickOperate.setRumble(RumbleType.kBothRumble, 0);
+        });
     }
 
     public Command getAutonomousCommand() {
@@ -140,5 +185,7 @@ public class RobotContainer {
         Target.periodic(drivetrain.getState().Pose);
         targetTracker.periodic();
         vision.periodic();
+        loop.poll();
+        SmartDashboard.putNumber("GameTime", gameTime.get());
     }
 }
