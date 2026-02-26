@@ -64,22 +64,22 @@ public class RobotContainer {
     private final TargetTracker targetTracker = new TargetTracker(drivetrain);
 
     private final Storage storage = new Storage();
-    private final Shooter Shooter = new Shooter(targetTracker);
+    // private final Shooter Shooter = new Shooter(targetTracker);
     private final Vision vision = new Vision(drivetrain);
 
     private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(joystickDrive, drivetrain, targetTracker);
-    private final ShootSequence shoot = new ShootSequence(Shooter, storage, targetTracker, joystickDrive, drivetrain, false);
-    private final ShootSequence shootSimple = new ShootSequence(Shooter, storage, targetTracker, joystickDrive, drivetrain, true);
+    // private final ShootSequence shoot = new ShootSequence(Shooter, storage, targetTracker, joystickDrive, drivetrain, false);
+    // private final ShootSequence shootSimple = new ShootSequence(Shooter, storage, targetTracker, joystickDrive, drivetrain, true);
 
-    private final Timer gameTime = new Timer();
+    private Timer gameTime = new Timer();
     private final double[] gameEvents = {/*Start 1st Shift*/10, /*2nd Shift*/35, /*3st Shift*/60, /*4th Shift*/85, /*Start Endgame*/110, /*End of Game*/140};
 
-    Intake intake = new Intake();
+    // Intake intake = new Intake();
 
     SendableChooser<Command> autonChooser;
 
     public RobotContainer() {
-        NamedCommands.registerCommand("ShootSequence", shootSimple);
+        // NamedCommands.registerCommand("ShootSequence", shootSimple);
 
         CameraServer.startAutomaticCapture();
         configureBindings();
@@ -87,8 +87,8 @@ public class RobotContainer {
         autonChooser = AutoBuilder.buildAutoChooser("RI3D Auto");
 
         SmartDashboard.putData("Auto Path", autonChooser);
-        RobotModeTriggers.autonomous().onTrue(Shooter.getZeroCommand());
-        RobotModeTriggers.teleop().onTrue(Shooter.getZeroCommand());
+        // RobotModeTriggers.autonomous().onTrue(Shooter.getZeroCommand());
+        // RobotModeTriggers.teleop().onTrue(Shooter.getZeroCommand());
 
         Field.writeOnceToNT();
     }
@@ -104,6 +104,10 @@ public class RobotContainer {
 
     public void startGameTimer() {
         gameTime.start();
+    }
+    public void stopGameTimer() {
+        gameTime.reset();
+        gameTime.stop();
     }
 
     private void configureBindings() {
@@ -122,8 +126,8 @@ public class RobotContainer {
             // var speed = 0.0;
             return speed;
         };
-        joystickOperate.rightTrigger(0.1).or(joystickOperate.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeedRaw(getIntakeSpeed.get()), intake));
-        joystickOperate.rightTrigger(0.1).and(joystickOperate.leftTrigger(0.1)).whileFalse(new RunCommand(() -> intake.stop(), intake));
+        // joystickOperate.rightTrigger(0.1).or(joystickOperate.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeedRaw(getIntakeSpeed.get()), intake));
+        // joystickOperate.rightTrigger(0.1).and(joystickOperate.leftTrigger(0.1)).whileFalse(new RunCommand(() -> intake.stop(), intake));
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
@@ -134,13 +138,13 @@ public class RobotContainer {
         joystickDrive.rightBumper().whileTrue(driveAndFaceTarget);
 
 
-        joystickOperate.a().whileTrue(shoot);
-        joystickOperate.b().whileTrue(shootSimple);
+        // joystickOperate.a().whileTrue(shoot);
+        // joystickOperate.b().whileTrue(shootSimple);
         joystickOperate.rightBumper().whileTrue(new DixieHornCommand());
 
 
-        joystickOperate.y().whileTrue(new RunCommand(() -> Shooter.inFeed()));
-        joystickOperate.x().whileTrue(Commands.startEnd(Shooter::enableAiming, Shooter::stop, Shooter));
+        // joystickOperate.y().whileTrue(new RunCommand(() -> Shooter.inFeed()));
+        // joystickOperate.x().whileTrue(Commands.startEnd(Shooter::enableAiming, Shooter::stop, Shooter));
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         joystickDrive.back().and(joystickDrive.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -153,26 +157,28 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
         
-        BooleanEvent changeEvent = new BooleanEvent(loop, () -> atGameScheduleTime(gameTime.get(), 0.25));
+        BooleanEvent changeEvent = new BooleanEvent(loop, () -> atGameScheduleTime(gameTime.get(), 0.5));
         changeEvent.rising().ifHigh(() -> {
             joystickDrive.setRumble(RumbleType.kBothRumble, 1);
             joystickOperate.setRumble(RumbleType.kBothRumble, 1);
         });
+        
         changeEvent.falling().ifHigh(() -> {
             joystickDrive.setRumble(RumbleType.kBothRumble, 0);
             joystickOperate.setRumble(RumbleType.kBothRumble, 0);
         });
         
-        BooleanEvent aboutToChange = new BooleanEvent(loop, () -> atGameScheduleTime(gameTime.get() - 3, 0.5));
+        BooleanEvent aboutToChange = new BooleanEvent(loop, () -> atGameScheduleTime(gameTime.get() + 3, 1));
         aboutToChange.rising().ifHigh(() -> {
-            joystickDrive.setRumble(RumbleType.kBothRumble, 0.5);
-            joystickOperate.setRumble(RumbleType.kBothRumble, 0.5);
+            joystickDrive.setRumble(RumbleType.kBothRumble, 0.2);
+            joystickOperate.setRumble(RumbleType.kBothRumble, 0.2);
         });
 
         aboutToChange.falling().ifHigh(() -> {
             joystickDrive.setRumble(RumbleType.kBothRumble, 0);
             joystickOperate.setRumble(RumbleType.kBothRumble, 0);
         });
+
     }
 
     public Command getAutonomousCommand() {
@@ -186,6 +192,5 @@ public class RobotContainer {
         targetTracker.periodic();
         vision.periodic();
         loop.poll();
-        SmartDashboard.putNumber("GameTime", gameTime.get());
     }
 }
