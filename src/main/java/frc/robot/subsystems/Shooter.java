@@ -7,10 +7,12 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -23,9 +25,17 @@ import frc.robot.utils.InterpolatingArrayTreeMap;
 import frc.robot.utils.TargetTracker;
 
 public class Shooter extends SubsystemBase {
-    TalonFX shootMotor = new TalonFX(41);
-    TalonFX hoodMotor = new TalonFX(42);
-    TalonFX feedMotor = new TalonFX(43);
+    // TalonFX shootMotor = new TalonFX(41);
+    // TalonFX hoodMotor = new TalonFX(42);
+    // TalonFX feedMotor = new TalonFX(43);
+    //For actual robot when we switch over
+    TalonFX shootMotorLeft = new TalonFX(41);
+    TalonFX shootMotorRight = new TalonFX(42);
+    TalonFX hoodMotor = new TalonFX(43);
+    TalonFX feedMotor = new TalonFX(44);
+
+    private Follower shootFollow = new Follower(41, MotorAlignmentValue.Opposed);
+    
     Boolean isAiming = false;
     Optional<Double> aimingDistOveride = Optional.empty();
     double feedDutyCycle = 0;
@@ -56,12 +66,20 @@ public class Shooter extends SubsystemBase {
         
         feedMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(40).withStatorCurrentLimitEnable(false));
 
-        shootMotor.getConfigurator().apply(
+        shootMotorLeft.getConfigurator().apply(
             new MotorOutputConfigs()
                 .withInverted(InvertedValue.Clockwise_Positive)
                 .withNeutralMode(NeutralModeValue.Coast)
                 .withPeakReverseDutyCycle(0)
         );
+        shootMotorRight.getConfigurator().apply(
+            new MotorOutputConfigs()
+                .withInverted(InvertedValue.Clockwise_Positive)
+                .withNeutralMode(NeutralModeValue.Coast)
+                .withPeakReverseDutyCycle(0)
+        );
+
+
 
         /*
          * NOTES: (with two brass flywheels)
@@ -71,7 +89,16 @@ public class Shooter extends SubsystemBase {
          * the belt vibrating.
          * At KV .125, KP  .8 recovery time is about .5sec
          */
-        shootMotor.getConfigurator().apply(
+        shootMotorLeft.getConfigurator().apply(
+            new Slot0Configs()
+                // TODO: still iterating on what these values should be
+                .withKV(.125) // this seems right
+                .withKP(.8)
+                .withKI(0)
+                .withKD(0)
+                
+        );
+        shootMotorRight.getConfigurator().apply(
             new Slot0Configs()
                 // TODO: still iterating on what these values should be
                 .withKV(.125) // this seems right
@@ -82,7 +109,7 @@ public class Shooter extends SubsystemBase {
         );
 
         setDefaultCommand(Commands.runOnce(this::stop, this));
-        DixieHornCommand.enrollSubsystemMotors(this, shootMotor, feedMotor);
+        DixieHornCommand.enrollSubsystemMotors(this, shootMotorLeft, shootMotorRight, feedMotor);
 
         SmartDashboard.putData("Shooter/system", this);
     }
@@ -127,7 +154,7 @@ public class Shooter extends SubsystemBase {
             return false;
 
         return flywheelReadyDebounce.calculate(
-                Math.abs(flywheelSpeedGoal - shootMotor.getVelocity().getValueAsDouble()) < 2.5);
+                Math.abs(flywheelSpeedGoal - shootMotorLeft.getVelocity().getValueAsDouble()) < 2.5);
     }
 
     private Boolean hoodReady() {
@@ -180,11 +207,12 @@ public class Shooter extends SubsystemBase {
 
         hoodMotor.setControl(new PositionVoltage(0).withSlot(0).withPosition(currHoodGoal));
         if (flywheelSpeedGoal == 0) {
-            shootMotor.setControl(new CoastOut());
+            shootMotorLeft.setControl(new CoastOut());
         } else {
             // Cruising
-            shootMotor.setControl(new VelocityVoltage(flywheelSpeedGoal).withSlot(0));
+            shootMotorLeft.setControl(new VelocityVoltage(flywheelSpeedGoal).withSlot(0));
         }
+        shootMotorRight.setControl(shootFollow);
 
         if (flywheelReady()) {
             feedMotor.set(feedDutyCycle);
@@ -193,10 +221,10 @@ public class Shooter extends SubsystemBase {
         }
 
         SmartDashboard.putNumber("Shooter/Distance", targetTracker.getRobotToTargetTranslation().getNorm());
-        SmartDashboard.putNumber("Shooter/shootMotor/voltage", shootMotor.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter/shootMotor/velocity", shootMotor.getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter/shootMotor/current", shootMotor.getStatorCurrent().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter/shootMotor/value", shootMotor.get());
+        SmartDashboard.putNumber("Shooter/shootMotor/voltage", shootMotorLeft.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter/shootMotor/velocity", shootMotorLeft.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter/shootMotor/current", shootMotorLeft.getStatorCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Shooter/shootMotor/value", shootMotorLeft.get());
         SmartDashboard.putBoolean("Shooter/isAiming", isAiming);
         SmartDashboard.putNumber("Shooter/hoodActual", hoodMotor.getPosition().getValueAsDouble());
         SmartDashboard.putBoolean("Shooter/hoodReady", hoodReady());
