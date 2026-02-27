@@ -7,7 +7,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.DixieHornCommand;
 
 public class Intake extends SubsystemBase {
-    private final TalonFX intakeMotor = new TalonFX(40);
+    private final TalonFX intakeMotor = new TalonFX(10,"Intake");
+    private final TalonFX intakeExtendLeft = new TalonFX(11,"Intake");
+    private final TalonFX intakeExtendRight = new TalonFX(12,"Intake");
     private double speed = 0;
 
     public Intake() {

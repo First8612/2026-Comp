@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Storage extends SubsystemBase{
-    private TalonFX conveyMotor; // = new TalonFX(30);
+    private TalonFX conveyMotor = new TalonFX(30,"Intake");
     private double test_conveySpeed = 0;
     
 

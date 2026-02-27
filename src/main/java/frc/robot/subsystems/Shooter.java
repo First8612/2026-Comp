@@ -29,10 +29,10 @@ public class Shooter extends SubsystemBase {
     // TalonFX hoodMotor = new TalonFX(42);
     // TalonFX feedMotor = new TalonFX(43);
     //For actual robot when we switch over
-    TalonFX shootMotorLeft = new TalonFX(41);
-    TalonFX shootMotorRight = new TalonFX(42);
-    TalonFX hoodMotor = new TalonFX(43);
-    TalonFX feedMotor = new TalonFX(44);
+    TalonFX shootMotorLeft = new TalonFX(20,"Shooter");
+    TalonFX shootMotorRight = new TalonFX(21,"Shooter");
+    TalonFX hoodMotor = new TalonFX(22,"Shooter");
+    TalonFX feedMotor = new TalonFX(23,"Shooter");
 
     private Follower shootFollow = new Follower(41, MotorAlignmentValue.Opposed);
     
