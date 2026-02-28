@@ -15,7 +15,6 @@ public class ShootFuel extends Command {
 
     @Override
     public void initialize() {
-        shooter.enableAiming();
         shooter.inFeed();
     }
 

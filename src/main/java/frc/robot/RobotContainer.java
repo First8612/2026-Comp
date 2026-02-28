@@ -136,7 +136,7 @@ public class RobotContainer {
             // var speed = 0.0;
             return speed;
         };
-        // joystickOperate.rightTrigger(0.1).or(joystickOperate.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeedRaw(getIntakeSpeed.get()), intake));
+        joystickOperate.rightTrigger(0.1).or(joystickOperate.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeedRaw(getIntakeSpeed.get()), intake));
         // joystickOperate.rightTrigger(0.1).and(joystickOperate.leftTrigger(0.1)).whileFalse(new RunCommand(() -> intake.stop(), intake));
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -149,12 +149,17 @@ public class RobotContainer {
 
 
         // joystickOperate.a().whileTrue(shoot);
-        // joystickOperate.b().whileTrue(shootSimple);
+        joystickOperate.b().whileTrue(shootSimple);
         joystickOperate.rightBumper().whileTrue(new DixieHornCommand());
 
 
         joystickOperate.y().whileTrue(new RunCommand(() -> shooter.inFeed()));
         joystickOperate.x().whileTrue(Commands.startEnd(shooter::enableAiming, shooter::stop, shooter));
+        joystickOperate.povUp().whileTrue(new RunCommand(() -> storage.conveyIn(),storage));
+        joystickOperate.povDown().whileTrue(new RunCommand(() -> storage.conveyOut(),storage));
+
+        joystickOperate.axisGreaterThan(1, 0.8).onTrue(new RunCommand(() -> intake.retract(), intake));
+        joystickOperate.axisLessThan(1, -0.8).onTrue(new RunCommand(() -> intake.extend(), intake));
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         joystickDrive.back().and(joystickDrive.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));

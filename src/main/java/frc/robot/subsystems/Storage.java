@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -7,14 +8,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Storage extends SubsystemBase{
-    private TalonFX conveyMotor = new TalonFX(30,"Intake");
+    private final CANBus intakeCANBus= new CANBus("Intake");
+    private TalonFX conveyMotor = new TalonFX(30,intakeCANBus);
     private double test_conveySpeed = 0;
     
 
     public Storage() {
         super();
         //More Init
-
+        
         setDefaultCommand(Commands.runOnce(this::conveyStop, this));
     }
 
@@ -38,5 +40,6 @@ public class Storage extends SubsystemBase{
     public void periodic() {
         SmartDashboard.putNumber("Storage/conveySpeed", test_conveySpeed);
         SmartDashboard.putBoolean("Storage/hasFuel", hasFuel());
+        conveyMotor.set(test_conveySpeed);
     }
 }

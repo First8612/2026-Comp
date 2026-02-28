@@ -11,18 +11,18 @@ import frc.robot.Target;
 public class Leading{
     private Translation2d leadingTrans = new Translation2d();
     private InterpolatingDoubleTreeMap leadData;
-    private Drivetrain drivetrain;
+      private Drivetrain drivetrain;
     private Translation2d AimPos;
 
-    public Leading(Drivetrain drivetrain) {
+      public Leading(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
-        leadData = new InterpolatingDoubleTreeMap();
-        leadData.put(0.0, 0.5);
-        leadData.put(5.0, 1.0);
+            leadData = new InterpolatingDoubleTreeMap();
+            leadData.put(0.0, 0.5);
+    leadData.put(5.0, 1.0);
     }
 
-    public void calculateLead(int loopLimit) {
-        leadingTrans = new Translation2d(drivetrain.getState().Speeds.vxMetersPerSecond, drivetrain.getState().Speeds.vyMetersPerSecond).rotateBy(drivetrain.getState().RawHeading).times(-1);
+      public void calculateLead(int loopLimit) {
+         leadingTrans = new Translation2d(drivetrain.getState().Speeds.vxMetersPerSecond, drivetrain.getState().Speeds.vyMetersPerSecond).rotateBy(drivetrain.getState().RawHeading).times(-1);
         Translation2d targetPos = Target.getPose().getTranslation();
         AimPos = targetPos;
         double hangTime;
