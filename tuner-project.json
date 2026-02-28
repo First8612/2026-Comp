@@ -7,18 +7,18 @@
       "ModuleId": 0,
       "Encoder": {
         "Id": 11,
-        "Name": "CANCoder (Device ID 11)",
+        "Name": "FrontLeftCANCoder",
         "Model": "CANCoder",
         "CANbus": "B05A401F46324B532020204A1E410EFF",
-        "CANbusFriendly": "CCR8612",
+        "CANbusFriendly": "Drivetrain",
         "SelectedMotorType": null
       },
       "SteerMotor": {
         "Id": 3,
-        "Name": "Talon FX vers. C (Device ID 3)",
+        "Name": "FrontLeftSteer",
         "Model": "Talon FX vers. C",
         "CANbus": "B05A401F46324B532020204A1E410EFF",
-        "CANbusFriendly": "CCR8612",
+        "CANbusFriendly": "Drivetrain",
         "SelectedMotorType": {
           "Name": "WCP Kraken x60",
           "FreeSpeedRps": 96.7,
@@ -28,10 +28,10 @@
       },
       "DriveMotor": {
         "Id": 2,
-        "Name": "Talon FX vers. C (Device ID 2)",
+        "Name": "FrontLeftDrive",
         "Model": "Talon FX vers. C",
         "CANbus": "B05A401F46324B532020204A1E410EFF",
-        "CANbusFriendly": "CCR8612",
+        "CANbusFriendly": "Drivetrain",
         "SelectedMotorType": {
           "Name": "WCP Kraken x60",
           "FreeSpeedRps": 96.7,
@@ -56,18 +56,18 @@
       "ModuleId": 1,
       "Encoder": {
         "Id": 10,
-        "Name": "CANCoder (Device ID 10)",
+        "Name": "FrontRightCANCoder",
         "Model": "CANCoder",
         "CANbus": "B05A401F46324B532020204A1E410EFF",
-        "CANbusFriendly": "CCR8612",
+        "CANbusFriendly": "Drivetrain",
         "SelectedMotorType": null
       },
       "SteerMotor": {
         "Id": 1,
-        "Name": "Talon FX vers. C (Device ID 1)",
+        "Name": "FrontRightSteer",
         "Model": "Talon FX vers. C",
         "CANbus": "B05A401F46324B532020204A1E410EFF",
-        "CANbusFriendly": "CCR8612",
+        "CANbusFriendly": "Drivetrain",
         "SelectedMotorType": {
           "Name": "WCP Kraken x60",
           "FreeSpeedRps": 96.7,
@@ -77,10 +77,10 @@
       },
       "DriveMotor": {
         "Id": 0,
-        "Name": "Talon FX vers. C (Device ID 0)",
+        "Name": "FrontRightDrive",
         "Model": "Talon FX vers. C",
         "CANbus": "B05A401F46324B532020204A1E410EFF",
-        "CANbusFriendly": "CCR8612",
+        "CANbusFriendly": "Drivetrain",
         "SelectedMotorType": {
           "Name": "WCP Kraken x60",
           "FreeSpeedRps": 96.7,
@@ -105,18 +105,18 @@
       "ModuleId": 2,
       "Encoder": {
         "Id": 12,
-        "Name": "CANCoder (Device ID 12)",
+        "Name": "BackLeftCANCoder",
         "Model": "CANCoder",
         "CANbus": "B05A401F46324B532020204A1E410EFF",
-        "CANbusFriendly": "CCR8612",
+        "CANbusFriendly": "Drivetrain",
         "SelectedMotorType": null
       },
       "SteerMotor": {
         "Id": 5,
-        "Name": "Talon FX vers. C (Device ID 5)",
+        "Name": "BackLeftSteer",
         "Model": "Talon FX vers. C",
         "CANbus": "B05A401F46324B532020204A1E410EFF",
-        "CANbusFriendly": "CCR8612",
+        "CANbusFriendly": "Drivetrain",
         "SelectedMotorType": {
           "Name": "WCP Kraken x60",
           "FreeSpeedRps": 96.7,
@@ -126,10 +126,10 @@
       },
       "DriveMotor": {
         "Id": 4,
-        "Name": "Talon FX vers. C (Device ID 4)",
+        "Name": "BackLeftDrive",
         "Model": "Talon FX vers. C",
         "CANbus": "B05A401F46324B532020204A1E410EFF",
-        "CANbusFriendly": "CCR8612",
+        "CANbusFriendly": "Drivetrain",
         "SelectedMotorType": {
           "Name": "WCP Kraken x60",
           "FreeSpeedRps": 96.7,
@@ -154,18 +154,18 @@
       "ModuleId": 3,
       "Encoder": {
         "Id": 13,
-        "Name": "CANCoder (Device ID 13)",
+        "Name": "BackRightCANCoder",
         "Model": "CANCoder",
         "CANbus": "B05A401F46324B532020204A1E410EFF",
-        "CANbusFriendly": "CCR8612",
+        "CANbusFriendly": "Drivetrain",
         "SelectedMotorType": null
       },
       "SteerMotor": {
         "Id": 7,
-        "Name": "Talon FX vers. C (Device ID 7)",
+        "Name": "BackRightSteer",
         "Model": "Talon FX vers. C",
         "CANbus": "B05A401F46324B532020204A1E410EFF",
-        "CANbusFriendly": "CCR8612",
+        "CANbusFriendly": "Drivetrain",
         "SelectedMotorType": {
           "Name": "WCP Kraken x60",
           "FreeSpeedRps": 96.7,
@@ -175,10 +175,10 @@
       },
       "DriveMotor": {
         "Id": 6,
-        "Name": "Talon FX vers. C (Device ID 6)",
+        "Name": "BackRightDrive",
         "Model": "Talon FX vers. C",
         "CANbus": "B05A401F46324B532020204A1E410EFF",
-        "CANbusFriendly": "CCR8612",
+        "CANbusFriendly": "Drivetrain",
         "SelectedMotorType": {
           "Name": "WCP Kraken x60",
           "FreeSpeedRps": 96.7,
@@ -205,7 +205,7 @@
       "Name": "Pigeon 2 vers. S (Device ID 30)",
       "Model": "Pigeon 2 vers. S",
       "CANbus": "B05A401F46324B532020204A1E410EFF",
-      "CANbusFriendly": "CCR8612",
+      "CANbusFriendly": "Drivetrain",
       "SelectedMotorType": null
     },
     "IsValidGyroCANbus": true,
