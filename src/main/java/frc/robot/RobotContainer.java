@@ -5,15 +5,8 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
-
-import java.util.function.Supplier;
-
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
@@ -21,16 +14,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DixieHornCommand;
 import frc.robot.commands.DriveAndFaceTargetCommand;
+import frc.robot.commands.DriveCommand;
 import frc.robot.commands.SafeRobotForTrench;
 import frc.robot.commands.ShootSequence;
+import frc.robot.controls.Controls;
+import frc.robot.controls.TestingControls;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
@@ -38,28 +30,15 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Storage;
 import edu.wpi.first.cameraserver.*;
-import edu.wpi.first.vision.VisionPipeline;
-import frc.robot.utils.LeadingTargetTracker;
 import frc.robot.utils.TargetTracker;
 
 public class RobotContainer {
-    private final EventLoop loop = new EventLoop();
     public final static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public final static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-    private final EventLoop m_loop = new EventLoop();
-
-    /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1)
-            .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
+    private final EventLoop loop = new EventLoop();
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystickDrive = new CommandXboxController(0);
-    private final CommandXboxController joystickOperate = new CommandXboxController(1);
+    private final Controls controls = new TestingControls();
     
     // subsystems
     public final Drivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -72,16 +51,16 @@ public class RobotContainer {
     private final Vision vision = new Vision(drivetrain);
 
     // commands
-    private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(joystickDrive, drivetrain, targetTracker);
-    private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, joystickDrive, drivetrain, false);
-    private final ShootSequence shootSimple = new ShootSequence(shooter, storage, targetTracker, joystickDrive, drivetrain, true);
+    private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(controls, drivetrain, targetTracker);
+    private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, drivetrain, false);
+    private final ShootSequence shootSimple = new ShootSequence(shooter, storage, targetTracker, drivetrain, true);
     private Timer gameTime = new Timer();
     private final double[] gameEvents = {/*Start 1st Shift*/10, /*2nd Shift*/35, /*3st Shift*/60, /*4th Shift*/85, /*Start Endgame*/110, /*End of Game*/140};
 
     private final Intake intake = new Intake();
 
     // events
-    private final BooleanEvent inTrenchEvent = new BooleanEvent(m_loop, () -> {
+    private final BooleanEvent inTrenchEvent = new BooleanEvent(loop, () -> {
         var robotPose = drivetrain.getState().Pose;
         return Field.inTrenchZone(robotPose);
     });
@@ -124,51 +103,28 @@ public class RobotContainer {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystickDrive.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystickDrive.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystickDrive.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            )
+            new DriveCommand(drivetrain, controls)
         );
-        Supplier<Double> getIntakeSpeed = () -> {
-            var speed = joystickOperate.getRightTriggerAxis()-joystickOperate.getLeftTriggerAxis();
-            // var speed = 0.0;
-            return speed;
-        };
-        joystickOperate.rightTrigger(0.1).or(joystickOperate.leftTrigger(0.1)).whileTrue(new RunCommand(() -> intake.setSpeedRaw(getIntakeSpeed.get()), intake));
-        // joystickOperate.rightTrigger(0.1).and(joystickOperate.leftTrigger(0.1)).whileFalse(new RunCommand(() -> intake.stop(), intake));
-        // Idle while the robot is disabled. This ensures the configured
-        // neutral mode is applied to the drive motors while disabled.
+
         final var idle = new SwerveRequest.Idle();
         RobotModeTriggers.disabled().whileTrue(
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        joystickDrive.rightBumper().whileTrue(driveAndFaceTarget);
+        controls.driveAndFaceTarget().whileTrue(driveAndFaceTarget);
+        controls.shoot().whileTrue(shoot);
+        controls.shootSimiple().whileTrue(shootSimple);
+        controls.horn().whileTrue(new DixieHornCommand());
+        controls.intakeExtend().onTrue(intake.runOnce(intake::extend));
+        controls.intakeRetract().onTrue(intake.runOnce(intake::retract));
+        controls.fieldReset().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-
-        // joystickOperate.a().whileTrue(shoot);
-        joystickOperate.b().whileTrue(shootSimple);
-        joystickOperate.rightBumper().whileTrue(new DixieHornCommand());
-
-
-        joystickOperate.y().whileTrue(new RunCommand(() -> shooter.inFeed()));
-        joystickOperate.x().whileTrue(Commands.startEnd(shooter::enableAiming, shooter::stop, shooter));
-        joystickOperate.povUp().whileTrue(new RunCommand(() -> storage.conveyIn(),storage));
-        joystickOperate.povDown().whileTrue(new RunCommand(() -> storage.conveyOut(),storage));
-
-        joystickOperate.axisGreaterThan(1, 0.8).onTrue(new RunCommand(() -> intake.retract(), intake));
-        joystickOperate.axisLessThan(1, -0.8).onTrue(new RunCommand(() -> intake.extend(), intake));
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystickDrive.back().and(joystickDrive.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystickDrive.back().and(joystickDrive.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystickDrive.start().and(joystickDrive.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystickDrive.start().and(joystickDrive.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-        
-        // Reset the field-centric heading on left bumper press.
-        joystickDrive.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        controls.sysIdDrivetrainDynamicForward().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        controls.sysIdDrivetrainDynamicReverse().whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        controls.sysIdDrivetrainQuasistaticForward().whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        controls.sysIdDrivetrainQuasistaticReverse().whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -185,26 +141,25 @@ public class RobotContainer {
         
         BooleanEvent changeEvent = new BooleanEvent(loop, () -> atGameScheduleTime(gameTime.get(), 0.5));
         changeEvent.rising().ifHigh(() -> {
-            joystickDrive.setRumble(RumbleType.kBothRumble, 1);
-            joystickOperate.setRumble(RumbleType.kBothRumble, 1);
+            controls.setRumble(1);
+            controls.setRumble(1);
         });
         
         changeEvent.falling().ifHigh(() -> {
-            joystickDrive.setRumble(RumbleType.kBothRumble, 0);
-            joystickOperate.setRumble(RumbleType.kBothRumble, 0);
+            controls.setRumble(0);
+            controls.setRumble(0);
         });
         
         BooleanEvent aboutToChange = new BooleanEvent(loop, () -> atGameScheduleTime(gameTime.get() + 3, 1));
         aboutToChange.rising().ifHigh(() -> {
-            joystickDrive.setRumble(RumbleType.kBothRumble, 0.2);
-            joystickOperate.setRumble(RumbleType.kBothRumble, 0.2);
+            controls.setRumble(0.2);
+            controls.setRumble(0.2);
         });
 
         aboutToChange.falling().ifHigh(() -> {
-            joystickDrive.setRumble(RumbleType.kBothRumble, 0);
-            joystickOperate.setRumble(RumbleType.kBothRumble, 0);
+            controls.setRumble(0);
+            controls.setRumble(0);
         });
-
     }
 
     public Command getAutonomousCommand() {
@@ -214,10 +169,9 @@ public class RobotContainer {
     }
 
     public void robotPeriodic() {
-        m_loop.poll();
+        loop.poll();
         Target.periodic(drivetrain.getState().Pose);
         targetTracker.periodic();
         vision.periodic();
-        loop.poll();
     }
 }

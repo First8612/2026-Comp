@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Storage;
 import frc.robot.subsystems.Shooter;
@@ -16,7 +15,6 @@ public class ShootSequence extends ParallelCommandGroup {
         Shooter shooter,
         Storage storage,
         TargetTracker targetTracker,
-        CommandXboxController driverController,
         Drivetrain drivetrain,
         boolean unsmart
     ) {
