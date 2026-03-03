@@ -6,15 +6,20 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import frc.robot.utils.LimelightHelpers;
+import frc.robot.utils.LimelightHelpers.PoseEstimate;
 
 public class Vision {
 
     private StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault()
             .getStructTopic("Poses/Pose", Pose2d.struct).publish();
-    private StructPublisher<Pose2d> poseMT1Publisher = NetworkTableInstance.getDefault()
-            .getStructTopic("Poses/Pose_WpiBlue", Pose2d.struct).publish();
-    private StructPublisher<Pose2d> poseMT2Publisher = NetworkTableInstance.getDefault()
-            .getStructTopic("Poses/Pose_MT2_WpiBlue", Pose2d.struct).publish();
+    private StructPublisher<Pose2d> frontPoseMT1Publisher = NetworkTableInstance.getDefault()
+            .getStructTopic("Poses/Pose_WpiBlue/front", Pose2d.struct).publish();
+    private StructPublisher<Pose2d> frontPoseMT2Publisher = NetworkTableInstance.getDefault()
+            .getStructTopic("Poses/Pose_MT2_WpiBlue/front", Pose2d.struct).publish();
+    private StructPublisher<Pose2d> backPoseMT1Publisher = NetworkTableInstance.getDefault()
+            .getStructTopic("Poses/Pose_WpiBlue/back", Pose2d.struct).publish();
+    private StructPublisher<Pose2d> backPoseMT2Publisher = NetworkTableInstance.getDefault()
+            .getStructTopic("Poses/Pose_MT2_WpiBlue/back", Pose2d.struct).publish();
     private Drivetrain driveBase;
 
     public Vision(Drivetrain drivebase) {
@@ -25,29 +30,31 @@ public class Vision {
     }
 
     public void periodic() {
-        var poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-        LimelightHelpers.SetRobotOrientation("limelight",
+        PoseEstimate poseEstimateFront = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front");
+        PoseEstimate poseEstimateBack = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back");
+
+        LimelightHelpers.SetRobotOrientation("limelight-front",
                 driveBase.getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        var poseEstimateMT2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-        if(poseEstimateMT2.tagCount != 0){
+        LimelightHelpers.SetRobotOrientation("limelight-back",
+                driveBase.getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+            
+        PoseEstimate poseEstimateFrontMT2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-front");
+        PoseEstimate poseEstimateBackMT2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
+
+        if(poseEstimateFrontMT2.tagCount != 0){
             driveBase.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
-            driveBase.addVisionMeasurement(poseEstimateMT2.pose, poseEstimateMT2.timestampSeconds);
-        }
-        
-
-        var doRejectUpdate = false;
-        if (poseEstimateMT2.tagCount == 0) {
-            doRejectUpdate = true;
+            driveBase.addVisionMeasurement(poseEstimateFrontMT2.pose, poseEstimateFrontMT2.timestampSeconds);
         }
 
-        
-        if (!doRejectUpdate) {
-            driveBase.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
-            driveBase.addVisionMeasurement(poseEstimateMT2.pose, poseEstimateMT2.timestampSeconds);
+        if(poseEstimateBackMT2.tagCount != 0){
+            driveBase.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
+            driveBase.addVisionMeasurement(poseEstimateBackMT2.pose, poseEstimateBackMT2.timestampSeconds);
         }
 
         posePublisher.set(driveBase.getState().Pose);
-        poseMT1Publisher.set(poseEstimate.pose);
-        poseMT2Publisher.set(poseEstimateMT2.pose);
+        frontPoseMT1Publisher.set(poseEstimateFront.pose);
+        frontPoseMT2Publisher.set(poseEstimateFrontMT2.pose);
+        backPoseMT1Publisher.set(poseEstimateBack.pose);
+        backPoseMT2Publisher.set(poseEstimateBackMT2.pose);
     }
 }

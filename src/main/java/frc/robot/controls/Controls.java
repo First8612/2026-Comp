@@ -30,7 +30,8 @@ public class Controls {
     }
 
     public Trigger driveAndFaceTarget() {
-        return driver.x();
+        //This is the same event as pressing M2
+        return driver.a();
     }
 
     public Trigger horn() {
@@ -38,7 +39,7 @@ public class Controls {
     }
 
     public Trigger fieldReset() {
-        return driver.leftBumper();
+        return driver.back();
     }
 
     // Operator ******************************

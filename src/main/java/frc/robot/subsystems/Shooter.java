@@ -225,7 +225,6 @@ public class Shooter extends SubsystemBase {
 
             currHoodGoal = setAmounts[0];
             flywheelSpeedGoal = setAmounts[1];
-            SmartDashboard.putNumber("Shooter/speedGoal", flywheelSpeedGoal);
         }
         if(overrideAim && isAiming) {
             currHoodGoal = hoodOverride;
@@ -247,23 +246,22 @@ public class Shooter extends SubsystemBase {
         }
         
         SmartDashboard.putNumber("Shooter/Distance", targetTracker.getRobotToTargetTranslation().getNorm());
+        SmartDashboard.putBoolean("Shooter/isAiming", isAiming);
+        SmartDashboard.putBoolean("Shooter/readyToShoot", readyToShoot());
         SmartDashboard.putNumber("Shooter/shootMotor/voltageLeft", shootMotorLeft.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/shootMotor/voltageRight", shootMotorRight.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/shootMotor/velocity", shootMotorLeft.getVelocity().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/shootMotor/currentLeft", shootMotorLeft.getStatorCurrent().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/shootMotor/currentRight", shootMotorRight.getStatorCurrent().getValueAsDouble());
         SmartDashboard.putNumber("Shooter/shootMotor/value", shootMotorLeft.get());
-        SmartDashboard.putBoolean("Shooter/isAiming", isAiming);
+        SmartDashboard.putBoolean("Shooter/shootMotor/isReady", flywheelReady());
+        SmartDashboard.putNumber("Shooter/shootMotor/targetVelocity", flywheelSpeedGoal);
         SmartDashboard.putNumber("Shooter/hood/actual", hoodMotor.getPosition().getValueAsDouble());
         SmartDashboard.putBoolean("Shooter/hood/ready", hoodReady());
         SmartDashboard.putNumber("Shooter/hood/current", hoodMotor.getStatorCurrent().getValueAsDouble());
-        SmartDashboard.putBoolean("Shooter/flywheelReady", flywheelReady());
-        SmartDashboard.putNumber("Shooter/flywheelSpeedGoal", flywheelSpeedGoal);
-        SmartDashboard.putBoolean("Shooter/readyToShoot", readyToShoot());
-        SmartDashboard.putNumber("Shooter/feedSet", feedMotor.get());
-        SmartDashboard.putNumber("Shooter/feedDutyCycleTarget", feedDutyCycle);
         SmartDashboard.putNumber("Shooter/hood/hoodGoal", currHoodGoal);
-        
+        SmartDashboard.putNumber("Shooter/feedMotor/feedSet", feedMotor.get());
+        SmartDashboard.putNumber("Shooter/feedMotor/feedDutyCycleTarget", feedDutyCycle);
 
     }
 }
