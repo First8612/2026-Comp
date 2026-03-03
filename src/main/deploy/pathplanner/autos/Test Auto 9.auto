@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start to Aim (Right)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSequence"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Aim to Climb (Right)"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Simple Autons",
+  "choreoAuto": false
+}

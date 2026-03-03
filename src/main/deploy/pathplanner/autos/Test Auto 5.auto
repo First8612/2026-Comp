@@ -25,13 +25,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Collect (Right to Left)"
+            "pathName": "Collect (Right to Right)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Middle to Aim2 (Left)"
+            "pathName": "Middle to Aim2 (Right)"
           }
         },
         {
@@ -43,13 +43,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Aim2 to Climb (Left)"
+            "pathName": "Aim2 to Climb (Right)"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Collect Across Autons",
+  "folder": "Collect Loop Autons",
   "choreoAuto": false
 }
