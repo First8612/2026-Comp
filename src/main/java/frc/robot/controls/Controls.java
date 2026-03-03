@@ -42,6 +42,10 @@ public class Controls {
         return driver.back();
     }
 
+    public Trigger trenchRun() {
+        return driver.rightBumper();
+    }
+
     // Operator ******************************
     public Trigger intakeRetract() {
         return operator.axisGreaterThan(XboxController.Axis.kLeftY.value, 0.8);
@@ -61,6 +65,14 @@ public class Controls {
 
     public Trigger intake() {
         return operator.rightBumper();
+    }
+
+    public Trigger conveyIn() {
+        return operator.povUp();
+    }
+
+    public Trigger conveyOut() {
+        return operator.povDown();
     }
 
     // Events
@@ -88,13 +100,5 @@ public class Controls {
 
     public OptionalDouble getTestJogValue() {
         return OptionalDouble.empty();
-    }
-
-    public Trigger conveyIn() {
-        return operator.povUp();
-    }
-
-    public Trigger conveyOut() {
-        return operator.povDown();
     }
 }

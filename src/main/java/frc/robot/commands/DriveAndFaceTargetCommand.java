@@ -17,7 +17,6 @@ public class DriveAndFaceTargetCommand extends Command {
         .withHeadingPID(10,0,0)
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
         
-        
     public DriveAndFaceTargetCommand(Controls controls, Drivetrain drivetrain, TargetTracker targetTracker) {
         super();
         this.controls = controls;
