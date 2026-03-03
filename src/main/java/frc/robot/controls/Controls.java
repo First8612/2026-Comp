@@ -84,4 +84,12 @@ public class Controls {
     public OptionalDouble getTestJogValue() {
         return OptionalDouble.empty();
     }
+
+    public Trigger conveyIn() {
+        return operator.povUp();
+    }
+
+    public Trigger conveyOut() {
+        return operator.povDown();
+    }
 }

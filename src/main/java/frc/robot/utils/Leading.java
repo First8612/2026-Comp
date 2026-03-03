@@ -16,9 +16,10 @@ public class Leading{
 
       public Leading(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;
-            leadData = new InterpolatingDoubleTreeMap();
-            leadData.put(0.0, 0.5);
-    leadData.put(5.0, 1.0);
+        leadData = new InterpolatingDoubleTreeMap();
+        
+        //TODO: more data here
+        leadData.put(5.6, 1.3);
     }
 
       public void calculateLead(int loopLimit) {

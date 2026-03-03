@@ -2,20 +2,29 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "Shooter": {
+          "open": true,
+          "override": {
+            "open": true
+          }
+        },
         "open": true
       }
     },
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
+      "/SmartDashboard/Auto Path": "String Chooser",
       "/SmartDashboard/FakeShooter/hoodController": "PIDController",
       "/SmartDashboard/FakeShooter/shootController": "PIDController",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
       "/SmartDashboard/Module 3": "Mechanism2d",
+      "/SmartDashboard/PathPlanner": "Alerts",
       "/SmartDashboard/Shooter/hoodController": "PIDController",
-      "/SmartDashboard/Shooter/shootController": "PIDController"
+      "/SmartDashboard/Shooter/shootController": "PIDController",
+      "/SmartDashboard/Shooter/system": "Subsystem"
     }
   },
   "NetworkTables Info": {

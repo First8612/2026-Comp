@@ -16,6 +16,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,6 +38,7 @@ public class Shooter extends SubsystemBase {
     TalonFX hoodMotor = new TalonFX(22, shooterCANBus);
     TalonFX feedMotor = new TalonFX(23, shooterCANBus);
 
+
     private Follower shootFollow = new Follower(20, MotorAlignmentValue.Opposed);
 
     Boolean isAiming = false;
@@ -48,16 +50,29 @@ public class Shooter extends SubsystemBase {
     double currHoodGoal = 0; // number used w/ PID
     private final Debouncer flywheelReadyDebounce = new Debouncer(0.07, DebounceType.kRising);
     private TargetTracker targetTracker;
+    private boolean overrideAim = false;
+    private double hoodOverride = 0.0;
+    private double flywheelOverride = 50.0;
+
 
     public Shooter(TargetTracker targetTracker) {
         super();
 
-        shootCalc.put(0.0, new double[] { 0.0, 49.0 * 1.5 });
-        shootCalc.put(1.2, new double[] { 0.0, 49.0 * 1.5});
-        shootCalc.put(2.7, new double[] { 0.1 * 4, 46.0 * 1.5});
-        shootCalc.put(4.2, new double[] { 0.2 * 4, 52.5 * 1.5});
-        shootCalc.put(5.6, new double[] { 0.3 * 4, 58.0 * 1.5});
-        shootCalc.put(200.0, new double[] { 0.3 * 4, 58.0 * 1.5});
+        //OLD NUMBER
+        // shootCalc.put(0.0, new double[] { 0.0, 49.0 * 1.5 });
+        // shootCalc.put(1.2, new double[] { 0.0, 49.0 * 1.5});
+        // shootCalc.put(2.7, new double[] { 0.1 * 4, 46.0 * 1.5});
+        // shootCalc.put(4.2, new double[] { 0.2 * 4, 52.5 * 1.5});
+        // shootCalc.put(5.6, new double[] { 0.3 * 4, 58.0 * 1.5});
+        // shootCalc.put(200.0, new double[] { 0.3 * 4, 58.0 * 1.5});
+
+        //NEW NUMBERS
+        shootCalc.put(0.0, new double[] { 0.0, 71.0 });
+        shootCalc.put(1.2, new double[] { 0.0, 71.0 });
+        shootCalc.put(2.7, new double[] { 0.0, 68.0 });
+        shootCalc.put(4.2, new double[] { 0.5, 78.0 });
+        shootCalc.put(5.6, new double[] { 1.35, 91.0 });
+        shootCalc.put(100.0, new double[] {1.35, 91.0});
 
         this.targetTracker = targetTracker;
         var mConfig = new MotorOutputConfigs();
@@ -66,7 +81,12 @@ public class Shooter extends SubsystemBase {
         hoodMotor.getConfigurator().apply(mConfig);
         hoodMotor.getConfigurator()
                 .apply(new CurrentLimitsConfigs().withStatorCurrentLimit(20).withStatorCurrentLimitEnable(true));
-        
+        hoodMotor.getConfigurator()
+        .apply(new Slot0Configs().
+                        withKP(10).
+                        withKI(.1).
+                        withKD(0)
+                );
         feedMotor.getConfigurator()
                 .apply(new CurrentLimitsConfigs().withStatorCurrentLimit(80).withStatorCurrentLimitEnable(false));
 
@@ -110,6 +130,10 @@ public class Shooter extends SubsystemBase {
         DixieHornCommand.enrollSubsystemMotors(this, shootMotorLeft, shootMotorRight, feedMotor);
 
         SmartDashboard.putData("Shooter/system", this);
+        SmartDashboard.putBoolean("Shooter/override/active", overrideAim);
+        SmartDashboard.putNumber("Shooter/override/hood", hoodOverride);
+        SmartDashboard.putNumber("Shooter/override/flywheel", flywheelOverride);
+
     }
 
     public void warmup() {
@@ -184,8 +208,12 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        overrideAim = SmartDashboard.getBoolean("Shooter/override/active", overrideAim);
+        flywheelOverride = SmartDashboard.getNumber("Shooter/override/flywheel", flywheelOverride);
+        hoodOverride = SmartDashboard.getNumber("Shooter/override/hood", hoodOverride);
         currHoodGoal = 0;
         flywheelSpeedGoal = 0;
+        
         if (isAiming) {
             var distance = targetTracker.getRobotToTargetTranslation().getNorm();
 
@@ -198,6 +226,10 @@ public class Shooter extends SubsystemBase {
             currHoodGoal = setAmounts[0];
             flywheelSpeedGoal = setAmounts[1];
             SmartDashboard.putNumber("Shooter/speedGoal", flywheelSpeedGoal);
+        }
+        if(overrideAim && isAiming) {
+            currHoodGoal = hoodOverride;
+            flywheelSpeedGoal = flywheelOverride;
         }
 
         hoodMotor.setControl(new PositionVoltage(0).withSlot(0).withPosition(currHoodGoal));
@@ -231,6 +263,7 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Shooter/feedSet", feedMotor.get());
         SmartDashboard.putNumber("Shooter/feedDutyCycleTarget", feedDutyCycle);
         SmartDashboard.putNumber("Shooter/hood/hoodGoal", currHoodGoal);
+        
 
     }
 }
