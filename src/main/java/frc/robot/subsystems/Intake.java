@@ -76,7 +76,7 @@ public class Intake extends SubsystemBase {
                     .withInverted(InvertedValue.Clockwise_Positive)
                     .withNeutralMode(NeutralModeValue.Brake))
                 .withCurrentLimits(new CurrentLimitsConfigs()
-                    .withStatorCurrentLimit(100)
+                    .withStatorCurrentLimit(150)
                     .withStatorCurrentLimitEnable(true)
                     .withSupplyCurrentLimitEnable(false)));
         intakeExtendLeft.setPosition(extendEncoder.getAbsolutePosition().getValueAsDouble() * extendRatio);

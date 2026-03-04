@@ -6,6 +6,10 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.lang.StackWalker.Option;
+import java.util.Optional;
+
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.Timer;
@@ -15,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -118,10 +123,18 @@ public class RobotContainer {
         controls.intakeExtend().onTrue(intake.runOnce(intake::extend));
         controls.intakeRetract().onTrue(intake.runOnce(intake::retract));
         controls.fieldReset().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
         controls.conveyOut().whileTrue(new RunCommand(() -> storage.conveyOut(), storage));
         controls.intake().whileTrue(new RunCommand(() -> intake.setSpeedRaw(1), intake));
         controls.trenchRun().whileTrue(new DriveTrenchRun(drivetrain, controls::getDriveRequest));
+
+        intake.setDefaultCommand(Commands.run(() -> {
+            var jog = controls.getTestJogValue();
+            if (jog.isPresent()) {
+                intake.increaseTestValue(jog.getAsDouble());
+            }
+        }, intake));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
