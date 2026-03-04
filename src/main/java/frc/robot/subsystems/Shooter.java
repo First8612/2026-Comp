@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CANBuses;
 import frc.robot.commands.DixieHornCommand;
 import frc.robot.utils.InterpolatingArrayTreeMap;
 import frc.robot.utils.TargetTracker;
@@ -32,11 +33,10 @@ public class Shooter extends SubsystemBase {
     // TalonFX hoodMotor = new TalonFX(42);
     // TalonFX feedMotor = new TalonFX(43);
     // For actual robot when we switch over
-    CANBus shooterCANBus = new CANBus("Shooter");
-    TalonFX shootMotorLeft = new TalonFX(20, shooterCANBus);
-    TalonFX shootMotorRight = new TalonFX(21, shooterCANBus);
-    TalonFX hoodMotor = new TalonFX(22, shooterCANBus);
-    TalonFX feedMotor = new TalonFX(23, shooterCANBus);
+    TalonFX shootMotorLeft = new TalonFX(20, CANBuses.shooter);
+    TalonFX shootMotorRight = new TalonFX(21, CANBuses.shooter);
+    TalonFX hoodMotor = new TalonFX(22, CANBuses.shooter);
+    TalonFX feedMotor = new TalonFX(23, CANBuses.shooter);
 
 
     private Follower shootFollow = new Follower(20, MotorAlignmentValue.Opposed);

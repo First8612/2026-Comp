@@ -16,14 +16,14 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CANBuses;
 import frc.robot.commands.DixieHornCommand;
 
 public class Intake extends SubsystemBase {
-    private final CANBus intakeCANBus = new CANBus("Intake");
-    private final TalonFX intakeMotor = new TalonFX(10, intakeCANBus);
-    private final TalonFX intakeExtendLeft = new TalonFX(11, intakeCANBus);
-    private final TalonFX intakeExtendRight = new TalonFX(12, intakeCANBus);
-    private final CANcoder extendEncoder = new CANcoder(13, intakeCANBus);
+    private final TalonFX intakeMotor = new TalonFX(10, CANBuses.intake);
+    private final TalonFX intakeExtendLeft = new TalonFX(11, CANBuses.intake);
+    private final TalonFX intakeExtendRight = new TalonFX(12, CANBuses.intake);
+    private final CANcoder extendEncoder = new CANcoder(13, CANBuses.intake);
     private double extendGoal = 0;
     private double speed = 0;
 

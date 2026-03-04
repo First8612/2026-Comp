@@ -6,10 +6,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.CANBuses;
 
 public class Storage extends SubsystemBase{
-    private final CANBus intakeCANBus= new CANBus("Intake");
-    private TalonFX conveyMotor = new TalonFX(30,intakeCANBus);
+    private TalonFX conveyMotor = new TalonFX(30, CANBuses.intake);
     private double test_conveySpeed = 0;
     
 
