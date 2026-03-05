@@ -51,7 +51,7 @@ public class ShootSequence extends ParallelCommandGroup {
             Commands.runOnce(setStatus("Shooting")),
             Commands.deadline(
                 finishShootingDeadline,
-                new ShootFuel(shooter)
+                new ShootFuel(shooter, storage)
             ),
 
             Commands.runOnce(setStatus("Finished"))

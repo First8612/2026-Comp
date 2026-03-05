@@ -121,6 +121,7 @@ public class RobotContainer {
         controls.fieldReset().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
         controls.conveyOut().whileTrue(new RunCommand(() -> storage.conveyOut(), storage));
+        controls.intake().whileTrue(new RunCommand(() -> intake.setSpeedRaw(1), intake));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

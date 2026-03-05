@@ -59,6 +59,10 @@ public class Controls {
         return operator.y();
     }
 
+    public Trigger intake() {
+        return operator.rightBumper();
+    }
+
     // Events
     public void setRumble(double value) {
         driver.setRumble(RumbleType.kBothRumble, value);

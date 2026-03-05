@@ -21,11 +21,11 @@ public class Storage extends SubsystemBase{
     }
 
     public void conveyIn() {
-        test_conveySpeed = 0.5;
+        test_conveySpeed = 0.75;
     }
 
     public void conveyOut() {
-        test_conveySpeed = -0.5;
+        test_conveySpeed = -0.75;
     }
 
     public void conveyStop() {
