@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Target;
 import frc.robot.subsystems.Drivetrain;
 
 public class LeadingTargetTracker extends TargetTracker {
