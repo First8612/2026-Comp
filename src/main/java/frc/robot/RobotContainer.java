@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.Timer;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DixieHornCommand;
 import frc.robot.commands.DriveAndFaceTargetCommand;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.DriveTrenchRun;
 import frc.robot.commands.SafeRobotForTrench;
 import frc.robot.commands.ShootSequence;
 import frc.robot.controls.Controls;
@@ -39,7 +41,7 @@ public class RobotContainer {
     private final EventLoop loop = new EventLoop();
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final Controls controls = new TestingControls();
+    private final Controls controls = new Controls();
     
     // subsystems
     public final Drivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -101,8 +103,6 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
             new DriveCommand(drivetrain, controls)
         );
@@ -122,6 +122,7 @@ public class RobotContainer {
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
         controls.conveyOut().whileTrue(new RunCommand(() -> storage.conveyOut(), storage));
         controls.intake().whileTrue(new RunCommand(() -> intake.setSpeedRaw(1), intake));
+        controls.trenchRun().whileTrue(new DriveTrenchRun(drivetrain, controls::getDriveRequest));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
