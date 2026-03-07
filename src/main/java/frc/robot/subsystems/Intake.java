@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -42,6 +43,8 @@ public class Intake extends SubsystemBase {
     // to use KG in feed-forward, the horizontal angle should be "0".
     private final Angle retractedGoal = Rotations.of(-0.199);
     private final Angle extendedGoal = Rotations.of(0);
+
+    private boolean extended = false;
 
     private double speed = 0;
     private double extendRatio = 16 / 3;
@@ -141,12 +144,14 @@ public class Intake extends SubsystemBase {
         intakeExtendSetControl(
             new PositionVoltage(extendedGoal)
             .withSlot(0));
+        extended = true;
     }
 
     public void retract() {
         intakeExtendSetControl(
             new PositionVoltage(retractedGoal)
             .withSlot(0));
+        extended = false;
     }
 
     public Boolean isExtended() {
@@ -171,6 +176,12 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         intakeMotor.set(speed);
+        if(extended && isExtended()) {
+            intakeExtendLeft.setControl(new CoastOut());
+        }
+        if(!extended && isRetracted()) {
+            intakeExtendLeft.setControl(new CoastOut());
+        }
 
         SmartDashboard.putNumber("Intake/speed", speed);
         SmartDashboard.putBoolean("Intake/extended", isExtended());
