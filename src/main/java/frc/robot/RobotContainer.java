@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -35,6 +36,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Storage;
 import edu.wpi.first.cameraserver.*;
+import frc.robot.utils.LeadingTargetTracker;
 import frc.robot.utils.TargetTracker;
 
 public class RobotContainer {
@@ -43,7 +45,7 @@ public class RobotContainer {
     private final EventLoop loop = new EventLoop();
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final Controls controls = new TestingControls();
+    private final Controls controls = new Controls();
     
     // subsystems
     public final Drivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -132,6 +134,7 @@ public class RobotContainer {
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
         controls.conveyOut().whileTrue(new RunCommand(() -> storage.conveyOut(), storage));
         controls.intake().whileTrue(new RunCommand(() -> intake.setSpeedRaw(1), intake));
+        controls.intake().onFalse(new InstantCommand(() -> intake.stop()));
         controls.trenchRun().whileTrue(new DriveTrenchRun(drivetrain, controls::getDriveRequest));
 
         intake.setDefaultCommand(Commands.run(() -> {

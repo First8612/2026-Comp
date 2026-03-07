@@ -17,7 +17,7 @@ public class LeadingTargetTracker extends TargetTracker {
         super(drivetrain);
         this.drivetrain = drivetrain;
         leader = new Leading(drivetrain);
-        leader.calculateLead(5);
+        leader.calculateLead(3);
     }
 
     @Override

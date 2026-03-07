@@ -18,10 +18,12 @@ public class Leading{
         
         //TODO: more data here
         leadData.put(5.6, 1.3);
+        leadData.put(2.7, 1.0);
+        leadData.put(1.8, 0.9);
     }
 
       public void calculateLead(int loopLimit) {
-         leadingTrans = new Translation2d(drivetrain.getState().Speeds.vxMetersPerSecond, drivetrain.getState().Speeds.vyMetersPerSecond).rotateBy(drivetrain.getState().RawHeading).times(-1);
+         leadingTrans = new Translation2d(drivetrain.getState().Speeds.vyMetersPerSecond, drivetrain.getState().Speeds.vxMetersPerSecond).rotateBy(drivetrain.getState().RawHeading).times(-1);
         Translation2d targetPos = Target.getPose().getTranslation();
         AimPos = targetPos;
         double hangTime;
