@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -27,13 +28,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CANBuses;
 import frc.robot.commands.DixieHornCommand;
+import frc.robot.utils.SmartDashboardHelper;
 
 public class Intake extends SubsystemBase {
     private final TalonFX intakeMotor = new TalonFX(10, CANBuses.intake);
     private final TalonFX intakeExtendLeft = new TalonFX(11, CANBuses.intake);
-    private final Slot0Configs intakeExtendLeftSlot0Config;
     private final TalonFX intakeExtendRight = new TalonFX(12, CANBuses.intake);
-    private final CANcoder extendEncoder = new CANcoder(13, CANBuses.intake);
+    private final CANcoder extendEncoderLeft = new CANcoder(13, CANBuses.intake);
+    private final CANcoder extendEncoderRight = new CANcoder(14, CANBuses.intake);
+    private final Slot0Configs intakeExtendSlot0Config;
 
     // these are off the absolute encoder. 
     // to use KG in feed-forward, the horizontal angle should be "0".
@@ -59,43 +62,55 @@ public class Intake extends SubsystemBase {
          * configured to the ratio between the absolute sensor and the Talon FX rotor.
          */
 
-        extendEncoder.getConfigurator().apply(new CANcoderConfiguration()
+        extendEncoderLeft.getConfigurator().apply(new CANcoderConfiguration()
             .withMagnetSensor(new MagnetSensorConfigs()
-                .withMagnetOffset(Rotations.of(-0.198))
+                .withMagnetOffset(Rotations.of(-0.195))
                 .withSensorDirection(SensorDirectionValue.Clockwise_Positive)));
 
-        // Extension Left (Leader)
+        extendEncoderRight.getConfigurator().apply(new CANcoderConfiguration()
+            .withMagnetSensor(new MagnetSensorConfigs()
+                .withMagnetOffset(Rotations.of(-0.042))
+                .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)));
+
+        intakeExtendSlot0Config = new Slot0Configs()
+                .withGravityType(GravityTypeValue.Arm_Cosine)
+                .withKG(-1)
+                .withKP(10)
+                .withKI(0)
+                .withKD(0);
+        
+        var intakeCurrentLimits = new CurrentLimitsConfigs()
+                    .withStatorCurrentLimit(150)
+                    .withStatorCurrentLimitEnable(true)
+                    .withSupplyCurrentLimitEnable(false);
+
+        // Extension Left
         intakeExtendLeft.getConfigurator().apply(
             new TalonFXConfiguration()
                 .withFeedback(new FeedbackConfigs()
-                    .withFeedbackRemoteSensorID(extendEncoder.getDeviceID())
+                    .withFeedbackRemoteSensorID(extendEncoderLeft.getDeviceID())
+                    .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
+                    .withSensorToMechanismRatio(1)
+                )
+                .withMotorOutput(new MotorOutputConfigs()
+                    .withInverted(InvertedValue.CounterClockwise_Positive)
+                    .withNeutralMode(NeutralModeValue.Brake))
+                .withCurrentLimits(intakeCurrentLimits)
+                .withSlot0(intakeExtendSlot0Config));
+
+        // Extension Right
+        intakeExtendRight.getConfigurator().apply(
+            new TalonFXConfiguration()
+                .withFeedback(new FeedbackConfigs()
+                    .withFeedbackRemoteSensorID(extendEncoderRight.getDeviceID())
                     .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
                     .withSensorToMechanismRatio(1)
                 )
                 .withMotorOutput(new MotorOutputConfigs()
                     .withInverted(InvertedValue.Clockwise_Positive)
                     .withNeutralMode(NeutralModeValue.Brake))
-                .withCurrentLimits(new CurrentLimitsConfigs()
-                    .withStatorCurrentLimit(150)
-                    .withStatorCurrentLimitEnable(true)
-                    .withSupplyCurrentLimitEnable(false)));
-        intakeExtendLeft.setPosition(extendEncoder.getAbsolutePosition().getValueAsDouble() * extendRatio);
-        intakeExtendRight.setPosition(extendEncoder.getAbsolutePosition().getValueAsDouble() * extendRatio);
-
-        intakeExtendLeftSlot0Config = new Slot0Configs()
-                .withGravityType(GravityTypeValue.Arm_Cosine)
-                .withKP(0)
-                .withKG(1)
-                .withKI(0)
-                .withKD(0);
-        intakeExtendLeft.getConfigurator().apply(intakeExtendLeftSlot0Config);
-
-        // Extension Left (Follower)
-        intakeExtendRight.setControl(intakeFollow);
-        intakeExtendRight.getConfigurator().apply(
-            new CurrentLimitsConfigs()
-                .withStatorCurrentLimit(10)
-                .withStatorCurrentLimitEnable(true));
+                .withCurrentLimits(intakeCurrentLimits)
+                .withSlot0(intakeExtendSlot0Config));
 
     }
 
@@ -117,18 +132,19 @@ public class Intake extends SubsystemBase {
     }
 
     public void increaseTestValue(double value) {
-        intakeExtendLeftSlot0Config.kG += value * 0.1;
-        intakeExtendLeft.getConfigurator().apply(intakeExtendLeftSlot0Config);
+        intakeExtendSlot0Config.kP += value * 0.05;
+        intakeExtendLeft.getConfigurator().apply(intakeExtendSlot0Config);
+        intakeExtendRight.getConfigurator().apply(intakeExtendSlot0Config);
     }
 
     public void extend() {
-        intakeExtendLeft.setControl(
+        intakeExtendSetControl(
             new PositionVoltage(extendedGoal)
             .withSlot(0));
     }
 
     public void retract() {
-        intakeExtendLeft.setControl(
+        intakeExtendSetControl(
             new PositionVoltage(retractedGoal)
             .withSlot(0));
     }
@@ -144,7 +160,12 @@ public class Intake extends SubsystemBase {
         return MathUtil.isNear(
             retractedGoal.magnitude(), 
             intakeExtendLeft.getPosition().getValueAsDouble(), 
-            0.1);
+            0.01);
+    }
+
+    private void intakeExtendSetControl(ControlRequest request) {
+        intakeExtendLeft.setControl(request);
+        intakeExtendRight.setControl(request);
     }
 
     @Override
@@ -154,11 +175,12 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("Intake/speed", speed);
         SmartDashboard.putBoolean("Intake/extended", isExtended());
         SmartDashboard.putBoolean("Intake/retracted", isRetracted());
-        SmartDashboard.putNumber("Intake/ExtendGoal", intakeExtendLeft.getClosedLoopReference().getValueAsDouble());
-        SmartDashboard.putNumber("Intake/ExtendPos", intakeExtendLeft.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Intake/ExtendCurrent", intakeExtendLeft.getTorqueCurrent().getValueAsDouble());
-        SmartDashboard.putNumber("Intake/ExtendVolts", intakeExtendLeft.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Intake/EncoderAbsolute", extendEncoder.getAbsolutePosition().getValueAsDouble());
-        SmartDashboard.putNumber("Intake/Encoder", extendEncoder.getPosition().getValueAsDouble());
+        SmartDashboardHelper.putTalonFX("Intake/ExtendMotorLeft", intakeExtendLeft);
+        SmartDashboardHelper.putTalonFX("Intake/ExtendMotorRight", intakeExtendRight);
+        SmartDashboardHelper.putCANCoder("Intake/ExtendEncoderLeft", extendEncoderLeft);
+        SmartDashboardHelper.putCANCoder("Intake/ExtendEncoderRight", extendEncoderRight);
+        SmartDashboard.putNumber("Intake/ExtendMotors/slot0/kG", intakeExtendSlot0Config.kG);
+        SmartDashboard.putNumber("Intake/ExtendMotors/slot0/kP", intakeExtendSlot0Config.kP);
+        SmartDashboard.putNumber("Intake/ExtendMotors/targetPosition", intakeExtendLeft.getClosedLoopReference().getValueAsDouble());
     }
 }

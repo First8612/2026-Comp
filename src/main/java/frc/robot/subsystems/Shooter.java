@@ -188,7 +188,7 @@ public class Shooter extends SubsystemBase {
     public Command getZeroCommand() {
         var command = Commands.sequence(
                 Commands.deadline(
-                        Commands.waitUntil(() -> Math.abs(hoodMotor.getStatorCurrent().getValueAsDouble()) > 16),
+                        Commands.waitUntil(() -> Math.abs(hoodMotor.getStatorCurrent().getValueAsDouble()) > 10),
                         Commands.run(() -> hoodMotor.setControl(new DutyCycleOut(-0.1)))),
                 Commands.runOnce(() -> {
                     hoodMotor.setPosition(-0.01);

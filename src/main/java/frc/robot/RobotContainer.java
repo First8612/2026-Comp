@@ -5,14 +5,12 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
-
-import java.lang.StackWalker.Option;
-import java.util.Optional;
-
-
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -45,7 +43,7 @@ public class RobotContainer {
     private final EventLoop loop = new EventLoop();
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final Controls controls = new Controls();
+    private final Controls controls = new TestingControls();
     
     // subsystems
     public final Drivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -87,6 +85,13 @@ public class RobotContainer {
         RobotModeTriggers.teleop().onTrue(shooter.getZeroCommand());
 
         Field.writeOnceToNT();
+
+        try {
+            var pdp = new PowerDistribution(0, ModuleType.kRev);
+            SmartDashboard.putData("Power", pdp);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private boolean atGameScheduleTime(double sec, double threshold) {
