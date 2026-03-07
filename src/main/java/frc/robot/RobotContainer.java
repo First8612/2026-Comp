@@ -129,7 +129,10 @@ public class RobotContainer {
         controls.horn().whileTrue(new DixieHornCommand());
         controls.intakeExtend().onTrue(intake.runOnce(intake::extend));
         controls.intakeRetract().onTrue(intake.runOnce(intake::retract));
-        controls.fieldReset().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        controls.fieldReset().onTrue(Commands.runOnce(() -> {
+            drivetrain.seedFieldCentric();
+            vision.setOdometeryHasBeenReset(true);
+        }));
 
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
         controls.conveyOut().whileTrue(new RunCommand(() -> storage.conveyOut(), storage));

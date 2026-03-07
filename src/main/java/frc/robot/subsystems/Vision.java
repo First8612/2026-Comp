@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.LimelightHelpers.PoseEstimate;
 
-public class Vision extends SubsystemBase{
+public class Vision extends SubsystemBase {
 
     private StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault()
             .getStructTopic("Poses/Pose", Pose2d.struct).publish();
@@ -22,6 +22,7 @@ public class Vision extends SubsystemBase{
     private StructPublisher<Pose2d> backPoseMT2Publisher = NetworkTableInstance.getDefault()
             .getStructTopic("Poses/Pose_MT2_WpiBlue/back", Pose2d.struct).publish();
     private Drivetrain driveBase;
+    private boolean odometeryHasBeenReset;
 
     public Vision(Drivetrain drivebase) {
 
@@ -30,32 +31,41 @@ public class Vision extends SubsystemBase{
         driveBase = drivebase;
     }
 
+    public void setOdometeryHasBeenReset(boolean hasBeenReset) {
+        this.odometeryHasBeenReset = hasBeenReset;
+    }
+
     public void periodic() {
-        PoseEstimate poseEstimateFront = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front");
-        PoseEstimate poseEstimateBack = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back");
-
-        LimelightHelpers.SetRobotOrientation("limelight-front",
-                driveBase.getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        LimelightHelpers.SetRobotOrientation("limelight-back",
-                driveBase.getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
-            
-        PoseEstimate poseEstimateFrontMT2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-front");
-        PoseEstimate poseEstimateBackMT2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
-
-        if(poseEstimateFrontMT2.tagCount != 0){
-            driveBase.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
-            driveBase.addVisionMeasurement(poseEstimateFrontMT2.pose, poseEstimateFrontMT2.timestampSeconds);
-        }
-        
-        // if(poseEstimateBackMT2.tagCount != 0){
-        //     driveBase.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
-        //     driveBase.addVisionMeasurement(poseEstimateBackMT2.pose, poseEstimateBackMT2.timestampSeconds);
-        // }
+        // periodicCamera("limelight-front", frontPoseMT1Publisher, frontPoseMT2Publisher);
+        // periodicCamera("limelight-back", backPoseMT1Publisher, backPoseMT2Publisher);
 
         posePublisher.set(driveBase.getState().Pose);
-        frontPoseMT1Publisher.set(poseEstimateFront.pose);
-        frontPoseMT2Publisher.set(poseEstimateFrontMT2.pose);
-        backPoseMT1Publisher.set(poseEstimateBack.pose);
-        backPoseMT2Publisher.set(poseEstimateBackMT2.pose);
+    }
+
+    private void periodicCamera(String limeLightName, StructPublisher<Pose2d> mt1Publisher,
+            StructPublisher<Pose2d> mt2Publisher) {
+        PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(limeLightName);
+        var stdevs = NetworkTableInstance.getDefault().getEntry(limeLightName + "/stddevs").getDoubleArray(new Double[] { 0.0, 0.0, 0.0});
+
+        mt1Publisher.set(poseEstimate.pose);
+
+        // MT2
+        var useMT2 = odometeryHasBeenReset;
+        LimelightHelpers.SetRobotOrientation(limeLightName,
+                driveBase.getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+
+        var poseEstimateMT2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limeLightName);
+        mt2Publisher.set(poseEstimateMT2.pose);
+
+        if (useMT2) {
+            poseEstimate = poseEstimateMT2;
+        }
+
+        if (poseEstimate.tagCount != 0) {
+            var readingSetDevs = VecBuilder.fill(stdevs[0], stdevs[1], stdevs[2]);
+            driveBase.setVisionMeasurementStdDevs(readingSetDevs);
+            driveBase.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
+        }
+
     }
 }
