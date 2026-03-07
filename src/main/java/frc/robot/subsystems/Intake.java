@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -78,7 +79,7 @@ public class Intake extends SubsystemBase {
         intakeExtendSlot0Config = new Slot0Configs()
                 .withGravityType(GravityTypeValue.Arm_Cosine)
                 .withKG(-1)
-                .withKP(10)
+                .withKP(20)
                 .withKI(0)
                 .withKD(0);
         
@@ -177,10 +178,10 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         intakeMotor.set(speed);
         if(extended && isExtended()) {
-            intakeExtendLeft.setControl(new CoastOut());
+            intakeExtendLeft.setControl(new NeutralOut());
         }
         if(!extended && isRetracted()) {
-            intakeExtendLeft.setControl(new CoastOut());
+            intakeExtendLeft.setControl(new NeutralOut());
         }
 
         SmartDashboard.putNumber("Intake/speed", speed);

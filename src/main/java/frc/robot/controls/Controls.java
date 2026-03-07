@@ -48,11 +48,11 @@ public class Controls {
 
     // Operator ******************************
     public Trigger intakeRetract() {
-        return operator.axisGreaterThan(XboxController.Axis.kLeftY.value, 0.8);
+        return operator.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.8);
     }
 
     public Trigger intakeExtend() {
-        return operator.axisGreaterThan(XboxController.Axis.kLeftY.value, -0.8);
+        return operator.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, 0.8);
     }
 
     public Trigger shoot() {
