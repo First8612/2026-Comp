@@ -65,12 +65,16 @@ public class Shooter extends SubsystemBase {
         // shootCalc.put(200.0, new double[] { 0.3 * 4, 58.0 * 1.5});
 
         //NEW NUMBERS
-        shootCalc.put(0.0, new double[] { 0.0, 71.0 });
-        shootCalc.put(1.2, new double[] { 0.0, 71.0 });
+        
+        // shootCalc.put(0.0, new double[] { 0.0, 71.0 });
+        // shootCalc.put(1.2, new double[] { 0.0, 71.0 });
+        
+        shootCalc.put(0.0, new double[] { 0.0, 65.0 });
+        shootCalc.put(1.8, new double[] { 0.0, 65.0 });
         shootCalc.put(2.7, new double[] { 0.0, 68.0 });
         shootCalc.put(4.2, new double[] { 0.5, 78.0 });
         shootCalc.put(5.6, new double[] { 1.35, 91.0 });
-        shootCalc.put(100.0, new double[] {1.35, 91.0});
+        shootCalc.put(100.0, new double[] { 1.35, 91.0 });
 
         this.targetTracker = targetTracker;
         var mConfig = new MotorOutputConfigs();
