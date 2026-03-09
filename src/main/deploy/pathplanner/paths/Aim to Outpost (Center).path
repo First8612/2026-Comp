@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.5,
-        "y": 0.65
+        "x": 2.0,
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 0.6500000000000004
+        "x": 1.7945400774021074,
+        "y": 2.7623554806895836
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5,
-        "y": 3.5
+        "x": 1.7973181818181816,
+        "y": 2.756954545454546
       },
       "prevControl": {
-        "x": 3.539170454545454,
-        "y": 0.31423863636363647
+        "x": 1.8676810590623631,
+        "y": 3.1131634734719573
+      },
+      "nextControl": {
+        "x": 1.7488711665009689,
+        "y": 2.511693691042649
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.45,
+        "y": 0.7
+      },
+      "prevControl": {
+        "x": 0.7519150329135695,
+        "y": 1.2473745812454666
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,14 +57,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 180.0
+    "velocity": 0,
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Climbing Paths",
+  "folder": "Outpost Paths",
   "idealStartingState": {
-    "velocity": 2.0,
-    "rotation": 180.0
+    "velocity": 0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

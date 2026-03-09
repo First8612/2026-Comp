@@ -15,12 +15,6 @@
           "data": {
             "name": "ShootSequence"
           }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.001
-          }
         }
       ]
     }
