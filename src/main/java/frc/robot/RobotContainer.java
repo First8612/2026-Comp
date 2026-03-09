@@ -89,7 +89,7 @@ public class RobotContainer {
         Field.writeOnceToNT();
 
         try {
-            var pdp = new PowerDistribution(0, ModuleType.kRev);
+            var pdp = new PowerDistribution(1, ModuleType.kRev);
             SmartDashboard.putData("Power", pdp);
         } catch (Exception e) {
             System.out.println(e.getMessage());
