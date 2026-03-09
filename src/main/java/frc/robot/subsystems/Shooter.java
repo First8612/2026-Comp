@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CANBuses;
 import frc.robot.commands.DixieHornCommand;
 import frc.robot.utils.InterpolatingArrayTreeMap;
+import frc.robot.utils.SmartDashboardHelper;
 import frc.robot.utils.TargetTracker;
 
 public class Shooter extends SubsystemBase {
@@ -250,20 +251,12 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Shooter/Distance", targetTracker.getRobotToTargetTranslation().getNorm());
         SmartDashboard.putBoolean("Shooter/isAiming", isAiming);
         SmartDashboard.putBoolean("Shooter/readyToShoot", readyToShoot());
-        SmartDashboard.putNumber("Shooter/shootMotor/voltageLeft", shootMotorLeft.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter/shootMotor/voltageRight", shootMotorRight.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter/shootMotor/velocity", shootMotorLeft.getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter/shootMotor/currentLeft", shootMotorLeft.getStatorCurrent().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter/shootMotor/currentRight", shootMotorRight.getStatorCurrent().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter/shootMotor/value", shootMotorLeft.get());
-        SmartDashboard.putBoolean("Shooter/shootMotor/isReady", flywheelReady());
+        SmartDashboardHelper.putTalonFX("Shooter/shootMotorLeft", shootMotorLeft);
+        SmartDashboardHelper.putTalonFX("Shooter/shootMotorRight", shootMotorRight);
         SmartDashboard.putNumber("Shooter/shootMotor/targetVelocity", flywheelSpeedGoal);
-        SmartDashboard.putNumber("Shooter/hood/actual", hoodMotor.getPosition().getValueAsDouble());
+        SmartDashboardHelper.putTalonFX("Shooter/hood/motor", hoodMotor);
         SmartDashboard.putBoolean("Shooter/hood/ready", hoodReady());
-        SmartDashboard.putNumber("Shooter/hood/current", hoodMotor.getStatorCurrent().getValueAsDouble());
-        SmartDashboard.putNumber("Shooter/hood/hoodGoal", currHoodGoal);
-        SmartDashboard.putNumber("Shooter/feedMotor/feedSet", feedMotor.get());
-        SmartDashboard.putNumber("Shooter/feedMotor/feedDutyCycleTarget", feedDutyCycle);
+        SmartDashboardHelper.putTalonFX("Shooter/feed/motor", feedMotor);
 
     }
 }

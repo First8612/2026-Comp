@@ -5,11 +5,11 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.LimelightHelpers;
-import frc.robot.utils.LimelightHelpers.LimelightResults;
 import frc.robot.utils.LimelightHelpers.PoseEstimate;
 
-public class Vision {
+public class Vision extends SubsystemBase{
 
     private StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault()
             .getStructTopic("Poses/Pose", Pose2d.struct).publish();
@@ -47,10 +47,10 @@ public class Vision {
             driveBase.addVisionMeasurement(poseEstimateFrontMT2.pose, poseEstimateFrontMT2.timestampSeconds);
         }
         
-        if(poseEstimateBackMT2.tagCount != 0){
-            driveBase.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
-            driveBase.addVisionMeasurement(poseEstimateBackMT2.pose, poseEstimateBackMT2.timestampSeconds);
-        }
+        // if(poseEstimateBackMT2.tagCount != 0){
+        //     driveBase.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
+        //     driveBase.addVisionMeasurement(poseEstimateBackMT2.pose, poseEstimateBackMT2.timestampSeconds);
+        // }
 
         posePublisher.set(driveBase.getState().Pose);
         frontPoseMT1Publisher.set(poseEstimateFront.pose);

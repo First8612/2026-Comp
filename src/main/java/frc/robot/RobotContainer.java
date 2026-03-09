@@ -77,7 +77,7 @@ public class RobotContainer {
     public RobotContainer() {
         // NamedCommands.registerCommand("ShootSequence", shootSimple);
 
-        CameraServer.startAutomaticCapture();
+        // CameraServer.startAutomaticCapture();
         configureBindings();
         drivetrain.configureAutoBuilder();
         autonChooser = AutoBuilder.buildAutoChooser("RI3D Auto");
@@ -154,15 +154,17 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
          // Field events
-         var safeRobotForTrench = new SafeRobotForTrench(intake, shooter);
-        SmartDashboard.putBoolean("Field/inTrench", false);
-         inTrenchEvent.rising().ifHigh(() -> {
-            SmartDashboard.putBoolean("Field/inTrench", true);
-            CommandScheduler.getInstance().schedule(safeRobotForTrench);
-         });
-         inTrenchEvent.falling().ifHigh(() -> {
-            SmartDashboard.putBoolean("Field/inTrench", false);
-         });
+
+         // disabling until we figure out field positioning better.
+        //  var safeRobotForTrench = new SafeRobotForTrench(intake, shooter);
+        // SmartDashboard.putBoolean("Field/inTrench", false);
+        //  inTrenchEvent.rising().ifHigh(() -> {
+        //     SmartDashboard.putBoolean("Field/inTrench", true);
+        //     CommandScheduler.getInstance().schedule(safeRobotForTrench);
+        //  });
+        //  inTrenchEvent.falling().ifHigh(() -> {
+        //     SmartDashboard.putBoolean("Field/inTrench", false);
+        //  });
         
         BooleanEvent changeEvent = new BooleanEvent(loop, () -> atGameScheduleTime(gameTime.get(), 0.5));
         changeEvent.rising().ifHigh(() -> {
@@ -197,6 +199,5 @@ public class RobotContainer {
         loop.poll();
         Target.periodic(drivetrain.getState().Pose);
         targetTracker.periodic();
-        vision.periodic();
     }
 }
