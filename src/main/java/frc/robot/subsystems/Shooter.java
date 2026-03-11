@@ -202,6 +202,7 @@ public class Shooter extends SubsystemBase {
                             .withForwardLimitAutosetPositionEnable(true)
                             .withForwardLimitAutosetPositionValue(1.18));
                     System.out.println("reset finished");
+                    SmartDashboard.putBoolean("Shooter/hood/reset", true);
                 }));
 
         command.addRequirements(this);
