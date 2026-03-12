@@ -30,6 +30,7 @@ import frc.robot.commands.SafeRobotForTrench;
 import frc.robot.commands.ShootSequence;
 import frc.robot.controls.*;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -65,6 +66,7 @@ public class RobotContainer {
     private final double[] gameEvents = {/*Start 1st Shift*/10, /*2nd Shift*/35, /*3st Shift*/60, /*4th Shift*/85, /*Start Endgame*/110, /*End of Game*/140};
 
     private final Intake intake = new Intake();
+    private final Climber climber = new Climber();
 
     // events
     private final BooleanEvent inTrenchEvent = new BooleanEvent(loop, () -> {
@@ -86,14 +88,14 @@ public class RobotContainer {
         RobotModeTriggers.autonomous().onTrue(shooter.getZeroCommand());
         RobotModeTriggers.teleop().onTrue(shooter.getZeroCommand());
 
-        Field.writeOnceToNT();
+        RobotModeTriggers.autonomous().onTrue(climber.getClimberZeroCommand());
+        //Comment this line out if running autonomous
+        RobotModeTriggers.teleop().onTrue(climber.getClimberZeroCommand());
 
-        try {
-            var pdp = new PowerDistribution(0, ModuleType.kRev);
-            SmartDashboard.putData("Power", pdp);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        //Un-comment this line if running autonomous
+        //RobotMOdeTriggers.teleop().onTrue(climber.raiseClimb());
+
+        Field.writeOnceToNT();
     }
 
     private boolean atGameScheduleTime(double sec, double threshold) {
@@ -129,13 +131,21 @@ public class RobotContainer {
         controls.horn().whileTrue(new DixieHornCommand());
         controls.intakeExtend().onTrue(intake.runOnce(intake::extend));
         controls.intakeRetract().onTrue(intake.runOnce(intake::retract));
-        controls.fieldReset().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        controls.fieldReset().onTrue(drivetrain.runOnce(() -> {
+            drivetrain.seedFieldCentric();
+            vision.reset();
+        }));
 
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
         controls.conveyOut().whileTrue(new RunCommand(() -> storage.conveyOut(), storage));
         controls.intake().whileTrue(new RunCommand(() -> intake.setSpeedRaw(1), intake));
         controls.intake().onFalse(new InstantCommand(() -> intake.stop()));
         controls.trenchRun().whileTrue(new DriveTrenchRun(drivetrain, controls::getDriveRequest));
+
+        controls.raiseClimb().onTrue(new InstantCommand(() -> {climber.raiseClimb(); SmartDashboard.putBoolean("Climber/Putting Up", true);}));
+        controls.lowerClimb().onTrue(new InstantCommand(() -> {climber.lowerClimb(); SmartDashboard.putBoolean("Climber/Putting Down", true);}));
+        controls.useClimb().onTrue(new InstantCommand(() -> {climber.useClimb();}));
+        // controls.manualClimb().whileTrue(new RunCommand(() -> climber.manualClimb(controls.getClimbManual()), climber));
 
         intake.setDefaultCommand(Commands.run(() -> {
             var jog = controls.getTestJogValue();

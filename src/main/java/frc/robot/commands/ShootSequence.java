@@ -33,7 +33,7 @@ public class ShootSequence extends ParallelCommandGroup {
         // if (unsmart) {
         //     finishShootingDeadline = Commands.waitSeconds(10);
         // }
-        var finishShootingDeadline = Commands.waitSeconds(30);
+        var finishShootingDeadline = Commands.waitSeconds(999);
 
 
         var mainSequence = new SequentialCommandGroup();

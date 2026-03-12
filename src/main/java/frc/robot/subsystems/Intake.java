@@ -158,14 +158,14 @@ public class Intake extends SubsystemBase {
     public Boolean isExtended() {
         return MathUtil.isNear(
             extendedGoal.magnitude(), 
-            intakeExtendLeft.getPosition().getValueAsDouble(), 
+            intakeExtendLeft.getPosition().getValueAsDouble(),
             0.1);
     }
 
     public Boolean isRetracted() {
         return MathUtil.isNear(
             retractedGoal.magnitude(), 
-            intakeExtendLeft.getPosition().getValueAsDouble(), 
+            intakeExtendLeft.getPosition().getValueAsDouble(),
             0.01);
     }
 
@@ -176,7 +176,11 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        intakeMotor.set(speed);
+        if(isExtended()) {
+            intakeMotor.set(speed);
+        }else{
+            intakeMotor.set(0);
+        }
         if(extended && isExtended()) {
             intakeExtendLeft.setControl(new NeutralOut());
         }

@@ -75,6 +75,30 @@ public class Controls {
         return operator.povDown();
     }
 
+    public Trigger feedOut() {
+        return operator.a();
+    }
+
+    public Trigger lowerClimb() {
+        return operator.axisGreaterThan(XboxController.Axis.kLeftY.value, 0.8);
+    }
+
+    public Trigger raiseClimb() {
+        return operator.axisLessThan(XboxController.Axis.kLeftY.value, -0.8);
+    }
+
+    public Trigger useClimb() {
+        return operator.leftStick();
+    }
+
+    public Trigger manualClimb() {
+        return operator.axisGreaterThan(XboxController.Axis.kLeftY.value, 0.1).or(operator.axisLessThan(XboxController.Axis.kLeftY.value, -0.1));
+    }
+
+    public double getClimbManual() {
+        return operator.getLeftY();
+    }
+
     // Events
     public void setRumble(double value) {
         driver.setRumble(RumbleType.kBothRumble, value);

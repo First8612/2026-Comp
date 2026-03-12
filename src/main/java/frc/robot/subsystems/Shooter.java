@@ -10,6 +10,7 @@ import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -42,8 +43,9 @@ public class Shooter extends SubsystemBase {
 
     Boolean isAiming = false;
     Optional<Double> aimingDistOveride = Optional.empty();
-    double feedDutyCycle = 0;
-    double flywheelSpeedGoal = 0;
+    private double flywheelSpeedGoal = 0;
+    private double feedSpeedGoal = 0;
+
     InterpolatingArrayTreeMap shootCalc = new InterpolatingArrayTreeMap(2);
 
     double currHoodGoal = 0; // number used w/ PID
@@ -52,6 +54,7 @@ public class Shooter extends SubsystemBase {
     private boolean overrideAim = false;
     private double hoodOverride = 0.0;
     private double flywheelOverride = 50.0;
+    private boolean hasReset = false;
 
 
     public Shooter(TargetTracker targetTracker) {
@@ -90,8 +93,16 @@ public class Shooter extends SubsystemBase {
                         withKI(.1).
                         withKD(0)
                 );
+
         feedMotor.getConfigurator()
-                .apply(new CurrentLimitsConfigs().withStatorCurrentLimit(80).withStatorCurrentLimitEnable(false));
+                .apply(new CurrentLimitsConfigs().withStatorCurrentLimit(50).withStatorCurrentLimitEnable(false));
+        feedMotor.getConfigurator()
+        .apply(new Slot0Configs().
+                        withKV(1).
+                        withKP(0).
+                        withKI(0).
+                        withKD(0)
+                );
 
         var shooterCurrentLimits = new CurrentLimitsConfigs()
             .withStatorCurrentLimit(80)
@@ -143,19 +154,19 @@ public class Shooter extends SubsystemBase {
     }
 
     public void inFeed() {
-        feedDutyCycle = 0.5;
+        feedSpeedGoal = 20;
     }
 
     public void backFeed() {
-        feedDutyCycle = -0.25;
+        feedSpeedGoal = -10;
     }
 
     public void stopFeed() {
-        feedDutyCycle = 0;
+        feedSpeedGoal = 0;
     }
 
     public void stop() {
-        feedDutyCycle = 0;
+        feedSpeedGoal = 0;
         isAiming = false;
         aimingDistOveride = Optional.empty();
     }
@@ -202,7 +213,9 @@ public class Shooter extends SubsystemBase {
                             .withForwardLimitAutosetPositionEnable(true)
                             .withForwardLimitAutosetPositionValue(1.18));
                     System.out.println("reset finished");
-                }));
+                    SmartDashboard.putBoolean("Shooter/hood/reset", true);
+                }),
+                Commands.runOnce(() -> {hasReset = true;}));
 
         command.addRequirements(this);
 
@@ -234,7 +247,10 @@ public class Shooter extends SubsystemBase {
             flywheelSpeedGoal = flywheelOverride;
         }
 
-        hoodMotor.setControl(new PositionVoltage(0).withSlot(0).withPosition(currHoodGoal));
+        if(hasReset) {
+            hoodMotor.setControl(new PositionVoltage(0).withSlot(0).withPosition(currHoodGoal));
+        }
+
         if (flywheelSpeedGoal == 0) {
             shootMotorLeft.setControl(new CoastOut());
         } else {
@@ -242,10 +258,10 @@ public class Shooter extends SubsystemBase {
             shootMotorLeft.setControl(new VelocityVoltage(flywheelSpeedGoal).withSlot(0));
         }
 
-        if (flywheelReady()) {
-            feedMotor.set(feedDutyCycle);
+        if (flywheelReady() || feedSpeedGoal < 0) {
+            feedMotor.setControl(new VelocityVoltage(feedSpeedGoal).withSlot(0));
         } else {
-            feedMotor.set(0);
+            feedMotor.setControl(new CoastOut());
         }
         
         SmartDashboard.putNumber("Shooter/Distance", targetTracker.getRobotToTargetTranslation().getNorm());
@@ -257,6 +273,5 @@ public class Shooter extends SubsystemBase {
         SmartDashboardHelper.putTalonFX("Shooter/hood/motor", hoodMotor);
         SmartDashboard.putBoolean("Shooter/hood/ready", hoodReady());
         SmartDashboardHelper.putTalonFX("Shooter/feed/motor", feedMotor);
-
     }
 }

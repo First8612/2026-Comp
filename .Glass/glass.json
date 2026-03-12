@@ -3,8 +3,14 @@
     "transitory": {
       "SmartDashboard": {
         "Shooter": {
+          "hood": {
+            "open": true
+          },
           "open": true,
           "override": {
+            "open": true
+          },
+          "shootMotor": {
             "open": true
           }
         },
