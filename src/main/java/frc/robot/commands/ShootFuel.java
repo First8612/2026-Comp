@@ -19,13 +19,13 @@ public class ShootFuel extends Command {
 
     @Override
     public void initialize() {
-        shooter.inFeed();
+        shooter.enableFeeding();
         storage.conveyIn();
     }
 
     @Override
     public void end(boolean interrupted) {
-        shooter.stopFeed();
+        shooter.enableFeeding(false);
         storage.conveyStop();
     }
 }

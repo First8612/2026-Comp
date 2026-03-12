@@ -10,7 +10,6 @@ import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -44,7 +43,8 @@ public class Shooter extends SubsystemBase {
     Boolean isAiming = false;
     Optional<Double> aimingDistOveride = Optional.empty();
     private double flywheelSpeedGoal = 0;
-    private double feedSpeedGoal = 0;
+    private boolean isFeeding = false;
+    private boolean isFeedReversed = false;
 
     InterpolatingArrayTreeMap shootCalc = new InterpolatingArrayTreeMap(2);
 
@@ -86,7 +86,7 @@ public class Shooter extends SubsystemBase {
         mConfig.Inverted = InvertedValue.Clockwise_Positive;
         hoodMotor.getConfigurator().apply(mConfig);
         hoodMotor.getConfigurator()
-                .apply(new CurrentLimitsConfigs().withStatorCurrentLimit(20).withStatorCurrentLimitEnable(true));
+                .apply(new CurrentLimitsConfigs().withStatorCurrentLimit(50).withStatorCurrentLimitEnable(true));
         hoodMotor.getConfigurator()
         .apply(new Slot0Configs().
                         withKP(10).
@@ -147,28 +147,23 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putBoolean("Shooter/override/active", overrideAim);
         SmartDashboard.putNumber("Shooter/override/hood", hoodOverride);
         SmartDashboard.putNumber("Shooter/override/flywheel", flywheelOverride);
+        SmartDashboard.putBoolean("Shooter/hood/resetting", false);
+        SmartDashboard.putBoolean("Shooter/hood/reset", false);
 
     }
 
-    public void warmup() {
+    public void feedReverse(Boolean reverse) {
+        isFeedReversed = reverse;
     }
 
-    public void inFeed() {
-        feedSpeedGoal = 20;
+    public void enableFeeding() {
+        enableFeeding(true);
     }
 
-    public void backFeed() {
-        feedSpeedGoal = -10;
-    }
 
-    public void stopFeed() {
-        feedSpeedGoal = 0;
-    }
-
-    public void stop() {
-        feedSpeedGoal = 0;
-        isAiming = false;
-        aimingDistOveride = Optional.empty();
+    public void enableFeeding(boolean enabled) {
+        isFeeding = enabled;
+        isFeedReversed = false;
     }
 
     public void enableAiming() {
@@ -179,6 +174,13 @@ public class Shooter extends SubsystemBase {
     public void enableAiming(double distOverride) {
         isAiming = true;
         aimingDistOveride = Optional.of(distOverride);
+    }
+
+    public void stop() {
+        isAiming = false;
+        isFeeding = false;
+        isFeedReversed = false;
+        aimingDistOveride = Optional.empty();
     }
 
     public boolean readyToShoot() {
@@ -197,15 +199,18 @@ public class Shooter extends SubsystemBase {
         return true;
     }
 
-    public void spinUp(double speed) {
-        flywheelSpeedGoal = speed;
-    }
-
     public Command getZeroCommand() {
+        var velocityDebounce = new Debouncer(1, DebounceType.kRising);
+        velocityDebounce.calculate(false);
+
         var command = Commands.sequence(
+                Commands.runOnce(() -> {
+                    SmartDashboard.putBoolean("Shooter/hood/resetting", true);
+                    SmartDashboard.putBoolean("Shooter/hood/reset", false);
+                }),
                 Commands.deadline(
-                        Commands.waitUntil(() -> Math.abs(hoodMotor.getStatorCurrent().getValueAsDouble()) > 10),
-                        Commands.run(() -> hoodMotor.setControl(new DutyCycleOut(-0.1)))),
+                        Commands.waitSeconds(5),
+                        Commands.run(() -> hoodMotor.setControl(new DutyCycleOut(-1)))),
                 Commands.runOnce(() -> {
                     hoodMotor.setPosition(-0.01);
                     hoodMotor.setControl(new DutyCycleOut(0));
@@ -213,6 +218,7 @@ public class Shooter extends SubsystemBase {
                             .withForwardLimitAutosetPositionEnable(true)
                             .withForwardLimitAutosetPositionValue(1.18));
                     System.out.println("reset finished");
+                    SmartDashboard.putBoolean("Shooter/hood/resetting", false);
                     SmartDashboard.putBoolean("Shooter/hood/reset", true);
                 }),
                 Commands.runOnce(() -> {hasReset = true;}));
@@ -242,6 +248,7 @@ public class Shooter extends SubsystemBase {
             currHoodGoal = setAmounts[0];
             flywheelSpeedGoal = setAmounts[1];
         }
+
         if(overrideAim && isAiming) {
             currHoodGoal = hoodOverride;
             flywheelSpeedGoal = flywheelOverride;
@@ -258,14 +265,16 @@ public class Shooter extends SubsystemBase {
             shootMotorLeft.setControl(new VelocityVoltage(flywheelSpeedGoal).withSlot(0));
         }
 
-        if (flywheelReady() || feedSpeedGoal < 0) {
-            feedMotor.setControl(new VelocityVoltage(feedSpeedGoal).withSlot(0));
+        if ((flywheelReady() && isFeeding) || isFeedReversed) {
+            var speedGoal = isFeedReversed ? -30 : 80;
+            feedMotor.setControl(new VelocityVoltage(speedGoal).withSlot(0));
         } else {
             feedMotor.setControl(new CoastOut());
         }
         
         SmartDashboard.putNumber("Shooter/Distance", targetTracker.getRobotToTargetTranslation().getNorm());
         SmartDashboard.putBoolean("Shooter/isAiming", isAiming);
+        SmartDashboard.putBoolean("Shooter/isFeeding", isFeeding);
         SmartDashboard.putBoolean("Shooter/readyToShoot", readyToShoot());
         SmartDashboardHelper.putTalonFX("Shooter/shootMotorLeft", shootMotorLeft);
         SmartDashboardHelper.putTalonFX("Shooter/shootMotorRight", shootMotorRight);

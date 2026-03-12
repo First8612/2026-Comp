@@ -41,8 +41,8 @@ public class ShootSequence extends ParallelCommandGroup {
             // warm up the shooter, and enable auto-aiming.
             // driveAndFaceTargetCommand will continue to keep robot pointed at target
             Commands.runOnce(setStatus("Start")),
-            Commands.runOnce(shooter::warmup, shooter),
             aimCommand,
+            Commands.runOnce(shooter::enableFeeding, shooter),
 
             Commands.runOnce(setStatus("WaitingForReady")),
             new WaitForReadyToShoot(shooter, targetTracker, unsmart),

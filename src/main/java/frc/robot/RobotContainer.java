@@ -141,6 +141,9 @@ public class RobotContainer {
         controls.intake().whileTrue(new RunCommand(() -> intake.setSpeedRaw(1), intake));
         controls.intake().onFalse(new InstantCommand(() -> intake.stop()));
         controls.trenchRun().whileTrue(new DriveTrenchRun(drivetrain, controls::getDriveRequest));
+        controls.feedOut().whileTrue(Commands.startEnd(
+            () -> shooter.feedReverse(true), 
+            () -> shooter.feedReverse(false)));
 
         controls.raiseClimb().onTrue(new InstantCommand(() -> {climber.raiseClimb(); SmartDashboard.putBoolean("Climber/Putting Up", true);}));
         controls.lowerClimb().onTrue(new InstantCommand(() -> {climber.lowerClimb(); SmartDashboard.putBoolean("Climber/Putting Down", true);}));
