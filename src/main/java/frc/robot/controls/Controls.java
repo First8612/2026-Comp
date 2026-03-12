@@ -75,6 +75,10 @@ public class Controls {
         return operator.povDown();
     }
 
+    public Trigger feedOut() {
+        return operator.a();
+    }
+
     public Trigger lowerClimb() {
         return operator.axisGreaterThan(XboxController.Axis.kLeftY.value, 0.8);
     }

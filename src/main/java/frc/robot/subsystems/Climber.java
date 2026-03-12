@@ -109,7 +109,7 @@ public class Climber extends SubsystemBase{
     }
 
     public void useClimb() {
-        changeMotorLimits(10);
+        changeMotorLimits(50);
         currClimbGoal = 12;
     }
 

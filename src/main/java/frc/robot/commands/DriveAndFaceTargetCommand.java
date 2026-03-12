@@ -3,6 +3,9 @@ package frc.robot.commands;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.controls.Controls;
 import frc.robot.subsystems.Drivetrain;
@@ -12,6 +15,7 @@ public class DriveAndFaceTargetCommand extends Command {
     private final Controls controls;
     private final Drivetrain drivetrain;
     private final TargetTracker targetTracker;
+    private BooleanPublisher activePublisher = NetworkTableInstance.getDefault().getBooleanTopic("Commands/DriveAndFaceTarget/active").publish();
 
     private final SwerveRequest.FieldCentricFacingAngle driveFacingTarget = new SwerveRequest.FieldCentricFacingAngle()
         .withHeadingPID(10,0,0)
@@ -24,6 +28,12 @@ public class DriveAndFaceTargetCommand extends Command {
         this.targetTracker = targetTracker;
 
         addRequirements(drivetrain);
+        activePublisher.set(false);
+    }
+
+    @Override
+    public void initialize() {
+        activePublisher.set(true);
     }
 
     @Override
@@ -37,5 +47,10 @@ public class DriveAndFaceTargetCommand extends Command {
                 .withTargetDirection(targetTracker.getRobotToTargetRotation());
 
         drivetrain.setControl(drive);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        activePublisher.set(false);
     }
 }

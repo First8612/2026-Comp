@@ -92,14 +92,10 @@ public class RobotContainer {
         //Comment this line out if running autonomous
         RobotModeTriggers.teleop().onTrue(climber.getClimberZeroCommand());
 
-        Field.writeOnceToNT();
+        //Un-comment this line if running autonomous
+        //RobotMOdeTriggers.teleop().onTrue(climber.raiseClimb());
 
-        try {
-            var pdp = new PowerDistribution(1, ModuleType.kRev);
-            SmartDashboard.putData("Power", pdp);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        Field.writeOnceToNT();
     }
 
     private boolean atGameScheduleTime(double sec, double threshold) {
@@ -135,7 +131,10 @@ public class RobotContainer {
         controls.horn().whileTrue(new DixieHornCommand());
         controls.intakeExtend().onTrue(intake.runOnce(intake::extend));
         controls.intakeRetract().onTrue(intake.runOnce(intake::retract));
-        controls.fieldReset().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        controls.fieldReset().onTrue(drivetrain.runOnce(() -> {
+            drivetrain.seedFieldCentric();
+            vision.reset();
+        }));
 
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
         controls.conveyOut().whileTrue(new RunCommand(() -> storage.conveyOut(), storage));
