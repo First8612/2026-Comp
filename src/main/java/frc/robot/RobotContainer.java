@@ -7,16 +7,14 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -26,7 +24,6 @@ import frc.robot.commands.DixieHornCommand;
 import frc.robot.commands.DriveAndFaceTargetCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.DriveTrenchRun;
-import frc.robot.commands.SafeRobotForTrench;
 import frc.robot.commands.ShootSequence;
 import frc.robot.controls.*;
 import frc.robot.generated.TunerConstants;
@@ -36,8 +33,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Storage;
-import edu.wpi.first.cameraserver.*;
-import frc.robot.utils.LeadingTargetTracker;
 import frc.robot.utils.TargetTracker;
 
 public class RobotContainer {
@@ -60,8 +55,8 @@ public class RobotContainer {
 
     // commands
     private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(controls, drivetrain, targetTracker);
-    private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, drivetrain, false);
-    private final ShootSequence shootSimple = new ShootSequence(shooter, storage, targetTracker, drivetrain, true);
+    private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, false);
+    private final ShootSequence shootSimple = new ShootSequence(shooter, storage, targetTracker, true);
     private Timer gameTime = new Timer();
     private final double[] gameEvents = {/*Start 1st Shift*/10, /*2nd Shift*/35, /*3st Shift*/60, /*4th Shift*/85, /*Start Endgame*/110, /*End of Game*/140};
 
@@ -77,15 +72,16 @@ public class RobotContainer {
     SendableChooser<Command> autonChooser;
 
     public RobotContainer() {
-        // NamedCommands.registerCommand("ShootSequence", shootSimple);
+        NamedCommands.registerCommand("EnableAiming", Commands.runOnce(shooter::enableAiming));
+        NamedCommands.registerCommand("ShootSequence", shoot);
+        NamedCommands.registerCommand("FaceTarget", driveAndFaceTarget);
 
-        // CameraServer.startAutomaticCapture();
         configureBindings();
         drivetrain.configureAutoBuilder();
-        autonChooser = AutoBuilder.buildAutoChooser("RI3D Auto");
+        autonChooser = AutoBuilder.buildAutoChooser("CS 1 (None) Auton");
 
         SmartDashboard.putData("Auto Path", autonChooser);
-        RobotModeTriggers.autonomous().onTrue(shooter.getZeroCommand());
+        // RobotModeTriggers.autonomous().onTrue(shooter.getZeroCommand());
         RobotModeTriggers.teleop().onTrue(shooter.getZeroCommand());
 
         RobotModeTriggers.autonomous().onTrue(climber.getClimberZeroCommand());

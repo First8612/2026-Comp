@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Storage;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.TargetTracker;
@@ -15,7 +14,6 @@ public class ShootSequence extends ParallelCommandGroup {
         Shooter shooter,
         Storage storage,
         TargetTracker targetTracker,
-        Drivetrain drivetrain,
         boolean unsmart
     ) {
         super();
@@ -38,11 +36,12 @@ public class ShootSequence extends ParallelCommandGroup {
 
         var mainSequence = new SequentialCommandGroup();
         mainSequence.addCommands(
-            // warm up the shooter, and enable auto-aiming.
-            // driveAndFaceTargetCommand will continue to keep robot pointed at target
+            //     // warm up the shooter, and enable auto-aiming.
+            //     // driveAndFaceTargetCommand will continue to keep robot pointed at target
             Commands.runOnce(setStatus("Start")),
             aimCommand,
             Commands.runOnce(shooter::enableFeeding, shooter),
+            Commands.runOnce(storage::conveyIn, storage),
 
             Commands.runOnce(setStatus("WaitingForReady")),
             new WaitForReadyToShoot(shooter, targetTracker, unsmart),
@@ -57,6 +56,7 @@ public class ShootSequence extends ParallelCommandGroup {
             Commands.runOnce(setStatus("Finished"))
         );
         this.addCommands(mainSequence);
+        this.addRequirements(storage);
     }
 
     private static Runnable setStatus(String status) {
