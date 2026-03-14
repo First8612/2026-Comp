@@ -143,12 +143,12 @@ public class Shooter extends SubsystemBase {
         setDefaultCommand(Commands.runOnce(this::stop, this));
         DixieHornCommand.enrollSubsystemMotors(this, shootMotorLeft, shootMotorRight, feedMotor);
 
-        SmartDashboard.putData("Shooter/system", this);
-        SmartDashboard.putBoolean("Shooter/override/active", overrideAim);
-        SmartDashboard.putNumber("Shooter/override/hood", hoodOverride);
-        SmartDashboard.putNumber("Shooter/override/flywheel", flywheelOverride);
-        SmartDashboard.putBoolean("Shooter/hood/resetting", false);
-        SmartDashboard.putBoolean("Shooter/hood/reset", false);
+        // SmartDashboard.putData("Shooter/system", this);
+        // SmartDashboard.putBoolean("Shooter/override/active", overrideAim);
+        // SmartDashboard.putNumber("Shooter/override/hood", hoodOverride);
+        // SmartDashboard.putNumber("Shooter/override/flywheel", flywheelOverride);
+        // SmartDashboard.putBoolean("Shooter/hood/resetting", false);
+        // SmartDashboard.putBoolean("Shooter/hood/reset", false);
 
     }
 
@@ -205,8 +205,8 @@ public class Shooter extends SubsystemBase {
 
         var command = Commands.sequence(
                 Commands.runOnce(() -> {
-                    SmartDashboard.putBoolean("Shooter/hood/resetting", true);
-                    SmartDashboard.putBoolean("Shooter/hood/reset", false);
+                    // SmartDashboard.putBoolean("Shooter/hood/resetting", true);
+                    // SmartDashboard.putBoolean("Shooter/hood/reset", false);
                 }),
                 Commands.deadline(
                         Commands.waitSeconds(5),
@@ -218,8 +218,8 @@ public class Shooter extends SubsystemBase {
                             .withForwardLimitAutosetPositionEnable(true)
                             .withForwardLimitAutosetPositionValue(1.18));
                     System.out.println("reset finished");
-                    SmartDashboard.putBoolean("Shooter/hood/resetting", false);
-                    SmartDashboard.putBoolean("Shooter/hood/reset", true);
+                    // SmartDashboard.putBoolean("Shooter/hood/resetting", false);
+                    // SmartDashboard.putBoolean("Shooter/hood/reset", true);
                 }),
                 Commands.runOnce(() -> {hasReset = true;}));
 
@@ -230,9 +230,9 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        overrideAim = SmartDashboard.getBoolean("Shooter/override/active", overrideAim);
-        flywheelOverride = SmartDashboard.getNumber("Shooter/override/flywheel", flywheelOverride);
-        hoodOverride = SmartDashboard.getNumber("Shooter/override/hood", hoodOverride);
+        // overrideAim = SmartDashboard.getBoolean("Shooter/override/active", overrideAim);
+        // flywheelOverride = SmartDashboard.getNumber("Shooter/override/flywheel", flywheelOverride);
+        // hoodOverride = SmartDashboard.getNumber("Shooter/override/hood", hoodOverride);
         currHoodGoal = 0;
         flywheelSpeedGoal = 0;
         
@@ -272,15 +272,15 @@ public class Shooter extends SubsystemBase {
             feedMotor.setControl(new CoastOut());
         }
         
-        SmartDashboard.putNumber("Shooter/Distance", targetTracker.getRobotToTargetTranslation().getNorm());
-        SmartDashboard.putBoolean("Shooter/isAiming", isAiming);
-        SmartDashboard.putBoolean("Shooter/isFeeding", isFeeding);
-        SmartDashboard.putBoolean("Shooter/readyToShoot", readyToShoot());
-        SmartDashboardHelper.putTalonFX("Shooter/shootMotorLeft", shootMotorLeft);
-        SmartDashboardHelper.putTalonFX("Shooter/shootMotorRight", shootMotorRight);
-        SmartDashboard.putNumber("Shooter/shootMotor/targetVelocity", flywheelSpeedGoal);
-        SmartDashboardHelper.putTalonFX("Shooter/hood/motor", hoodMotor);
-        SmartDashboard.putBoolean("Shooter/hood/ready", hoodReady());
-        SmartDashboardHelper.putTalonFX("Shooter/feed/motor", feedMotor);
+        // SmartDashboard.putNumber("Shooter/Distance", targetTracker.getRobotToTargetTranslation().getNorm());
+        // SmartDashboard.putBoolean("Shooter/isAiming", isAiming);
+        // SmartDashboard.putBoolean("Shooter/isFeeding", isFeeding);
+        // SmartDashboard.putBoolean("Shooter/readyToShoot", readyToShoot());
+        // SmartDashboardHelper.putTalonFX("Shooter/shootMotorLeft", shootMotorLeft);
+        // SmartDashboardHelper.putTalonFX("Shooter/shootMotorRight", shootMotorRight);
+        // SmartDashboard.putNumber("Shooter/shootMotor/targetVelocity", flywheelSpeedGoal);
+        // SmartDashboardHelper.putTalonFX("Shooter/hood/motor", hoodMotor);
+        // SmartDashboard.putBoolean("Shooter/hood/ready", hoodReady());
+        // SmartDashboardHelper.putTalonFX("Shooter/feed/motor", feedMotor);
     }
 }

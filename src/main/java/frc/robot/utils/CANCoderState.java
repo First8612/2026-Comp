@@ -1,0 +1,62 @@
+package frc.robot.utils;
+
+import java.util.Collection;
+
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.hardware.CANcoder;
+
+import edu.wpi.first.units.measure.*;
+
+public class CANCoderState {
+    public StatusSignal<Angle> position;
+    public StatusSignal<AngularVelocity> velocity;
+    public StatusSignal<Angle> absolutePosition;
+
+    /**
+     * Creates a new CANCoderState by capturing the current signals from a CANcoder.
+     * The signals are not refreshed; they reflect the last known values.
+     *
+     * @param encoder the CANcoder to capture state from
+     * @return a new CANCoderState object containing all encoder signals
+     */
+    public static CANCoderState capture(CANcoder encoder) {
+        CANCoderState state = new CANCoderState();
+        state.position = encoder.getPosition();
+        state.velocity = encoder.getVelocity();
+        state.absolutePosition = encoder.getAbsolutePosition();
+        return state;
+    }
+
+    /**
+     * Adds all signals from this state to the provided array at the given index.
+     *
+     * @param array the array to add signals to
+     * @param index the starting index in the array
+     * @return the updated index after adding all signals
+     */
+    public int addToArray(StatusSignal<?>[] array, int index) {
+        array[index++] = position;
+        array[index++] = velocity;
+        array[index++] = absolutePosition;
+        return index;
+    }
+
+    /**
+     * Adds all signals from this state to the provided collection.
+     *
+     * @param collection the collection to add signals to
+     */
+    public void addToArray(Collection<StatusSignal<?>> collection) {
+        collection.add(position);
+        collection.add(velocity);
+        collection.add(absolutePosition);
+    }
+
+    public StatusSignal<?>[] asArray() {
+        return new StatusSignal<?>[] {
+            position,
+            velocity,
+            absolutePosition
+        };
+    }
+}

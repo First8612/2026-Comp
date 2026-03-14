@@ -1,9 +1,9 @@
 package frc.robot.utils;
 
-import com.ctre.phoenix6.BaseStatusSignal;
+import java.util.Collection;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.units.measure.*;
 
 public class TalonFXState {
@@ -33,35 +33,16 @@ public class TalonFXState {
     }
 
     /**
-     * Refreshes all signals in multiple state objects in a batch operation.
-     * Uses BaseStatusSignal.refreshAll() to perform all reads in parallel for maximum efficiency.
-     * 
-     * @param states the TalonFXState objects to refresh
+     * Adds all signals from this state to the provided collection.
+     *
+     * @param collection the collection to add signals to
      */
-    public static void refreshAll(TalonFXState... states) {
-        // Collect all signals from all states
-        StatusSignal<?>[] allSignals = new StatusSignal<?>[states.length * 6];
-        int index = 0;
-        for (TalonFXState state : states) {
-            allSignals[index++] = state.position;
-            allSignals[index++] = state.velocity;
-            allSignals[index++] = state.motorVoltage;
-            allSignals[index++] = state.supplyCurrent;
-            allSignals[index++] = state.statorCurrent;
-            allSignals[index++] = state.closedLoopReference;
-        }
-        // Use BaseStatusSignal.refreshAll() to refresh all signals in parallel
-        BaseStatusSignal.refreshAll(allSignals);
-    }
-
-    public StatusSignal<?>[] asArray() {
-        return new StatusSignal<?>[] {
-            position,
-            velocity,
-            motorVoltage,
-            supplyCurrent,
-            statorCurrent,
-            closedLoopReference
-        };
+    public void addToArray(Collection<StatusSignal<?>> collection) {
+        collection.add(position);
+        collection.add(velocity);
+        collection.add(motorVoltage);
+        collection.add(supplyCurrent);
+        collection.add(statorCurrent);
+        collection.add(closedLoopReference);
     }
 }

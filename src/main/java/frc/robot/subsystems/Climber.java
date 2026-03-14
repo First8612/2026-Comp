@@ -125,8 +125,8 @@ public class Climber extends SubsystemBase{
             climbMotorRight.setControl(new PositionVoltage(0).withSlot(0).withPosition(currClimbGoal));
         }
 
-        SmartDashboard.putNumber("Climber/ClimbGoal", currClimbGoal);
-        SmartDashboardHelper.putTalonFX("Climber/LeftMotor", climbMotorLeft);
-        SmartDashboardHelper.putTalonFX("Climber/RightMotor", climbMotorRight);
+        // SmartDashboard.putNumber("Climber/ClimbGoal", currClimbGoal);
+        // SmartDashboardHelper.putTalonFX("Climber/LeftMotor", climbMotorLeft);
+        // SmartDashboardHelper.putTalonFX("Climber/RightMotor", climbMotorRight);
     }
 }
