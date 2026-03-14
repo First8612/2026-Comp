@@ -1,7 +1,9 @@
 package frc.robot.utils;
 
 import java.util.Collection;
+import java.util.List;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.*;
@@ -45,4 +47,29 @@ public class TalonFXState {
         collection.add(statorCurrent);
         collection.add(closedLoopReference);
     }
+
+
+    /**
+     * Adds all signals from this state to the provided collection.
+     *
+     * @param collection the collection to add signals to
+     */
+    public void addTo(List<BaseStatusSignal> collection) {
+        collection.add(position);
+        collection.add(velocity);
+        collection.add(motorVoltage);
+        collection.add(supplyCurrent);
+        collection.add(statorCurrent);
+        collection.add(closedLoopReference);
+    }
+
+    /**
+     * Returns all signals from this state as a list.
+     *
+     * @return a list containing all motor signals
+     */
+    public java.util.List<StatusSignal<?>> toList() {
+        return java.util.List.of(position, velocity, motorVoltage, supplyCurrent, statorCurrent, closedLoopReference);
+    }
+
 }

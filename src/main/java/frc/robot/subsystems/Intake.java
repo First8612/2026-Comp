@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Intake extends SubsystemBase {
+    private final boolean enabled = false;
     private final NetworkTableGroup NT = new NetworkTableGroup("Intake", true);
     private final TalonFX intakeMotor = new TalonFX(10, CANBuses.intake);
     private final TalonFX intakeExtendLeft = new TalonFX(11, CANBuses.intake);
@@ -154,6 +155,8 @@ public class Intake extends SubsystemBase {
     }
 
     public void extend() {
+        if (!enabled) return;
+
         intakeExtendSetControl(
             new PositionVoltage(extendedGoal)
             .withSlot(0));
@@ -161,6 +164,8 @@ public class Intake extends SubsystemBase {
     }
 
     public void retract() {
+        if (!enabled) return;
+
         intakeExtendSetControl(
             new PositionVoltage(retractedGoal)
             .withSlot(0));
@@ -188,8 +193,10 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (!enabled) return;
+        
         // Batch refresh all status signals in parallel using BaseStatusSignal.refreshAll()
-        List<StatusSignal<?>> signals = new ArrayList<>();
+        List<BaseStatusSignal> signals = new ArrayList<>();
         extendLeftState.addTo(signals);
         extendRightState.addTo(signals);
         extendEncoderLeftState.addTo(signals);
@@ -209,12 +216,12 @@ public class Intake extends SubsystemBase {
             intakeExtendSetControl(new NeutralOut());
         }
 
-        NT.putNumber("Intake/speed", speed);
-        NT.putBoolean("Intake/extended", isExtended());
-        NT.putBoolean("Intake/retracted", isRetracted());
-        NT.putTalonFX("Intake/ExtendMotorLeft", extendLeftState);
-        NT.putTalonFX("Intake/ExtendMotorRight", extendRightState);
-        NT.putCANCoder("Intake/ExtendEncoderLeft", extendEncoderLeftState);
-        NT.putCANCoder("Intake/ExtendEncoderRight", extendEncoderRightState);
+        NT.putNumber("speed", speed);
+        NT.putBoolean("extended", isExtended());
+        NT.putBoolean("retracted", isRetracted());
+        NT.putTalonFX("ExtendMotorLeft", extendLeftState);
+        NT.putTalonFX("ExtendMotorRight", extendRightState);
+        NT.putCANCoder("ExtendEncoderLeft", extendEncoderLeftState);
+        NT.putCANCoder("ExtendEncoderRight", extendEncoderRightState);
     }
 }

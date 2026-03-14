@@ -1,7 +1,11 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -17,6 +21,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,15 +29,19 @@ import frc.robot.CANBuses;
 import frc.robot.commands.DixieHornCommand;
 import frc.robot.utils.InterpolatingArrayTreeMap;
 import frc.robot.utils.NetworkTableGroup;
+import frc.robot.utils.TalonFXState;
 import frc.robot.utils.TargetTracker;
 
 public class Shooter extends SubsystemBase {
-    private final NetworkTableGroup NT = new NetworkTableGroup("Shooter", false);
-    TalonFX shootMotorLeft = new TalonFX(20, CANBuses.shooter);
-    TalonFX shootMotorRight = new TalonFX(21, CANBuses.shooter);
-    TalonFX hoodMotor = new TalonFX(22, CANBuses.shooter);
-    TalonFX feedMotor = new TalonFX(23, CANBuses.shooter);
-
+    private final NetworkTableGroup NT = new NetworkTableGroup("Shooter", true);
+    private final TalonFX shootMotorLeft = new TalonFX(20, CANBuses.shooter);
+    private final TalonFX shootMotorRight = new TalonFX(21, CANBuses.shooter);
+    private final TalonFX hoodMotor = new TalonFX(22, CANBuses.shooter);
+    private final TalonFX feedMotor = new TalonFX(23, CANBuses.shooter);
+    private final TalonFXState shootMotorLeftSignals = TalonFXState.capture(shootMotorLeft);
+    private final TalonFXState shootMotorRightSignals = TalonFXState.capture(shootMotorRight);
+    private final TalonFXState hoodMotorSignals = TalonFXState.capture(hoodMotor);
+    private final TalonFXState feedMotorSignals = TalonFXState.capture(feedMotor);
 
     private Follower shootFollow = new Follower(20, MotorAlignmentValue.Opposed);
 
@@ -82,7 +91,7 @@ public class Shooter extends SubsystemBase {
         mConfig.Inverted = InvertedValue.Clockwise_Positive;
         hoodMotor.getConfigurator().apply(mConfig);
         hoodMotor.getConfigurator()
-                .apply(new CurrentLimitsConfigs().withStatorCurrentLimit(50).withStatorCurrentLimitEnable(true));
+                .apply(new CurrentLimitsConfigs().withStatorCurrentLimit(20).withStatorCurrentLimitEnable(true));
         hoodMotor.getConfigurator()
         .apply(new Slot0Configs().
                         withKP(10).
@@ -91,11 +100,11 @@ public class Shooter extends SubsystemBase {
                 );
 
         feedMotor.getConfigurator()
-                .apply(new CurrentLimitsConfigs().withStatorCurrentLimit(50).withStatorCurrentLimitEnable(false));
+                .apply(new CurrentLimitsConfigs().withStatorCurrentLimit(100).withStatorCurrentLimitEnable(false));
         feedMotor.getConfigurator()
         .apply(new Slot0Configs().
-                        withKV(1).
-                        withKP(0).
+                        withKV(0.11).
+                        withKP(1000000).
                         withKI(0).
                         withKD(0)
                 );
@@ -139,11 +148,11 @@ public class Shooter extends SubsystemBase {
         setDefaultCommand(Commands.runOnce(this::stop, this));
         DixieHornCommand.enrollSubsystemMotors(this, shootMotorLeft, shootMotorRight, feedMotor);
 
-        NT.putBoolean("Shooter/override/active", overrideAim);
-        NT.putNumber("Shooter/override/hood", hoodOverride);
-        NT.putNumber("Shooter/override/flywheel", flywheelOverride);
-        NT.putBoolean("Shooter/hood/resetting", false);
-        NT.putBoolean("Shooter/hood/reset", false);
+        NT.putBoolean("override/active", overrideAim);
+        NT.putNumber("override/hood", hoodOverride);
+        NT.putNumber("override/flywheel", flywheelOverride);
+        NT.putBoolean("hood/resetting", false);
+        NT.putBoolean("hood/reset", false);
     }
 
     public void feedReverse(Boolean reverse) {
@@ -186,7 +195,7 @@ public class Shooter extends SubsystemBase {
             return false;
 
         return flywheelReadyDebounce.calculate(
-                Math.abs(flywheelSpeedGoal - shootMotorLeft.getVelocity().getValueAsDouble()) < 2.5);
+                Math.abs(flywheelSpeedGoal - shootMotorLeftSignals.velocity.getValueAsDouble()) < 2.5);
     }
 
     private Boolean hoodReady() {
@@ -199,21 +208,21 @@ public class Shooter extends SubsystemBase {
 
         var command = Commands.sequence(
                 Commands.runOnce(() -> {
-                    // SmartDashboard.putBoolean("Shooter/hood/resetting", true);
-                    // SmartDashboard.putBoolean("Shooter/hood/reset", false);
+                    NT.putBoolean("hood/resetting", true);
+                    NT.putBoolean("hood/reset", false);
                 }),
                 Commands.deadline(
-                        Commands.waitSeconds(5),
-                        Commands.run(() -> hoodMotor.setControl(new DutyCycleOut(-1)))),
+                        Commands.waitUntil(() -> hoodMotor.getStatorCurrent().getValueAsDouble() > 5),
+                        Commands.run(() -> hoodMotor.setControl(new DutyCycleOut(-.1)))),
                 Commands.runOnce(() -> {
-                    hoodMotor.setPosition(-0.01);
+                    hoodMotor.setPosition(-.08);
                     hoodMotor.setControl(new DutyCycleOut(0));
                     hoodMotor.getConfigurator().apply(new HardwareLimitSwitchConfigs()
                             .withForwardLimitAutosetPositionEnable(true)
                             .withForwardLimitAutosetPositionValue(1.18));
                     System.out.println("reset finished");
-                    // SmartDashboard.putBoolean("Shooter/hood/resetting", false);
-                    // SmartDashboard.putBoolean("Shooter/hood/reset", true);
+                    NT.putBoolean("hood/resetting", false);
+                    NT.putBoolean("hood/reset", true);
                 }),
                 Commands.runOnce(() -> {hasReset = true;}));
 
@@ -224,9 +233,16 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // overrideAim = SmartDashboard.getBoolean("Shooter/override/active", overrideAim);
-        // flywheelOverride = SmartDashboard.getNumber("Shooter/override/flywheel", flywheelOverride);
-        // hoodOverride = SmartDashboard.getNumber("Shooter/override/hood", hoodOverride);
+        List<BaseStatusSignal> signals = new ArrayList<>();
+        shootMotorLeftSignals.addTo(signals);
+        shootMotorRightSignals.addTo(signals);
+        hoodMotorSignals.addTo(signals);
+        feedMotorSignals.addTo(signals);
+        BaseStatusSignal.refreshAll(signals);
+
+        overrideAim = SmartDashboard.getBoolean("Shooter/override/active", overrideAim);
+        flywheelOverride = SmartDashboard.getNumber("Shooter/override/flywheel", flywheelOverride);
+        hoodOverride = SmartDashboard.getNumber("Shooter/override/hood", hoodOverride);
         currHoodGoal = 0;
         flywheelSpeedGoal = 0;
         
@@ -266,15 +282,15 @@ public class Shooter extends SubsystemBase {
             feedMotor.setControl(new CoastOut());
         }
         
-        NT.putNumber("Shooter/Distance", targetTracker.getRobotToTargetTranslation().getNorm());
-        NT.putBoolean("Shooter/isAiming", isAiming);
-        NT.putBoolean("Shooter/isFeeding", isFeeding);
-        NT.putBoolean("Shooter/readyToShoot", readyToShoot());
-        NT.putTalonFX("Shooter/shootMotorLeft", shootMotorLeft);
-        NT.putTalonFX("Shooter/shootMotorRight", shootMotorRight);
-        NT.putNumber("Shooter/shootMotor/targetVelocity", flywheelSpeedGoal);
-        NT.putTalonFX("Shooter/hood/motor", hoodMotor);
-        NT.putBoolean("Shooter/hood/ready", hoodReady());
-        NT.putTalonFX("Shooter/feed/motor", feedMotor);
+        NT.putNumber("Distance", targetTracker.getRobotToTargetTranslation().getNorm());
+        NT.putBoolean("isAiming", isAiming);
+        NT.putBoolean("isFeeding", isFeeding);
+        NT.putBoolean("readyToShoot", readyToShoot());
+        NT.putTalonFX("shootMotorLeft", shootMotorLeft);
+        NT.putTalonFX("shootMotorRight", shootMotorRight);
+        NT.putNumber("shootMotor/targetVelocity", flywheelSpeedGoal);
+        NT.putTalonFX("hood/motor", hoodMotor);
+        NT.putBoolean("hood/ready", hoodReady());
+        NT.putTalonFX("feed/motor", feedMotor);
     }
 }

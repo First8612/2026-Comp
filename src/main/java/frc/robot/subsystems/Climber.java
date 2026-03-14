@@ -73,7 +73,7 @@ public class Climber extends SubsystemBase{
                                 .withForwardLimitAutosetPositionEnable(true)
                                 .withForwardLimitAutosetPositionValue(1.18));
                         System.out.println("reset finished");
-                        SmartDashboard.putBoolean("Climber/resetLeft", true);
+                        NT.putBoolean("resetLeft", true);
                     })),
                 Commands.sequence(
                     Commands.deadline(
@@ -86,7 +86,7 @@ public class Climber extends SubsystemBase{
                                 .withForwardLimitAutosetPositionEnable(true)
                                 .withForwardLimitAutosetPositionValue(1.18));
                         System.out.println("reset finished");
-                        SmartDashboard.putBoolean("Climber/resetLeft", true);
+                        NT.putBoolean("resetLeft", true);
                     }))),
             Commands.runOnce(() -> {hasReset = true;}));
 
@@ -128,8 +128,8 @@ public class Climber extends SubsystemBase{
             climbMotorRight.setControl(new PositionVoltage(0).withSlot(0).withPosition(currClimbGoal));
         }
 
-        NT.putNumber("Climber/ClimbGoal", currClimbGoal);
-        NT.putTalonFX("Climber/LeftMotor", climbMotorLeft);
-        NT.putTalonFX("Climber/RightMotor", climbMotorRight);
+        NT.putNumber("ClimbGoal", currClimbGoal);
+        NT.putTalonFX("LeftMotor", climbMotorLeft);
+        NT.putTalonFX("RightMotor", climbMotorRight);
     }
 }

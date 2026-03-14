@@ -5,10 +5,14 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+
+import javax.sound.sampled.Control;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
@@ -35,6 +39,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Storage;
+import frc.robot.utils.NetworkTableGroup;
 import frc.robot.utils.TargetTracker;
 
 public class RobotContainer {
@@ -42,6 +47,7 @@ public class RobotContainer {
     public final static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     private final EventLoop loop = new EventLoop();
     private final Telemetry logger = new Telemetry(MaxSpeed);
+    private final NetworkTableGroup robotNT = new NetworkTableGroup("Robot", true);
 
     private final Controls controls = new Controls();
     
@@ -82,7 +88,7 @@ public class RobotContainer {
         drivetrain.configureAutoBuilder();
         autonChooser = AutoBuilder.buildAutoChooser("CS 1 (None) Auton");
 
-    // SmartDashboard.putData("Auto Path", autonChooser);
+        // SmartDashboard.putData("Auto Path", autonChooser);
         // RobotModeTriggers.autonomous().onTrue(shooter.getZeroCommand());
         RobotModeTriggers.teleop().onTrue(shooter.getZeroCommand());
 
@@ -143,8 +149,8 @@ public class RobotContainer {
             () -> shooter.feedReverse(true), 
             () -> shooter.feedReverse(false)));
 
-    controls.raiseClimb().onTrue(new InstantCommand(() -> {climber.raiseClimb(); /*SmartDashboard.putBoolean("Climber/Putting Up", true);*/}));
-    controls.lowerClimb().onTrue(new InstantCommand(() -> {climber.lowerClimb(); /*SmartDashboard.putBoolean("Climber/Putting Down", true);*/}));
+        controls.raiseClimb().onTrue(new InstantCommand(() -> {climber.raiseClimb(); /*SmartDashboard.putBoolean("Climber/Putting Up", true);*/}));
+        controls.lowerClimb().onTrue(new InstantCommand(() -> {climber.lowerClimb(); /*SmartDashboard.putBoolean("Climber/Putting Down", true);*/}));
         controls.useClimb().onTrue(new InstantCommand(() -> {climber.useClimb();}));
         // controls.manualClimb().whileTrue(new RunCommand(() -> climber.manualClimb(controls.getClimbManual()), climber));
 
@@ -161,6 +167,8 @@ public class RobotContainer {
         controls.sysIdDrivetrainDynamicReverse().whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         controls.sysIdDrivetrainQuasistaticForward().whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         controls.sysIdDrivetrainQuasistaticReverse().whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
+        controls.zeroHood().onTrue(shooter.getZeroCommand());
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -208,5 +216,13 @@ public class RobotContainer {
 
     public void robotPeriodic() {
         loop.poll();
+
+        robotNT.putNumber("batteryVoltage", RobotController.getBatteryVoltage());
+        robotNT.putNumber("batteryVoltage", RobotController.getBatteryVoltage());
+        robotNT.putNumber("inputVoltage", RobotController.getInputVoltage());
+        robotNT.putNumber("inputCurrent", RobotController.getInputCurrent());
+        robotNT.putNumber("brownoutVoltage", RobotController.getBrownoutVoltage());
+        robotNT.putNumber("cpuTemp", RobotController.getCPUTemp());
+        
     }
 }

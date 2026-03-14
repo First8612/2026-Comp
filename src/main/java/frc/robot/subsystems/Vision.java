@@ -29,6 +29,10 @@ public class Vision extends SubsystemBase {
             .getDoubleTopic("Poses/back/StdDev").publish();
     private BooleanPublisher useMT2Publisher = NetworkTableInstance.getDefault()
             .getBooleanTopic("Poses/useMT2").publish();
+    private DoublePublisher frontLatencyPublisher = NetworkTableInstance.getDefault()
+            .getDoubleTopic("Poses/front/latency").publish();
+    private DoublePublisher backLatencyPublisher = NetworkTableInstance.getDefault()
+            .getDoubleTopic("Poses/back/latency").publish();
     private Drivetrain driveBase;
     private Boolean useMT2 = false;
     private long mt1Readings = 0;
@@ -37,7 +41,7 @@ public class Vision extends SubsystemBase {
 
         super();
 
-        driveBase = drivebase;
+        this.driveBase = drivebase;
     }
 
     public void reset() {
@@ -46,16 +50,24 @@ public class Vision extends SubsystemBase {
     }
 
     public void periodic() {
-        handleLimelight("limelight-front", frontPoseMT1Publisher, frontPoseMT2Publisher, frontStdDevPublisher);
-        handleLimelight("limelight-back", backPoseMT1Publisher, backPoseMT2Publisher, backStdDevPublisher);
+        handleLimelight("limelight-front", frontPoseMT1Publisher, frontPoseMT2Publisher, frontStdDevPublisher, frontLatencyPublisher);
+        handleLimelight("limelight-back", backPoseMT1Publisher, backPoseMT2Publisher, backStdDevPublisher, backLatencyPublisher);
 
-        // posePublisher.set(driveBase.getState().Pose);
-        // useMT2Publisher.set(useMT2);
+        posePublisher.set(driveBase.getCachedState().Pose);
+        useMT2Publisher.set(useMT2);
     }
 
-    private void handleLimelight(String limelightName, StructPublisher<Pose2d> mt1Publisher, StructPublisher<Pose2d> mt2Publisher, DoublePublisher stdDevPublisher) {
+    private void handleLimelight(
+        String limelightName, 
+        StructPublisher<Pose2d> mt1Publisher, 
+        StructPublisher<Pose2d> mt2Publisher, 
+        DoublePublisher stdDevPublisher,
+        DoublePublisher latencyPublisher
+
+    ) {
+        var drivetrainState = driveBase.getCachedState();
         PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
-        // mt1Publisher.set(poseEstimate.pose);
+        mt1Publisher.set(poseEstimate.pose);
 
         if (!useMT2) {
             if (poseEstimate.tagCount != 0) {
@@ -68,19 +80,23 @@ public class Vision extends SubsystemBase {
         }
         else {
             LimelightHelpers.SetRobotOrientation(limelightName,
-                    driveBase.getCachedState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+                    drivetrainState.Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
             poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
 
-            // mt2Publisher.set(poseEstimate.pose);
+            mt2Publisher.set(poseEstimate.pose);
         }
+
+        var latency = drivetrainState.Timestamp - poseEstimate.timestampSeconds;
+        latencyPublisher.set(latency);
+
 
         if (poseEstimate.tagCount != 0) {
 
             // stolen from https://github.com/Enigma2075/FRC2025/blob/05b738aa4bcf2dd822304b07f8c74f97dc0b25d0/src/main/java/frc/robot/subsystems/Vision.java#L287-L297
             double stdDevFactor = Math.pow(poseEstimate.avgTagDist, 2.0) / poseEstimate.tagCount;
-            double linearStdDev = 0.75 * stdDevFactor;
+            double linearStdDev = 0.75 * stdDevFactor * (Math.pow(drivetrainState.Speeds.omegaRadiansPerSecond, 2) + 1);
             double angularStdDev = 999999999 * stdDevFactor;
-            // stdDevPublisher.set(linearStdDev);
+            stdDevPublisher.set(linearStdDev);
 
             driveBase.setVisionMeasurementStdDevs(VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
             driveBase.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);

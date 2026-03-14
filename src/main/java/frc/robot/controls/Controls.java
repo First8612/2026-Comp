@@ -99,6 +99,10 @@ public class Controls {
         return operator.getLeftY();
     }
 
+    public Trigger zeroHood() {
+        return operator.b();
+    }
+
     // Events
     public void setRumble(double value) {
         driver.setRumble(RumbleType.kBothRumble, value);

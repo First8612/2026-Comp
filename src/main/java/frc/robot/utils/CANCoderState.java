@@ -2,6 +2,7 @@ package frc.robot.utils;
 
 import java.util.Collection;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
 
@@ -32,7 +33,7 @@ public class CANCoderState {
      *
      * @param collection the collection to add signals to
      */
-    public void addTo(Collection<StatusSignal<?>> collection) {
+    public void addTo(Collection<BaseStatusSignal> collection) {
         collection.add(position);
         collection.add(velocity);
         collection.add(absolutePosition);
