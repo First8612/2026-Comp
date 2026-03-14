@@ -10,8 +10,10 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -65,7 +67,7 @@ public class RobotContainer {
 
     // events
     private final BooleanEvent inTrenchEvent = new BooleanEvent(loop, () -> {
-        var robotPose = drivetrain.getState().Pose;
+        var robotPose = drivetrain.getCachedState().Pose;
         return Field.inTrenchZone(robotPose);
     });
 
@@ -80,7 +82,7 @@ public class RobotContainer {
         drivetrain.configureAutoBuilder();
         autonChooser = AutoBuilder.buildAutoChooser("CS 1 (None) Auton");
 
-        SmartDashboard.putData("Auto Path", autonChooser);
+    // SmartDashboard.putData("Auto Path", autonChooser);
         // RobotModeTriggers.autonomous().onTrue(shooter.getZeroCommand());
         RobotModeTriggers.teleop().onTrue(shooter.getZeroCommand());
 
@@ -141,8 +143,8 @@ public class RobotContainer {
             () -> shooter.feedReverse(true), 
             () -> shooter.feedReverse(false)));
 
-        controls.raiseClimb().onTrue(new InstantCommand(() -> {climber.raiseClimb(); SmartDashboard.putBoolean("Climber/Putting Up", true);}));
-        controls.lowerClimb().onTrue(new InstantCommand(() -> {climber.lowerClimb(); SmartDashboard.putBoolean("Climber/Putting Down", true);}));
+    controls.raiseClimb().onTrue(new InstantCommand(() -> {climber.raiseClimb(); /*SmartDashboard.putBoolean("Climber/Putting Up", true);*/}));
+    controls.lowerClimb().onTrue(new InstantCommand(() -> {climber.lowerClimb(); /*SmartDashboard.putBoolean("Climber/Putting Down", true);*/}));
         controls.useClimb().onTrue(new InstantCommand(() -> {climber.useClimb();}));
         // controls.manualClimb().whileTrue(new RunCommand(() -> climber.manualClimb(controls.getClimbManual()), climber));
 
@@ -206,6 +208,5 @@ public class RobotContainer {
 
     public void robotPeriodic() {
         loop.poll();
-        Target.periodic(drivetrain.getState().Pose);
     }
 }

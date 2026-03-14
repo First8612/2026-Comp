@@ -1,52 +1,52 @@
-package frc.robot.utils;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.Target;
+// package frc.robot.utils;
+// import edu.wpi.first.math.geometry.Pose2d;
+// import edu.wpi.first.math.geometry.Rotation2d;
+// import edu.wpi.first.math.geometry.Translation2d;
+// import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+// import frc.robot.subsystems.Drivetrain;
+// import frc.robot.Target;
 
-public class Leading{
-    private Translation2d leadingTrans = new Translation2d();
-    private InterpolatingDoubleTreeMap leadData;
-      private Drivetrain drivetrain;
-    private Translation2d AimPos;
+// public class Leading{
+//     private Translation2d leadingTrans = new Translation2d();
+//     private InterpolatingDoubleTreeMap leadData;
+//       private Drivetrain drivetrain;
+//     private Translation2d AimPos;
 
-      public Leading(Drivetrain drivetrain) {
-        this.drivetrain = drivetrain;
-        leadData = new InterpolatingDoubleTreeMap();
+//       public Leading(Drivetrain drivetrain) {
+//         this.drivetrain = drivetrain;
+//         leadData = new InterpolatingDoubleTreeMap();
         
-        //TODO: more data here
-        leadData.put(5.6, 1.3);
-        leadData.put(2.7, 1.0);
-        leadData.put(1.8, 0.9);
-    }
+//         //TODO: more data here
+//         leadData.put(5.6, 1.3);
+//         leadData.put(2.7, 1.0);
+//         leadData.put(1.8, 0.9);
+//     }
 
-      public void calculateLead(int loopLimit) {
-         leadingTrans = new Translation2d(drivetrain.getState().Speeds.vyMetersPerSecond, drivetrain.getState().Speeds.vxMetersPerSecond).rotateBy(drivetrain.getState().RawHeading).times(-1);
-        Translation2d targetPos = Target.getPose().getTranslation();
-        AimPos = targetPos;
-        double hangTime;
-        for(int i = 0; i < loopLimit; i++) {
-            hangTime = leadData.get(drivetrain.getState().Pose.getTranslation().getDistance(AimPos));
+//       public void calculateLead(int loopLimit) {
+//          leadingTrans = new Translation2d(drivetrain.getState().Speeds.vyMetersPerSecond, drivetrain.getState().Speeds.vxMetersPerSecond).rotateBy(drivetrain.getState().RawHeading).times(-1);
+//         Translation2d targetPos = Target.getPose().getTranslation();
+//         AimPos = targetPos;
+//         double hangTime;
+//         for(int i = 0; i < loopLimit; i++) {
+//             hangTime = leadData.get(drivetrain.getState().Pose.getTranslation().getDistance(AimPos));
 
-            AimPos = targetPos.plus(leadingTrans.times(hangTime));
-        }
-    }
+//             AimPos = targetPos.plus(leadingTrans.times(hangTime));
+//         }
+//     }
 
-    public Translation2d getTarget() {
-        return AimPos;
-    }
-    public Pose2d getTargetAsPose2d() {
-        return new Pose2d(AimPos, new Rotation2d());
-    }
+//     public Translation2d getTarget() {
+//         return AimPos;
+//     }
+//     public Pose2d getTargetAsPose2d() {
+//         return new Pose2d(AimPos, new Rotation2d());
+//     }
 
-    public Translation2d getTranslationFrom(Pose2d pose) {
+//     public Translation2d getTranslationFrom(Pose2d pose) {
 
-        return AimPos.minus(pose.getTranslation());
-    }
+//         return AimPos.minus(pose.getTranslation());
+//     }
 
-    public Rotation2d getDirectionFrom(Pose2d pose) {
-        return getTranslationFrom(pose).getAngle();
-    }
-}
+//     public Rotation2d getDirectionFrom(Pose2d pose) {
+//         return getTranslationFrom(pose).getAngle();
+//     }
+// }

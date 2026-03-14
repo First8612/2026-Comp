@@ -25,13 +25,14 @@ public class Robot extends TimedRobot {
     public Robot() {
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
+        DriverStation.silenceJoystickConnectionWarning(true);
 
         m_robotContainer = new RobotContainer();
     }
 
     @Override
     public void robotPeriodic() {
-        m_timeAndJoystickReplay.update();
+        // m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run();
         m_robotContainer.robotPeriodic();
     }

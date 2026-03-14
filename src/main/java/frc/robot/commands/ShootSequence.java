@@ -61,7 +61,7 @@ public class ShootSequence extends ParallelCommandGroup {
 
     private static Runnable setStatus(String status) {
         return () -> {
-            SmartDashboard.putString("ShootSequence", status);
+            // SmartDashboard.putString("ShootSequence", status);
         };
     }
 }

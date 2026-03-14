@@ -23,12 +23,12 @@ public class TalonFXState {
      */
     public static TalonFXState capture(TalonFX motor) {
         TalonFXState state = new TalonFXState();
-        state.position = motor.getPosition();
-        state.velocity = motor.getVelocity();
-        state.motorVoltage = motor.getMotorVoltage();
-        state.supplyCurrent = motor.getSupplyCurrent();
-        state.statorCurrent = motor.getStatorCurrent();
-        state.closedLoopReference = motor.getClosedLoopReference();
+        state.position = motor.getPosition(false);
+        state.velocity = motor.getVelocity(false);
+        state.motorVoltage = motor.getMotorVoltage(false);
+        state.supplyCurrent = motor.getSupplyCurrent(false);
+        state.statorCurrent = motor.getStatorCurrent(false);
+        state.closedLoopReference = motor.getClosedLoopReference(false);
         return state;
     }
 
@@ -37,7 +37,7 @@ public class TalonFXState {
      *
      * @param collection the collection to add signals to
      */
-    public void addToArray(Collection<StatusSignal<?>> collection) {
+    public void addTo(Collection<StatusSignal<?>> collection) {
         collection.add(position);
         collection.add(velocity);
         collection.add(motorVoltage);

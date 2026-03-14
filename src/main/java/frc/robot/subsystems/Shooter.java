@@ -17,21 +17,17 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CANBuses;
 import frc.robot.commands.DixieHornCommand;
 import frc.robot.utils.InterpolatingArrayTreeMap;
-import frc.robot.utils.SmartDashboardHelper;
+import frc.robot.utils.NetworkTableGroup;
 import frc.robot.utils.TargetTracker;
 
 public class Shooter extends SubsystemBase {
-    // TalonFX shootMotor = new TalonFX(41);
-    // TalonFX hoodMotor = new TalonFX(42);
-    // TalonFX feedMotor = new TalonFX(43);
-    // For actual robot when we switch over
+    private final NetworkTableGroup NT = new NetworkTableGroup("Shooter", false);
     TalonFX shootMotorLeft = new TalonFX(20, CANBuses.shooter);
     TalonFX shootMotorRight = new TalonFX(21, CANBuses.shooter);
     TalonFX hoodMotor = new TalonFX(22, CANBuses.shooter);
@@ -143,13 +139,11 @@ public class Shooter extends SubsystemBase {
         setDefaultCommand(Commands.runOnce(this::stop, this));
         DixieHornCommand.enrollSubsystemMotors(this, shootMotorLeft, shootMotorRight, feedMotor);
 
-        // SmartDashboard.putData("Shooter/system", this);
-        // SmartDashboard.putBoolean("Shooter/override/active", overrideAim);
-        // SmartDashboard.putNumber("Shooter/override/hood", hoodOverride);
-        // SmartDashboard.putNumber("Shooter/override/flywheel", flywheelOverride);
-        // SmartDashboard.putBoolean("Shooter/hood/resetting", false);
-        // SmartDashboard.putBoolean("Shooter/hood/reset", false);
-
+        NT.putBoolean("Shooter/override/active", overrideAim);
+        NT.putNumber("Shooter/override/hood", hoodOverride);
+        NT.putNumber("Shooter/override/flywheel", flywheelOverride);
+        NT.putBoolean("Shooter/hood/resetting", false);
+        NT.putBoolean("Shooter/hood/reset", false);
     }
 
     public void feedReverse(Boolean reverse) {
@@ -272,15 +266,15 @@ public class Shooter extends SubsystemBase {
             feedMotor.setControl(new CoastOut());
         }
         
-        // SmartDashboard.putNumber("Shooter/Distance", targetTracker.getRobotToTargetTranslation().getNorm());
-        // SmartDashboard.putBoolean("Shooter/isAiming", isAiming);
-        // SmartDashboard.putBoolean("Shooter/isFeeding", isFeeding);
-        // SmartDashboard.putBoolean("Shooter/readyToShoot", readyToShoot());
-        // SmartDashboardHelper.putTalonFX("Shooter/shootMotorLeft", shootMotorLeft);
-        // SmartDashboardHelper.putTalonFX("Shooter/shootMotorRight", shootMotorRight);
-        // SmartDashboard.putNumber("Shooter/shootMotor/targetVelocity", flywheelSpeedGoal);
-        // SmartDashboardHelper.putTalonFX("Shooter/hood/motor", hoodMotor);
-        // SmartDashboard.putBoolean("Shooter/hood/ready", hoodReady());
-        // SmartDashboardHelper.putTalonFX("Shooter/feed/motor", feedMotor);
+        NT.putNumber("Shooter/Distance", targetTracker.getRobotToTargetTranslation().getNorm());
+        NT.putBoolean("Shooter/isAiming", isAiming);
+        NT.putBoolean("Shooter/isFeeding", isFeeding);
+        NT.putBoolean("Shooter/readyToShoot", readyToShoot());
+        NT.putTalonFX("Shooter/shootMotorLeft", shootMotorLeft);
+        NT.putTalonFX("Shooter/shootMotorRight", shootMotorRight);
+        NT.putNumber("Shooter/shootMotor/targetVelocity", flywheelSpeedGoal);
+        NT.putTalonFX("Shooter/hood/motor", hoodMotor);
+        NT.putBoolean("Shooter/hood/ready", hoodReady());
+        NT.putTalonFX("Shooter/feed/motor", feedMotor);
     }
 }

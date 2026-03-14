@@ -46,7 +46,7 @@ public class DriveTrenchRun extends Command {
 
     @Override
     public void initialize() {
-        var robotPose = drivetrain.getState().Pose;
+        var robotPose = drivetrain.getCachedState().Pose;
         var nearestTrench = trenches.get(0);
 
         for (Field.Trench t : trenches) {
@@ -81,7 +81,7 @@ public class DriveTrenchRun extends Command {
 
     @Override
     public void execute() {
-        var robotPose = drivetrain.getState().Pose;
+        var robotPose = drivetrain.getCachedState().Pose;
         var sourceDriveRequest = driveRequestSupplier.get();
         double driverX = sourceDriveRequest.VelocityX;
 

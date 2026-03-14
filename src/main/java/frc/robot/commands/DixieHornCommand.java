@@ -55,7 +55,7 @@ public class DixieHornCommand extends Command {
 
     @Override
     public void execute() {
-        SmartDashboard.putNumber("DixieHorn/noteIndex", noteIndex);
+    // SmartDashboard.putNumber("DixieHorn/noteIndex", noteIndex);
         
         // if current note is outside of array bounds, return
         if (noteIndex < 0 || noteIndex >= DIXIE_HORN_NOTES.length) {

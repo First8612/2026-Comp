@@ -21,24 +21,10 @@ public class CANCoderState {
      */
     public static CANCoderState capture(CANcoder encoder) {
         CANCoderState state = new CANCoderState();
-        state.position = encoder.getPosition();
-        state.velocity = encoder.getVelocity();
-        state.absolutePosition = encoder.getAbsolutePosition();
+        state.position = encoder.getPosition(false);
+        state.velocity = encoder.getVelocity(false);
+        state.absolutePosition = encoder.getAbsolutePosition(false);
         return state;
-    }
-
-    /**
-     * Adds all signals from this state to the provided array at the given index.
-     *
-     * @param array the array to add signals to
-     * @param index the starting index in the array
-     * @return the updated index after adding all signals
-     */
-    public int addToArray(StatusSignal<?>[] array, int index) {
-        array[index++] = position;
-        array[index++] = velocity;
-        array[index++] = absolutePosition;
-        return index;
     }
 
     /**
@@ -46,7 +32,7 @@ public class CANCoderState {
      *
      * @param collection the collection to add signals to
      */
-    public void addToArray(Collection<StatusSignal<?>> collection) {
+    public void addTo(Collection<StatusSignal<?>> collection) {
         collection.add(position);
         collection.add(velocity);
         collection.add(absolutePosition);

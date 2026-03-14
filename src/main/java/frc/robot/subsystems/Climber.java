@@ -15,11 +15,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CANBuses;
-import frc.robot.utils.SmartDashboardHelper;
+import frc.robot.utils.NetworkTableGroup;
+import frc.robot.utils.TalonFXState;
 
 public class Climber extends SubsystemBase{
+    private final NetworkTableGroup NT = new NetworkTableGroup("Climber", false);
     private final TalonFX climbMotorRight = new TalonFX(21, CANBuses.intake);
     private final TalonFX climbMotorLeft = new TalonFX(20, CANBuses.intake);
+
     private double currClimbGoal = 0;
     private boolean hasReset = false;
 
@@ -125,8 +128,8 @@ public class Climber extends SubsystemBase{
             climbMotorRight.setControl(new PositionVoltage(0).withSlot(0).withPosition(currClimbGoal));
         }
 
-        // SmartDashboard.putNumber("Climber/ClimbGoal", currClimbGoal);
-        // SmartDashboardHelper.putTalonFX("Climber/LeftMotor", climbMotorLeft);
-        // SmartDashboardHelper.putTalonFX("Climber/RightMotor", climbMotorRight);
+        NT.putNumber("Climber/ClimbGoal", currClimbGoal);
+        NT.putTalonFX("Climber/LeftMotor", climbMotorLeft);
+        NT.putTalonFX("Climber/RightMotor", climbMotorRight);
     }
 }
