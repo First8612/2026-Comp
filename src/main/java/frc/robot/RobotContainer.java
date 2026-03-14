@@ -207,6 +207,5 @@ public class RobotContainer {
     public void robotPeriodic() {
         loop.poll();
         Target.periodic(drivetrain.getState().Pose);
-        targetTracker.periodic();
     }
 }

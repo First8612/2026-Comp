@@ -53,12 +53,8 @@ public class Robot extends TimedRobot {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         if (m_autonomousCommand != null) {
-            System.out.println("***************  RUNNIG AUTON ***************");
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
-        } else {
-            System.out.println("***************  YOU LOSE  ***************");
-
-        }
+        }  
     }
 
     @Override

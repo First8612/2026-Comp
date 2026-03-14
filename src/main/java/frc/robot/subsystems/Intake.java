@@ -9,9 +9,7 @@ import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -19,12 +17,12 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,11 +44,8 @@ public class Intake extends SubsystemBase {
     private final Angle extendedGoal = Rotations.of(0);
 
     private boolean extended = false;
-
     private double speed = 0;
-    private double extendRatio = 16 / 3;
-
-    private Follower intakeFollow = new Follower(11, MotorAlignmentValue.Opposed);
+    // extendRatio = 16 / 3;
 
     public Intake() {
         super();
@@ -73,7 +68,7 @@ public class Intake extends SubsystemBase {
 
         extendEncoderRight.getConfigurator().apply(new CANcoderConfiguration()
             .withMagnetSensor(new MagnetSensorConfigs()
-                .withMagnetOffset(Rotations.of(-0.042))
+                .withMagnetOffset(Rotations.of(-0.4765))
                 .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)));
 
         intakeExtendSlot0Config = new Slot0Configs()
@@ -182,10 +177,10 @@ public class Intake extends SubsystemBase {
             intakeMotor.set(0);
         }
         if(extended && isExtended()) {
-            intakeExtendLeft.setControl(new NeutralOut());
+            intakeExtendSetControl(new NeutralOut());
         }
         if(!extended && isRetracted()) {
-            intakeExtendLeft.setControl(new NeutralOut());
+            intakeExtendSetControl(new NeutralOut());
         }
 
         SmartDashboard.putNumber("Intake/speed", speed);
