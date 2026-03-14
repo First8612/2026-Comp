@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Rotations;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -22,13 +23,13 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CANBuses;
 import frc.robot.commands.DixieHornCommand;
 import frc.robot.utils.SmartDashboardHelper;
+import frc.robot.utils.TalonFXState;
 
 public class Intake extends SubsystemBase {
     private final TalonFX intakeMotor = new TalonFX(10, CANBuses.intake);
@@ -37,6 +38,10 @@ public class Intake extends SubsystemBase {
     private final CANcoder extendEncoderLeft = new CANcoder(13, CANBuses.intake);
     private final CANcoder extendEncoderRight = new CANcoder(14, CANBuses.intake);
     private final Slot0Configs intakeExtendSlot0Config;
+
+    // Status signals - captured as states for efficient refresh management
+    private TalonFXState extendLeftState;
+    private TalonFXState extendRightState;
 
     // these are off the absolute encoder. 
     // to use KG in feed-forward, the horizontal angle should be "0".
@@ -111,6 +116,21 @@ public class Intake extends SubsystemBase {
                 .withCurrentLimits(intakeCurrentLimits)
                 .withSlot0(intakeExtendSlot0Config));
 
+        // Initialize the TalonFXState objects by capturing current signals
+        extendLeftState = TalonFXState.capture(intakeExtendLeft);
+        extendRightState = TalonFXState.capture(intakeExtendRight);
+
+        // Configure update frequencies for status signals
+        // Position and velocity signals update at 100 Hz for periodic monitoring
+        BaseStatusSignal.setUpdateFrequencyForAll(100,
+            intakeExtendLeft.getPosition(false),
+            intakeExtendRight.getPosition(false),
+            intakeExtendLeft.getVelocity(false),
+            intakeExtendRight.getVelocity(false));
+        
+        // Closed loop reference updates at 50 Hz as it's primarily for dashboard display
+        intakeExtendLeft.getClosedLoopReference(false).setUpdateFrequency(50);
+
     }
 
     public void in() {
@@ -153,14 +173,14 @@ public class Intake extends SubsystemBase {
     public Boolean isExtended() {
         return MathUtil.isNear(
             extendedGoal.magnitude(), 
-            intakeExtendLeft.getPosition().getValueAsDouble(),
+            extendLeftState.position.getValueAsDouble(),
             0.1);
     }
 
     public Boolean isRetracted() {
         return MathUtil.isNear(
             retractedGoal.magnitude(), 
-            intakeExtendLeft.getPosition().getValueAsDouble(),
+            extendLeftState.position.getValueAsDouble(),
             0.01);
     }
 
@@ -171,6 +191,9 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // Batch refresh all status signals from both extend motors
+        TalonFXState.refreshAll(extendLeftState, extendRightState);
+
         if(isExtended()) {
             intakeMotor.set(speed);
         }else{
@@ -186,12 +209,12 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("Intake/speed", speed);
         SmartDashboard.putBoolean("Intake/extended", isExtended());
         SmartDashboard.putBoolean("Intake/retracted", isRetracted());
-        SmartDashboardHelper.putTalonFX("Intake/ExtendMotorLeft", intakeExtendLeft);
-        SmartDashboardHelper.putTalonFX("Intake/ExtendMotorRight", intakeExtendRight);
+        SmartDashboardHelper.putTalonFX("Intake/ExtendMotorLeft", extendLeftState);
+        SmartDashboardHelper.putTalonFX("Intake/ExtendMotorRight", extendRightState);
         SmartDashboardHelper.putCANCoder("Intake/ExtendEncoderLeft", extendEncoderLeft);
         SmartDashboardHelper.putCANCoder("Intake/ExtendEncoderRight", extendEncoderRight);
         SmartDashboard.putNumber("Intake/ExtendMotors/slot0/kG", intakeExtendSlot0Config.kG);
         SmartDashboard.putNumber("Intake/ExtendMotors/slot0/kP", intakeExtendSlot0Config.kP);
-        SmartDashboard.putNumber("Intake/ExtendMotors/targetPosition", intakeExtendLeft.getClosedLoopReference().getValueAsDouble());
+        SmartDashboard.putNumber("Intake/ExtendMotors/targetPosition", extendLeftState.closedLoopReference.getValueAsDouble());
     }
 }
