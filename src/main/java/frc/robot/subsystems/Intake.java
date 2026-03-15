@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Intake extends SubsystemBase {
-    private final boolean enabled = false;
+    private final boolean enabled = true;
     private final NetworkTableGroup NT = new NetworkTableGroup("Intake", true);
     private final TalonFX intakeMotor = new TalonFX(10, CANBuses.intake);
     private final TalonFX intakeExtendLeft = new TalonFX(11, CANBuses.intake);
@@ -209,12 +209,12 @@ public class Intake extends SubsystemBase {
             intakeMotor.set(0);
         }
 
-        if(extended && isExtended()) {
-            intakeExtendSetControl(new NeutralOut());
-        }
-        if(!extended && isRetracted()) {
-            intakeExtendSetControl(new NeutralOut());
-        }
+        // if(extended && isExtended()) {
+        //     intakeExtendSetControl(new NeutralOut());
+        // }
+        // if(!extended && isRetracted()) {
+        //     intakeExtendSetControl(new NeutralOut());
+        // }
 
         NT.putNumber("speed", speed);
         NT.putBoolean("extended", isExtended());

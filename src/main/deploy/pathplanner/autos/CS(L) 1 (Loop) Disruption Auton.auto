@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Aim (Center)"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootSequence"
+            "pathName": "Start to Middle (Center to Left)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Aim to Climb (Center to Left)"
+            "pathName": "Collect (Left to Left)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Middle to Aim2 (Left)"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Simple Autons",
+  "folder": "Disruption Autons",
   "choreoAuto": false
 }

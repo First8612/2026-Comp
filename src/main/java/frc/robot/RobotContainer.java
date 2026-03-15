@@ -49,7 +49,7 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
     private final NetworkTableGroup robotNT = new NetworkTableGroup("Robot", true);
 
-    private final Controls controls = new Controls();
+    private final Controls controls = new TestingControls();
     
     // subsystems
     public final Drivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -83,12 +83,13 @@ public class RobotContainer {
         NamedCommands.registerCommand("EnableAiming", Commands.runOnce(shooter::enableAiming));
         NamedCommands.registerCommand("ShootSequence", shoot);
         NamedCommands.registerCommand("FaceTarget", driveAndFaceTarget);
+        NamedCommands.registerCommand("ExtendIntake", Commands.runOnce(() -> intake.extend()));
 
         configureBindings();
         drivetrain.configureAutoBuilder();
         autonChooser = AutoBuilder.buildAutoChooser("CS 1 (None) Auton");
 
-        // SmartDashboard.putData("Auto Path", autonChooser);
+        SmartDashboard.putData("Auto Path", autonChooser);
         // RobotModeTriggers.autonomous().onTrue(shooter.getZeroCommand());
         RobotModeTriggers.teleop().onTrue(shooter.getZeroCommand());
 
@@ -154,12 +155,12 @@ public class RobotContainer {
         controls.useClimb().onTrue(new InstantCommand(() -> {climber.useClimb();}));
         // controls.manualClimb().whileTrue(new RunCommand(() -> climber.manualClimb(controls.getClimbManual()), climber));
 
-        intake.setDefaultCommand(Commands.run(() -> {
+        climber.setDefaultCommand(Commands.run(() -> {
             var jog = controls.getTestJogValue();
             if (jog.isPresent()) {
-                intake.increaseTestValue(jog.getAsDouble());
+                climber.changeHeight(jog.getAsDouble());
             }
-        }, intake));
+        }, climber));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

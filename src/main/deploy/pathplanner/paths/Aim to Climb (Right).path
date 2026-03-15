@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 2.0,
-        "y": 6.0
+        "y": 2.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.230204545454545,
-        "y": 5.220284090909091
+        "x": 1.8694659090909087,
+        "y": 2.7054204545454548
       },
       "isLocked": false,
       "linkedName": null
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 1.5,
-        "y": 4.0
+        "y": 3.5
       },
       "prevControl": {
-        "x": 1.993147727272727,
-        "y": 4.416352272727273
+        "x": 1.8385454545454545,
+        "y": 3.2001477272727277
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -48,7 +48,7 @@
   "folder": "Climbing Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -36.0
+    "rotation": 38.0
   },
   "useDefaultConstraints": true
 }

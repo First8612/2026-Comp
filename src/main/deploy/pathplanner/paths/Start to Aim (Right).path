@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.55,
-        "y": 7.4
+        "y": 0.65
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6599554111206025,
-        "y": 6.595118050084034
+        "x": 2.7302837252116605,
+        "y": 1.421792568366695
       },
       "isLocked": false,
       "linkedName": null
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 2.0,
-        "y": 6.0
+        "y": 2.0
       },
       "prevControl": {
-        "x": 2.7921311243278137,
-        "y": 6.743154362746927
+        "x": 3.028191764462781,
+        "y": 1.0818406846736588
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -36.0
+    "rotation": 38.0
   },
   "reversed": false,
   "folder": "Aiming Paths",

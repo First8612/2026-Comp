@@ -53,8 +53,8 @@ public class Vision extends SubsystemBase {
         handleLimelight("limelight-front", frontPoseMT1Publisher, frontPoseMT2Publisher, frontStdDevPublisher, frontLatencyPublisher);
         handleLimelight("limelight-back", backPoseMT1Publisher, backPoseMT2Publisher, backStdDevPublisher, backLatencyPublisher);
 
-        posePublisher.set(driveBase.getCachedState().Pose);
-        useMT2Publisher.set(useMT2);
+        // posePublisher.set(driveBase.getCachedState().Pose);
+        // useMT2Publisher.set(useMT2);
     }
 
     private void handleLimelight(
@@ -67,7 +67,7 @@ public class Vision extends SubsystemBase {
     ) {
         var drivetrainState = driveBase.getCachedState();
         PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
-        mt1Publisher.set(poseEstimate.pose);
+        // mt1Publisher.set(poseEstimate.pose);
 
         if (!useMT2) {
             if (poseEstimate.tagCount != 0) {
@@ -83,11 +83,11 @@ public class Vision extends SubsystemBase {
                     drivetrainState.Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
             poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
 
-            mt2Publisher.set(poseEstimate.pose);
+            // mt2Publisher.set(poseEstimate.pose);
         }
 
         var latency = drivetrainState.Timestamp - poseEstimate.timestampSeconds;
-        latencyPublisher.set(latency);
+        // latencyPublisher.set(latency);
 
 
         if (poseEstimate.tagCount != 0) {
@@ -96,7 +96,7 @@ public class Vision extends SubsystemBase {
             double stdDevFactor = Math.pow(poseEstimate.avgTagDist, 2.0) / poseEstimate.tagCount;
             double linearStdDev = 0.75 * stdDevFactor * (Math.pow(drivetrainState.Speeds.omegaRadiansPerSecond, 2) + 1);
             double angularStdDev = 999999999 * stdDevFactor;
-            stdDevPublisher.set(linearStdDev);
+            // stdDevPublisher.set(linearStdDev);
 
             driveBase.setVisionMeasurementStdDevs(VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
             driveBase.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);

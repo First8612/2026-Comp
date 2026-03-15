@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Middle (Right)"
+            "pathName": "Start to Middle (Left)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Collect (Right to Left)"
+            "pathName": "Collect (Left to Right)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Middle to Aim2 (Left)"
+            "pathName": "Middle to Aim2 (Right)"
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Aim2 to Outpost (Left)"
+            "pathName": "Aim2 to Outpost (Right)"
           }
         },
         {

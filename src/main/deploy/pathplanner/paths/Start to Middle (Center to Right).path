@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
+        "x": 3.55,
         "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6090429524250696,
-        "y": 4.934215456574292
+        "x": 2.669485637683097,
+        "y": 3.041220418966839
       },
       "isLocked": false,
       "linkedName": null
@@ -17,15 +17,15 @@
     {
       "anchor": {
         "x": 3.6,
-        "y": 7.4
+        "y": 0.65
       },
       "prevControl": {
-        "x": 2.5787000371920135,
-        "y": 7.102112086671959
+        "x": 2.4713029642725752,
+        "y": 1.021991711621918
       },
       "nextControl": {
-        "x": 3.8469586598733345,
-        "y": 7.472031726766829
+        "x": 4.081026036020246,
+        "y": 0.49146525346497827
       },
       "isLocked": false,
       "linkedName": null
@@ -33,11 +33,11 @@
     {
       "anchor": {
         "x": 5.5,
-        "y": 7.4
+        "y": 0.65
       },
       "prevControl": {
-        "x": 4.767323053270335,
-        "y": 7.4
+        "x": 4.560094901079374,
+        "y": 0.7330920158643198
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,15 +47,15 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.9987908101571956,
-      "rotationDegrees": 0.0
+      "rotationDegrees": 180.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -63,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Traversing Paths",
