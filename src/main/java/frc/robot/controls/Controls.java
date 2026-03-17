@@ -16,9 +16,9 @@ public class Controls {
     protected final CommandXboxController operator = new CommandXboxController(1);
     protected final Trigger noButton = new Trigger(() -> false);
     protected final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(RobotContainer.MaxSpeed * 0.1)
-            .withRotationalDeadband(RobotContainer.MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+            .withDeadband(RobotContainer.MaxSpeed * 0.05)
+            .withRotationalDeadband(RobotContainer.MaxAngularRate * 0.05) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.Velocity); // Use open-loop control for drive motors
 
     // Driver ******************************
     public SwerveRequest.FieldCentric getDriveRequest() {
@@ -123,6 +123,14 @@ public class Controls {
     }
 
     public Trigger sysIdDrivetrainQuasistaticReverse() {
+        return noButton;
+    }
+
+    public Trigger startSignalLogger() {
+        return noButton;
+    }
+
+    public Trigger stopSignalLogger() {
         return noButton;
     }
 

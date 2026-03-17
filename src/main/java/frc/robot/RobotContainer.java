@@ -6,18 +6,15 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import javax.sound.sampled.Control;
-
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -84,18 +81,19 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShootSequence", shoot);
         NamedCommands.registerCommand("FaceTarget", driveAndFaceTarget);
         NamedCommands.registerCommand("ExtendIntake", Commands.runOnce(() -> intake.extend()));
+        NamedCommands.registerCommand("RetractIntake", Commands.runOnce(() -> intake.retract()));
 
         configureBindings();
         drivetrain.configureAutoBuilder();
-        autonChooser = AutoBuilder.buildAutoChooser("CS 1 (None) Auton");
+        autonChooser = AutoBuilder.buildAutoChooser("Testing Auton");
 
         SmartDashboard.putData("Auto Path", autonChooser);
         // RobotModeTriggers.autonomous().onTrue(shooter.getZeroCommand());
         RobotModeTriggers.teleop().onTrue(shooter.getZeroCommand());
 
-        RobotModeTriggers.autonomous().onTrue(climber.getClimberZeroCommand());
-        //Comment this line out if running autonomous
-        RobotModeTriggers.teleop().onTrue(climber.getClimberZeroCommand());
+        // RobotModeTriggers.autonomous().onTrue(climber.getClimberZeroCommand());
+        // //Comment this line out if running autonomous
+        // RobotModeTriggers.teleop().onTrue(climber.getClimberZeroCommand());
 
         //Un-comment this line if running autonomous
         //RobotMOdeTriggers.teleop().onTrue(climber.raiseClimb());
@@ -155,12 +153,12 @@ public class RobotContainer {
         controls.useClimb().onTrue(new InstantCommand(() -> {climber.useClimb();}));
         // controls.manualClimb().whileTrue(new RunCommand(() -> climber.manualClimb(controls.getClimbManual()), climber));
 
-        climber.setDefaultCommand(Commands.run(() -> {
-            var jog = controls.getTestJogValue();
-            if (jog.isPresent()) {
-                climber.changeHeight(jog.getAsDouble());
-            }
-        }, climber));
+        // climber.setDefaultCommand(Commands.run(() -> {
+        //     var jog = controls.getTestJogValue();
+        //     if (jog.isPresent()) {
+        //         climber.changeHeight(jog.getAsDouble());
+        //     }
+        // }, climber));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -168,6 +166,11 @@ public class RobotContainer {
         controls.sysIdDrivetrainDynamicReverse().whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         controls.sysIdDrivetrainQuasistaticForward().whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         controls.sysIdDrivetrainQuasistaticReverse().whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        controls.startSignalLogger().onTrue(Commands.runOnce(() -> {
+            SignalLogger.start();
+            System.out.println("******  SIGNALLOGGER STARTED *********");
+        }));
+        controls.stopSignalLogger().onTrue(Commands.runOnce(SignalLogger::stop));
 
         controls.zeroHood().onTrue(shooter.getZeroCommand());
 

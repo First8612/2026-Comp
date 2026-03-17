@@ -67,7 +67,7 @@ public class Vision extends SubsystemBase {
     ) {
         var drivetrainState = driveBase.getCachedState();
         PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
-        // mt1Publisher.set(poseEstimate.pose);
+        mt1Publisher.set(poseEstimate.pose);
 
         if (!useMT2) {
             if (poseEstimate.tagCount != 0) {
@@ -83,7 +83,7 @@ public class Vision extends SubsystemBase {
                     drivetrainState.Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
             poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
 
-            // mt2Publisher.set(poseEstimate.pose);
+            mt2Publisher.set(poseEstimate.pose);
         }
 
         var latency = drivetrainState.Timestamp - poseEstimate.timestampSeconds;

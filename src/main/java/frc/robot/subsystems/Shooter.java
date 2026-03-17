@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
@@ -78,9 +78,9 @@ public class Shooter extends SubsystemBase {
         // shootCalc.put(0.0, new double[] { 0.0, 71.0 });
         // shootCalc.put(1.2, new double[] { 0.0, 71.0 });
         
-        shootCalc.put(0.0, new double[] { 0.0, 65.0 });
-        shootCalc.put(1.8, new double[] { 0.0, 65.0 });
-        shootCalc.put(2.7, new double[] { 0.0, 68.0 });
+        shootCalc.put(0.0, new double[] { 0.0, 63.0 });
+        shootCalc.put(2, new double[] { 0.0, 64.0 });
+        shootCalc.put(3, new double[] { 0.0, 69.0 });
         shootCalc.put(4.2, new double[] { 0.5, 78.0 });
         shootCalc.put(5.6, new double[] { 1.35, 91.0 });
         shootCalc.put(100.0, new double[] { 1.35, 91.0 });
@@ -100,11 +100,9 @@ public class Shooter extends SubsystemBase {
                 );
 
         feedMotor.getConfigurator()
-                .apply(new CurrentLimitsConfigs().withStatorCurrentLimit(100).withStatorCurrentLimitEnable(false));
-        feedMotor.getConfigurator()
         .apply(new Slot0Configs().
-                        withKV(0.11).
-                        withKP(1000000).
+                        withKV(0.135).
+                        withKP(.1).
                         withKI(0).
                         withKD(0)
                 );
@@ -119,6 +117,7 @@ public class Shooter extends SubsystemBase {
                         .withInverted(InvertedValue.CounterClockwise_Positive)
                         .withNeutralMode(NeutralModeValue.Coast)
                         .withPeakReverseDutyCycle(0));
+        shootMotorLeft.getConfigurator().apply(new VoltageConfigs().withPeakReverseVoltage(0));
         shootMotorRight.getConfigurator().apply(shooterCurrentLimits);
         shootMotorRight.getConfigurator().apply(
                 new MotorOutputConfigs()
@@ -139,7 +138,7 @@ public class Shooter extends SubsystemBase {
                 new Slot0Configs()
                         // TODO: still iterating on what these values should be
                         .withKV(.125) // this seems right
-                        .withKP(0.7)
+                        .withKP(.7)
                         .withKI(0)
                         .withKD(0)
 
@@ -276,7 +275,8 @@ public class Shooter extends SubsystemBase {
         }
 
         if ((flywheelReady() && isFeeding) || isFeedReversed) {
-            var speedGoal = isFeedReversed ? -30 : 80;
+            var speedGoal = isFeedReversed ? -10.0 : 30.0;
+
             feedMotor.setControl(new VelocityVoltage(speedGoal).withSlot(0));
         } else {
             feedMotor.setControl(new CoastOut());
