@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.25,
+        "x": 3.0,
         "y": 1.05
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5703295454545447,
+        "x": 2.3203295454545447,
         "y": 2.5508181818181823
       },
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 2.5,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -48,7 +48,7 @@
   "folder": "Climbing Paths",
   "idealStartingState": {
     "velocity": 2.0,
-    "rotation": 66.0
+    "rotation": 71.0
   },
   "useDefaultConstraints": true
 }

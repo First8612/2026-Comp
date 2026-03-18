@@ -46,7 +46,7 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
     private final NetworkTableGroup robotNT = new NetworkTableGroup("Robot", true);
 
-    private final Controls controls = new TestingControls();
+    private final Controls controls = new Controls();
     
     // subsystems
     public final Drivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -82,6 +82,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("FaceTarget", driveAndFaceTarget);
         NamedCommands.registerCommand("ExtendIntake", Commands.runOnce(() -> intake.extend()));
         NamedCommands.registerCommand("RetractIntake", Commands.runOnce(() -> intake.retract()));
+        NamedCommands.registerCommand("StartIntake", new RunCommand(() -> intake.in()));
 
         configureBindings();
         drivetrain.configureAutoBuilder();
@@ -93,7 +94,7 @@ public class RobotContainer {
 
         // RobotModeTriggers.autonomous().onTrue(climber.getClimberZeroCommand());
         // //Comment this line out if running autonomous
-        // RobotModeTriggers.teleop().onTrue(climber.getClimberZeroCommand());
+        RobotModeTriggers.teleop().onTrue(climber.getClimberZeroCommand());
 
         //Un-comment this line if running autonomous
         //RobotMOdeTriggers.teleop().onTrue(climber.raiseClimb());
@@ -141,11 +142,9 @@ public class RobotContainer {
 
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
         controls.conveyOut().whileTrue(new RunCommand(() -> storage.conveyOut(), storage));
-        controls.intake().whileTrue(new RunCommand(() -> intake.setSpeedRaw(1), intake));
-        controls.intake().onFalse(new InstantCommand(() -> intake.stop()));
         controls.trenchRun().whileTrue(new DriveTrenchRun(drivetrain, controls::getDriveRequest));
         controls.feedOut().whileTrue(Commands.startEnd(
-            () -> shooter.feedReverse(true), 
+            () -> shooter.feedReverse(true),
             () -> shooter.feedReverse(false)));
 
         controls.raiseClimb().onTrue(new InstantCommand(() -> {climber.raiseClimb(); /*SmartDashboard.putBoolean("Climber/Putting Up", true);*/}));

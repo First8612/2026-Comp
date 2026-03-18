@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -44,6 +45,7 @@ public class Intake extends SubsystemBase {
     private final CANcoder extendEncoderLeft = new CANcoder(13, CANBuses.intake);
     private final CANcoder extendEncoderRight = new CANcoder(14, CANBuses.intake);
     private final Slot0Configs intakeExtendSlot0Config;
+    private final Slot1Configs intakeExtendSlot1Config;
 
     // Status signals - captured as states for efficient refresh management
     private TalonFXState extendLeftState;
@@ -51,12 +53,13 @@ public class Intake extends SubsystemBase {
     private CANCoderState extendEncoderLeftState;
     private CANCoderState extendEncoderRightState;
 
-    // these are off the absolute encoder. 
+    // these are off the absolute encoder.
     // to use KG in feed-forward, the horizontal angle should be "0".
     private final Angle retractedGoal = Rotations.of(-0.199);
-    private final Angle extendedGoal = Rotations.of(0);
+    private final Angle extendedGoal = Rotations.of(0.01);
 
     private boolean extended = false;
+    private boolean extending = false;
     private double speed = 0;
     // extendRatio = 16 / 3;
 
@@ -76,18 +79,25 @@ public class Intake extends SubsystemBase {
 
         extendEncoderLeft.getConfigurator().apply(new CANcoderConfiguration()
             .withMagnetSensor(new MagnetSensorConfigs()
-                .withMagnetOffset(Rotations.of(-0.195))
+                .withMagnetOffset(Rotations.of(-0.2))
                 .withSensorDirection(SensorDirectionValue.Clockwise_Positive)));
 
         extendEncoderRight.getConfigurator().apply(new CANcoderConfiguration()
             .withMagnetSensor(new MagnetSensorConfigs()
-                .withMagnetOffset(Rotations.of(-0.4765))
+                .withMagnetOffset(Rotations.of(-0.4705))
                 .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)));
 
         intakeExtendSlot0Config = new Slot0Configs()
                 .withGravityType(GravityTypeValue.Arm_Cosine)
-                .withKG(-1)
+                .withKG(-0.8)
                 .withKP(20)
+                .withKI(0)
+                .withKD(0);
+
+        intakeExtendSlot1Config = new Slot1Configs()
+                .withGravityType(GravityTypeValue.Arm_Cosine)
+                .withKG(-0.8)
+                .withKP(100)
                 .withKI(0)
                 .withKD(0);
         
@@ -140,9 +150,9 @@ public class Intake extends SubsystemBase {
     }
 
     // intended for prototyping time
-    public void setSpeedRaw(double intakeSpeed) {
-        this.speed = intakeSpeed;
-    }
+    // public void setSpeedRaw(double intakeSpeed) {
+    //     this.speed = intakeSpeed;
+    // }
 
     public void stop() {
         speed = 0;
@@ -204,7 +214,11 @@ public class Intake extends SubsystemBase {
         BaseStatusSignal.refreshAll(signals.toArray(new StatusSignal<?>[0]));
 
         if(isExtended()) {
-            intakeMotor.set(speed);
+            intakeMotor.set(1);
+            if(extended) {
+                intakeExtendLeft.set(0.02);
+                intakeExtendRight.set(0.02);
+            }
         }else{
             intakeMotor.set(0);
         }

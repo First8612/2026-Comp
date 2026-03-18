@@ -20,7 +20,7 @@ import frc.robot.utils.NetworkTableGroup;
 import frc.robot.utils.TalonFXState;
 
 public class Climber extends SubsystemBase{
-    private final NetworkTableGroup NT = new NetworkTableGroup("Climber", false);
+    private final NetworkTableGroup NT = new NetworkTableGroup("Climber", true);
     private final TalonFX climbMotorRight = new TalonFX(21, CANBuses.intake);
     private final TalonFX climbMotorLeft = new TalonFX(20, CANBuses.intake);
 
@@ -121,7 +121,7 @@ public class Climber extends SubsystemBase{
     }
 
     public void useClimb() {
-        changeMotorLimits(150);
+        changeMotorLimits(200);
         currClimbGoal = 12;
     }
 
