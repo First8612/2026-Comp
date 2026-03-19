@@ -46,6 +46,10 @@ public class Controls {
         return driver.rightBumper();
     }
 
+    public Trigger changeColor() {
+        return driver.b();
+    }
+
     // Operator ******************************
     public Trigger intakeRetract() {
         return operator.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.8);

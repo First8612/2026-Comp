@@ -78,9 +78,9 @@ public class Shooter extends SubsystemBase {
         // shootCalc.put(0.0, new double[] { 0.0, 71.0 });
         // shootCalc.put(1.2, new double[] { 0.0, 71.0 });
         
-        shootCalc.put(0.0, new double[] { 0.0, 63.0 });
-        shootCalc.put(2, new double[] { 0.0, 66.0 });
-        shootCalc.put(3, new double[] { 0.0, 71.0 });
+        shootCalc.put(0.0, new double[] { 0.0, 65.0 });
+        shootCalc.put(1.8, new double[] { 0.0, 65.0 });
+        shootCalc.put(2.7, new double[] { 0.0, 69.0 });
         shootCalc.put(4.2, new double[] { 0.5, 80.0 });
         shootCalc.put(5.6, new double[] { 1.35, 93.0 });
         shootCalc.put(100.0, new double[] { 1.35, 93.0 });

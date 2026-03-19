@@ -66,7 +66,7 @@ public class Intake extends SubsystemBase {
     public Intake() {
         super();
         
-        setDefaultCommand(Commands.runOnce(this::stop, this));
+        // setDefaultCommand(Commands.runOnce(this::stop, this));
         DixieHornCommand.enrollSubsystemMotors(this, intakeMotor, intakeExtendLeft, intakeExtendRight);
 
         // Extension CANcoder
@@ -186,14 +186,14 @@ public class Intake extends SubsystemBase {
         return MathUtil.isNear(
             extendedGoal.magnitude(), 
             extendLeftState.position.getValueAsDouble(),
-            0.1);
+            0.2);
     }
 
     public Boolean isRetracted() {
         return MathUtil.isNear(
             retractedGoal.magnitude(), 
             extendLeftState.position.getValueAsDouble(),
-            0.01);
+            0.1);
     }
 
     private void intakeExtendSetControl(ControlRequest request) {
@@ -214,10 +214,10 @@ public class Intake extends SubsystemBase {
         BaseStatusSignal.refreshAll(signals.toArray(new StatusSignal<?>[0]));
 
         if(isExtended()) {
-            intakeMotor.set(1);
+            intakeMotor.set(speed);
             if(extended) {
-                intakeExtendLeft.set(0.02);
-                intakeExtendRight.set(0.02);
+                intakeExtendLeft.set(0.05);
+                intakeExtendRight.set(0.05);
             }
         }else{
             intakeMotor.set(0);

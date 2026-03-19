@@ -11,25 +11,19 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "EnableAiming"
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "ShootSequence"
+                  "waitTime": 5.0
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "FaceTarget"
+                  "name": "ShootSequence"
                 }
               }
             ]

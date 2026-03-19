@@ -33,6 +33,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Storage;
@@ -57,6 +58,7 @@ public class RobotContainer {
     private final Storage storage = new Storage();
     private final Shooter shooter = new Shooter(targetTracker);
     private final Vision vision = new Vision(drivetrain);
+    private final LightStrip lights = new LightStrip();
 
     // commands
     private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(controls, drivetrain, targetTracker);
@@ -82,7 +84,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("FaceTarget", driveAndFaceTarget);
         NamedCommands.registerCommand("ExtendIntake", Commands.runOnce(() -> intake.extend()));
         NamedCommands.registerCommand("RetractIntake", Commands.runOnce(() -> intake.retract()));
-        NamedCommands.registerCommand("StartIntake", new RunCommand(() -> intake.in()));
+        NamedCommands.registerCommand("StartIntake", new InstantCommand(() -> intake.in(), intake));
+        NamedCommands.registerCommand("StopIntake", new InstantCommand(() -> intake.stop(), intake));
 
         configureBindings();
         drivetrain.configureAutoBuilder();
@@ -139,10 +142,14 @@ public class RobotContainer {
             drivetrain.seedFieldCentric();
             vision.reset();
         }));
+        controls.changeColor().onTrue(new InstantCommand(() -> lights.switchColor()));
 
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
         controls.conveyOut().whileTrue(new RunCommand(() -> storage.conveyOut(), storage));
         controls.trenchRun().whileTrue(new DriveTrenchRun(drivetrain, controls::getDriveRequest));
+        
+        controls.intake().whileTrue(Commands.startEnd(() -> intake.in(), () -> intake.stop(), intake));
+
         controls.feedOut().whileTrue(Commands.startEnd(
             () -> shooter.feedReverse(true),
             () -> shooter.feedReverse(false)));
