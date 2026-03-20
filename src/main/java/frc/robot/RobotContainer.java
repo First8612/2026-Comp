@@ -89,8 +89,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("RetractIntake", Commands.runOnce(() -> intake.retract()));
         NamedCommands.registerCommand("StartIntake", new InstantCommand(() -> intake.in(), intake));
         NamedCommands.registerCommand("StopIntake", new InstantCommand(() -> intake.stop(), intake));
-        NamedCommands.registerCommand("ExtendClimb", new InstantCommand(() -> climber.raiseClimb()));
-        NamedCommands.registerCommand("Climb", new InstantCommand(() -> climber.useClimb()));
+        NamedCommands.registerCommand("ExtendClimb", new InstantCommand(() -> climber.raiseClimb(), climber));
+        NamedCommands.registerCommand("Climb", new InstantCommand(() -> climber.useClimb(), climber));
 
         configureBindings();
         drivetrain.configureAutoBuilder();
