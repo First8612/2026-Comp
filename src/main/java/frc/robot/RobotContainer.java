@@ -100,12 +100,12 @@ public class RobotContainer {
         // RobotModeTriggers.autonomous().onTrue(shooter.getZeroCommand());
         RobotModeTriggers.teleop().onTrue(shooter.getZeroCommand());
 
-        // RobotModeTriggers.autonomous().onTrue(climber.getClimberZeroCommand());
+        RobotModeTriggers.autonomous().onTrue(climber.getClimberZeroCommand());
         // //Comment this line out if running autonomous
-        RobotModeTriggers.teleop().onTrue(climber.getClimberZeroCommand());
+        //RobotModeTriggers.teleop().onTrue(climber.getClimberZeroCommand());
 
         //Un-comment this line if running autonomous
-        //RobotMOdeTriggers.teleop().onTrue(climber.raiseClimb());
+        // RobotModeTriggers.teleop().onTrue(climber.raiseClimb());
 
         Field.writeOnceToNT();
     }
