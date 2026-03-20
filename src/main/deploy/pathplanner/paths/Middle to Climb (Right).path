@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 0.6500000000000004
+        "x": -0.4894721826032091,
+        "y": 0.043423680454586444
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5,
+        "x": 1.7,
         "y": 3.5
       },
       "prevControl": {
-        "x": 3.539170454545454,
-        "y": 0.31423863636363647
+        "x": 4.026119828809061,
+        "y": 3.7956348074160706
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Climbing Paths",
