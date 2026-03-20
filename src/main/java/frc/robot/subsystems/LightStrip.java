@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.CANdleConfiguration;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
+import com.ctre.phoenix6.signals.StripTypeValue;
 
 /**
  * Subsystem that controls an addressable LED strip using a CANdle.
@@ -29,18 +30,24 @@ public class LightStrip extends SubsystemBase {
     };
 
     public LightStrip() {
-        if(DriverStation.getAlliance().get() == Alliance.Blue) {
-            toBlue();
-        } else {
-            toRed();
+        CANdleConfiguration configs = new CANdleConfiguration();
+        configs.LED.StripType = StripTypeValue.GRB;
+        rightCANdle.getConfigurator().apply(configs);
+        if(DriverStation.getAlliance().isPresent()) {
+            if(DriverStation.getAlliance().get() == Alliance.Blue) {
+                toBlue();
+            } else {
+                toRed();
+            }
+        }
+        else {
+            toGreen();
         }
     }
 
     private void setColors(SolidColor color) {
         rightCANdle.setControl(color);
         leftCANdle.setControl(color);
-        rightCANdle.setControl(color.withLEDStartIndex(8).withLEDEndIndex(36));
-        leftCANdle.setControl(color.withLEDStartIndex(8).withLEDEndIndex(35));
     }
 
     /**
@@ -57,25 +64,25 @@ public class LightStrip extends SubsystemBase {
     }
 
     public void toRed() {
-        SolidColor red = new SolidColor(0, 7).withColor(new RGBWColor(255, 0, 0));
+        SolidColor red = new SolidColor(0, 135).withColor(new RGBWColor(255, 0, 0));
         setColors(red);
         SmartDashboard.putString("Lights/color", "red");
     }
 
     public void toOrange() {
-        SolidColor orange = new SolidColor(0, 7).withColor(new RGBWColor(255, 150, 0));
+        SolidColor orange = new SolidColor(0, 135).withColor(new RGBWColor(255, 150, 0));
         setColors(orange);
         SmartDashboard.putString("Lights/color", "orange");
     }
 
     public void toGreen() {
-        SolidColor green = new SolidColor(0, 7).withColor(new RGBWColor(0, 255, 0));
+        SolidColor green = new SolidColor(0, 135).withColor(new RGBWColor(0, 255, 0));
         setColors(green);
         SmartDashboard.putString("Lights/color", "green");
     }
 
     public void toBlue() {
-        SolidColor blue = new SolidColor(0, 7).withColor(new RGBWColor(0, 0, 255));
+        SolidColor blue = new SolidColor(0, 135).withColor(new RGBWColor(0, 0, 255));
         setColors(blue);
         SmartDashboard.putString("Lights/color", "blue");
     }

@@ -43,6 +43,7 @@ import frc.robot.utils.TargetTracker;
 public class RobotContainer {
     public final static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public final static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    public static boolean prescisionMode = false;
     private final EventLoop loop = new EventLoop();
     private final Telemetry logger = new Telemetry(MaxSpeed);
     private final NetworkTableGroup robotNT = new NetworkTableGroup("Robot", true);
@@ -132,6 +133,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
+        controls.prescisionMode().whileTrue(Commands.startEnd(() -> {prescisionMode = true;}, () -> {prescisionMode = false;}));
         controls.driveAndFaceTarget().whileTrue(driveAndFaceTarget);
         controls.shoot().whileTrue(shoot);
         controls.shootSimiple().whileTrue(shootSimple);
@@ -199,6 +201,7 @@ public class RobotContainer {
         changeEvent.rising().ifHigh(() -> {
             controls.setRumble(1);
             controls.setRumble(1);
+            lights.switchColor();
         });
         
         changeEvent.falling().ifHigh(() -> {
