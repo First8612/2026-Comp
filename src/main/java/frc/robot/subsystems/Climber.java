@@ -45,7 +45,7 @@ public class Climber extends SubsystemBase{
 
         var lmConfig = new MotorOutputConfigs();
         lmConfig.NeutralMode = NeutralModeValue.Brake;
-        lmConfig.Inverted = InvertedValue.Clockwise_Positive;
+        lmConfig.Inverted = InvertedValue.CounterClockwise_Positive;
 
         climbMotorLeft.getConfigurator().apply(lmConfig);
         climbMotorLeft.getConfigurator()
@@ -78,7 +78,7 @@ public class Climber extends SubsystemBase{
         var command = Commands.sequence(
             // drive backwards
             Commands.deadline(
-                    Commands.waitUntil(() -> Math.abs(climbMotor.getStatorCurrent().getValueAsDouble()) > 10),
+                    Commands.waitUntil(() -> Math.abs(climbMotor.getStatorCurrent().getValueAsDouble()) > 20),
                     Commands.run(() -> {
                         var dutyCycle = ramp.calculate(-0.1);
                         climbMotor.setControl(new DutyCycleOut(dutyCycle));
@@ -111,18 +111,18 @@ public class Climber extends SubsystemBase{
     }
 
     public void raiseClimb() {
-        changeMotorLimits(10);
-        currClimbGoal = 25;
+        changeMotorLimits(30);
+        currClimbGoal = 70;
     }
 
     public void lowerClimb() {
-        changeMotorLimits(10);
+        changeMotorLimits(20);
         currClimbGoal = 0;
     }
 
     public void useClimb() {
         changeMotorLimits(200);
-        currClimbGoal = 12;
+        currClimbGoal = 33;
     }
 
     public void manualClimb(double change) {
