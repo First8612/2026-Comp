@@ -66,10 +66,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Traversing Paths",
+  "folder": "Traversal Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -53.0
+    "rotation": -62.0
   },
   "useDefaultConstraints": true
 }

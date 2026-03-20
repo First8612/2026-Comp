@@ -48,7 +48,7 @@
   "folder": "Outpost Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 71.0
+    "rotation": 62.0
   },
   "useDefaultConstraints": true
 }

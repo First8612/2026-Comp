@@ -70,7 +70,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Collecting Paths",
+  "folder": "Collection Paths",
   "idealStartingState": {
     "velocity": 2.0,
     "rotation": 180.0

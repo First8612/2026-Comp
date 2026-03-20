@@ -48,7 +48,7 @@
   "folder": "Climbing Paths",
   "idealStartingState": {
     "velocity": 2.0,
-    "rotation": 71.0
+    "rotation": 62.0
   },
   "useDefaultConstraints": true
 }

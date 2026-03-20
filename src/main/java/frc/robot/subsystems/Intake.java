@@ -61,6 +61,7 @@ public class Intake extends SubsystemBase {
     private boolean extended = false;
     private boolean extending = false;
     private double speed = 0;
+    private Climber climb;
     // extendRatio = 16 / 3;
 
     public Intake() {
@@ -141,6 +142,10 @@ public class Intake extends SubsystemBase {
         extendEncoderRightState = CANCoderState.capture(extendEncoderRight);
     }
 
+    public void getClimber(Climber cl) {
+        climb = cl;
+    }
+
     public void in() {
         speed = 0.75;
     }
@@ -165,7 +170,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void extend() {
-        if (!enabled) return;
+        if (!enabled || climb.isOut()) return;
 
         intakeExtendSetControl(
             new PositionVoltage(extendedGoal)
@@ -174,7 +179,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void retract() {
-        if (!enabled) return;
+        if (!enabled || climb.isOut()) return;
 
         intakeExtendSetControl(
             new PositionVoltage(retractedGoal)

@@ -24,11 +24,15 @@ public class Climber extends SubsystemBase{
     private final TalonFX climbMotorRight = new TalonFX(21, CANBuses.intake);
     private final TalonFX climbMotorLeft = new TalonFX(20, CANBuses.intake);
 
+    private Intake intake;
+
     private double currClimbGoal = 0;
     private boolean hasReset = false;
 
-    public Climber() {
+    public Climber(Intake intake) {
         super();
+
+        this.intake = intake;
 
         var slot0Config = new Slot0Configs().
                         withKP(12).
@@ -111,8 +115,10 @@ public class Climber extends SubsystemBase{
     }
 
     public void raiseClimb() {
-        changeMotorLimits(30);
-        currClimbGoal = 70;
+        if(intake.isRetracted()) {
+            changeMotorLimits(30);
+            currClimbGoal = 70;
+        }
     }
 
     public void lowerClimb() {
@@ -121,13 +127,19 @@ public class Climber extends SubsystemBase{
     }
 
     public void useClimb() {
-        changeMotorLimits(200);
-        currClimbGoal = 33;
+        if(intake.isRetracted()) {
+            changeMotorLimits(200);
+            currClimbGoal = 33;
+        }
     }
 
     public void manualClimb(double change) {
         changeMotorLimits(10);
         currClimbGoal += change;
+    }
+
+    public boolean isOut() {
+        return currClimbGoal > 0;
     }
 
     @Override

@@ -64,15 +64,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "ShootSequence"
-                }
-              },
-              {
                 "type": "wait",
                 "data": {
                   "waitTime": 3.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootSequence"
                 }
               }
             ]
@@ -138,15 +138,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "ShootSequence"
-                }
-              },
-              {
                 "type": "wait",
                 "data": {
                   "waitTime": 10.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootSequence"
                 }
               }
             ]
@@ -156,6 +156,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Disruption Autons",
+  "folder": null,
   "choreoAuto": false
 }

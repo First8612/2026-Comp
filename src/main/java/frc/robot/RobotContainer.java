@@ -69,7 +69,8 @@ public class RobotContainer {
     private final double[] gameEvents = {/*Start 1st Shift*/10, /*2nd Shift*/35, /*3st Shift*/60, /*4th Shift*/85, /*Start Endgame*/110, /*End of Game*/140};
 
     private final Intake intake = new Intake();
-    private final Climber climber = new Climber();
+    private final Climber climber = new Climber(intake);
+    
 
     // events
     private final BooleanEvent inTrenchEvent = new BooleanEvent(loop, () -> {
@@ -80,6 +81,7 @@ public class RobotContainer {
     SendableChooser<Command> autonChooser;
 
     public RobotContainer() {
+        intake.getClimber(climber);
         NamedCommands.registerCommand("EnableAiming", Commands.runOnce(shooter::enableAiming));
         NamedCommands.registerCommand("ShootSequence", shoot);
         NamedCommands.registerCommand("FaceTarget", driveAndFaceTarget);
