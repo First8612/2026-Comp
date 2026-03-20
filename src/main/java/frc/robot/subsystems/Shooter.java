@@ -83,7 +83,8 @@ public class Shooter extends SubsystemBase {
         shootCalc.put(2.7, new double[] { 0.0, 69.0 });
         shootCalc.put(4.2, new double[] { 0.5, 80.0 });
         shootCalc.put(5.6, new double[] { 1.35, 93.0 });
-        shootCalc.put(100.0, new double[] { 1.35, 93.0 });
+        shootCalc.put(100.0, new double[] { 2.8, 95.0 });
+        shootCalc.put(10000.0, new double[] { 2.8, 95.0 });
 
         this.targetTracker = targetTracker;
         var mConfig = new MotorOutputConfigs();
