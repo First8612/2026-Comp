@@ -1,6 +1,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.stream.IntStream;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.BooleanPublisher;
@@ -10,6 +12,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.LimelightHelpers.PoseEstimate;
+import frc.robot.utils.LimelightHelpers.RawFiducial;
 
 public class Vision extends SubsystemBase {
 
@@ -36,6 +39,8 @@ public class Vision extends SubsystemBase {
     private Drivetrain driveBase;
     private Boolean useMT2 = false;
     private long mt1Readings = 0;
+    private int[] trustedTags = new int[] {9, 10, 25, 26 };
+
 
     public Vision(Drivetrain drivebase) {
 
@@ -86,21 +91,22 @@ public class Vision extends SubsystemBase {
             mt2Publisher.set(poseEstimate.pose);
         }
 
-        var latency = drivetrainState.Timestamp - poseEstimate.timestampSeconds;
-        // latencyPublisher.set(latency);
+        if (poseEstimate.tagCount == 0) return;
 
+        // stolen from https://github.com/Enigma2075/FRC2025/blob/05b738aa4bcf2dd822304b07f8c74f97dc0b25d0/src/main/java/frc/robot/subsystems/Vision.java#L287-L297
+        double stdDevFactor = Math.pow(poseEstimate.avgTagDist, 2.0) / poseEstimate.tagCount;
+        double linearStdDev = 0.25 * stdDevFactor * (Math.pow(drivetrainState.Speeds.omegaRadiansPerSecond, 2) + 1);
+        double angularStdDev = 999999999 * stdDevFactor;
+        stdDevPublisher.set(linearStdDev);
 
-        if (poseEstimate.tagCount != 0) {
-
-            // stolen from https://github.com/Enigma2075/FRC2025/blob/05b738aa4bcf2dd822304b07f8c74f97dc0b25d0/src/main/java/frc/robot/subsystems/Vision.java#L287-L297
-            double stdDevFactor = Math.pow(poseEstimate.avgTagDist, 2.0) / poseEstimate.tagCount;
-            double linearStdDev = 0.25 * stdDevFactor * (Math.pow(drivetrainState.Speeds.omegaRadiansPerSecond, 2) + 1);
-            double angularStdDev = 999999999 * stdDevFactor;
-            // stdDevPublisher.set(linearStdDev);
-
-            driveBase.setVisionMeasurementStdDevs(VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
-            driveBase.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
+        for (RawFiducial fiducial : poseEstimate.rawFiducials) {
+            var trustedTagStream = IntStream.of(trustedTags);
+            if (trustedTagStream.anyMatch(id -> fiducial.id == id)) {
+                linearStdDev *= 0.5;
+            }
         }
 
+        driveBase.setVisionMeasurementStdDevs(VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+        driveBase.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
     }
 }
