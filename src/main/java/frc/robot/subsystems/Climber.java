@@ -85,7 +85,7 @@ public class Climber extends SubsystemBase{
             Commands.deadline(
                     Commands.waitUntil(() -> Math.abs(climbMotor.getStatorCurrent().getValueAsDouble()) > 20),
                     Commands.run(() -> {
-                        var dutyCycle = ramp.calculate(-0.1);
+                        var dutyCycle = ramp.calculate(-0.2);
                         climbMotor.setControl(new DutyCycleOut(dutyCycle));
                     })),
 

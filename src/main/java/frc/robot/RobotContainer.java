@@ -89,8 +89,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("RetractIntake", Commands.runOnce(() -> intake.retract()));
         NamedCommands.registerCommand("StartIntake", new InstantCommand(() -> intake.in(), intake));
         NamedCommands.registerCommand("StopIntake", new InstantCommand(() -> intake.stop(), intake));
-        NamedCommands.registerCommand("ExtendClimb", new InstantCommand(() -> climber.raiseClimb(), climber));
-        NamedCommands.registerCommand("Climb", new InstantCommand(() -> climber.useClimb(), climber));
+        NamedCommands.registerCommand("ExtendClimb", Commands.run(() -> climber.raiseClimb()));
+        NamedCommands.registerCommand("Climb", new InstantCommand(() -> climber.useClimb()));
 
         configureBindings();
         drivetrain.configureAutoBuilder();
@@ -102,7 +102,7 @@ public class RobotContainer {
 
         RobotModeTriggers.autonomous().onTrue(climber.getClimberZeroCommand());
         // //Comment this line out if running autonomous
-        //RobotModeTriggers.teleop().onTrue(climber.getClimberZeroCommand());
+        // RobotModeTriggers.teleop().onTrue(climber.getClimberZeroCommand());
 
         //Un-comment this line if running autonomous
         // RobotModeTriggers.teleop().onTrue(climber.raiseClimb());
@@ -163,6 +163,7 @@ public class RobotContainer {
         controls.raiseClimb().onTrue(new InstantCommand(() -> {climber.raiseClimb(); /*SmartDashboard.putBoolean("Climber/Putting Up", true);*/}));
         controls.lowerClimb().onTrue(new InstantCommand(() -> {climber.lowerClimb(); /*SmartDashboard.putBoolean("Climber/Putting Down", true);*/}));
         controls.useClimb().onTrue(new InstantCommand(() -> {climber.useClimb();}));
+        controls.manualReset().onTrue(climber.getClimberZeroCommand());
         // controls.manualClimb().whileTrue(new RunCommand(() -> climber.manualClimb(controls.getClimbManual()), climber));
 
         // climber.setDefaultCommand(Commands.run(() -> {

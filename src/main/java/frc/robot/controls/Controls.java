@@ -103,6 +103,10 @@ public class Controls {
         return operator.axisGreaterThan(XboxController.Axis.kLeftY.value, 0.1).or(operator.axisLessThan(XboxController.Axis.kLeftY.value, -0.1));
     }
 
+    public Trigger manualReset() {
+        return operator.leftBumper().and(operator.a());
+    }
+
     public double getClimbManual() {
         return operator.getLeftY();
     }
