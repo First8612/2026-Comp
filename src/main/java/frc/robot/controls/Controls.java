@@ -17,15 +17,15 @@ public class Controls {
     protected final Trigger noButton = new Trigger(() -> false);
     protected final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(RobotContainer.MaxSpeed * 0.05)
-            .withRotationalDeadband(RobotContainer.MaxAngularRate * 0.05) // Add a 10% deadband
+            .withRotationalDeadband(RobotContainer.MaxAngularRate * 0.05) // Add a 5% deadband
             .withDriveRequestType(DriveRequestType.Velocity); // Use open-loop control for drive motors
 
     // Driver ******************************
     public SwerveRequest.FieldCentric getDriveRequest() {
-        return drive.withVelocityX(-driver.getLeftY() * RobotContainer.MaxSpeed) // Drive forward with negative Y
+        return drive.withVelocityX(-driver.getLeftY() * RobotContainer.MaxSpeed * (RobotContainer.prescisionMode == true ? 0.25 : 1)) // Drive forward with negative Y
                                                                                  // (forward)
-                .withVelocityY(-driver.getLeftX() * RobotContainer.MaxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(-driver.getRightX() * RobotContainer.MaxAngularRate); // Drive counterclockwise with
+                .withVelocityY(-driver.getLeftX() * RobotContainer.MaxSpeed * (RobotContainer.prescisionMode == true ? 0.25 : 1)) // Drive left with negative X (left)
+                .withRotationalRate(-driver.getRightX() * RobotContainer.MaxAngularRate * (RobotContainer.prescisionMode == true ? 0.25 : 1)); // Drive counterclockwise with
                                                                                           // negative X (left)
     }
 
@@ -48,6 +48,10 @@ public class Controls {
 
     public Trigger changeColor() {
         return driver.b();
+    }
+
+    public Trigger prescisionMode() {
+        return driver.leftBumper();
     }
 
     // Operator ******************************
@@ -97,6 +101,10 @@ public class Controls {
 
     public Trigger manualClimb() {
         return operator.axisGreaterThan(XboxController.Axis.kLeftY.value, 0.1).or(operator.axisLessThan(XboxController.Axis.kLeftY.value, -0.1));
+    }
+
+    public Trigger manualReset() {
+        return operator.leftBumper().and(operator.a());
     }
 
     public double getClimbManual() {

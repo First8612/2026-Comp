@@ -5,27 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "EnableAiming"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "RetractIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Testing Path"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "pathName": "Start to Aim (Right)"
           }
         },
         {

@@ -21,11 +21,11 @@
       },
       "prevControl": {
         "x": 7.7,
-        "y": 1.0000000000000027
+        "y": 1.000000000000004
       },
       "nextControl": {
         "x": 7.7,
-        "y": 5.0
+        "y": 6.0
       },
       "isLocked": false,
       "linkedName": null
@@ -47,11 +47,11 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.6,
-      "rotationDegrees": 90.0
+      "rotationDegrees": 100.0
     },
     {
       "waypointRelativePos": 1.5,
-      "rotationDegrees": 90.0
+      "rotationDegrees": 100.0
     }
   ],
   "constraintZones": [],
@@ -70,9 +70,9 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Collecting Paths",
+  "folder": "Collection Paths",
   "idealStartingState": {
-    "velocity": 2.0,
+    "velocity": 2.5,
     "rotation": 180.0
   },
   "useDefaultConstraints": true

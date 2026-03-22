@@ -86,9 +86,9 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Collecting Paths",
+  "folder": "Collection Paths",
   "idealStartingState": {
-    "velocity": 2.0,
+    "velocity": 2.5,
     "rotation": 0.0
   },
   "useDefaultConstraints": true

@@ -46,11 +46,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
+    "velocity": 2.5,
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Traversing Paths",
+  "folder": "Traversal Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 40.0

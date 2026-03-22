@@ -4,16 +4,12 @@
   "holonomicMode": true,
   "pathFolders": [
     "Aiming Paths",
+    "Collection Paths",
     "Climbing Paths",
-    "Collecting Paths",
-    "Depot Paths",
     "Outpost Paths",
-    "Traversing Paths"
+    "Traversal Paths"
   ],
   "autoFolders": [
-    "Collect Across Autons",
-    "Collect Loop Autons",
-    "Collect Outpost Autons",
     "Disruption Autons",
     "Simple Autons"
   ],

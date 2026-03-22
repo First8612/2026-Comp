@@ -83,7 +83,8 @@ public class Shooter extends SubsystemBase {
         shootCalc.put(2.7, new double[] { 0.0, 69.0 });
         shootCalc.put(4.2, new double[] { 0.5, 80.0 });
         shootCalc.put(5.6, new double[] { 1.35, 93.0 });
-        shootCalc.put(100.0, new double[] { 1.35, 93.0 });
+        shootCalc.put(100.0, new double[] { 2.8, 100.0 });
+        shootCalc.put(10000.0, new double[] { 2.8, 100.0 });
 
         this.targetTracker = targetTracker;
         var mConfig = new MotorOutputConfigs();
@@ -273,8 +274,10 @@ public class Shooter extends SubsystemBase {
             // Cruising
             shootMotorLeft.setControl(new VelocityVoltage(flywheelSpeedGoal).withSlot(0));
         }
-
-        if ((flywheelReady() && isFeeding) || isFeedReversed) {
+        if(flywheelSpeedGoal > 0 && targetTracker.getRobotToTargetTranslation().getNorm() > 100) {
+            feedMotor.setControl(new VelocityVoltage(30.0).withSlot(0));
+        }
+        else if ((flywheelReady() && isFeeding) || isFeedReversed) {
             var speedGoal = isFeedReversed ? -10.0 : 30.0;
 
             feedMotor.setControl(new VelocityVoltage(speedGoal).withSlot(0));

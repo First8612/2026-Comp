@@ -33,6 +33,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Simple Autons",
+  "folder": null,
   "choreoAuto": false
 }

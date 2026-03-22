@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 1.5,
+        "x": 1.7,
         "y": 3.5
       },
       "prevControl": {
-        "x": 1.6942499999999998,
+        "x": 1.8942499999999998,
         "y": 3.261988636363636
       },
       "nextControl": null,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Climbing Paths",
   "idealStartingState": {
     "velocity": 2.0,
-    "rotation": 71.0
+    "rotation": 62.0
   },
   "useDefaultConstraints": true
 }

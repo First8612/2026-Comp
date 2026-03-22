@@ -11,7 +11,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
+                  "waitTime": 0.2
                 }
               },
               {
@@ -69,6 +69,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Disruption Autons",
+  "folder": null,
   "choreoAuto": false
 }

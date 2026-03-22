@@ -47,7 +47,7 @@ public class Field {
                 ));
 
             var passingTargetYOffset = Inches.of(24);
-            var passingTargetXOffset = Inches.of(24);
+            var passingTargetXOffset = Inches.of(24000);
 
             passingTargetRight = origin.plus(
                 new Transform2d(passingTargetXOffset, passingTargetYOffset, noRotation)

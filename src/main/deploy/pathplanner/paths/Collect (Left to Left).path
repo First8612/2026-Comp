@@ -25,7 +25,7 @@
       },
       "nextControl": {
         "x": 7.7,
-        "y": 3.0
+        "y": 2.0
       },
       "isLocked": false,
       "linkedName": null
@@ -47,11 +47,11 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.6,
-      "rotationDegrees": -90.0
+      "rotationDegrees": -100.0
     },
     {
       "waypointRelativePos": 1.5,
-      "rotationDegrees": -90.0
+      "rotationDegrees": -100.0
     }
   ],
   "constraintZones": [],
@@ -70,9 +70,9 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Collecting Paths",
+  "folder": "Collection Paths",
   "idealStartingState": {
-    "velocity": 2.0,
+    "velocity": 2.5,
     "rotation": 0.0
   },
   "useDefaultConstraints": true

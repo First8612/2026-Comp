@@ -43,6 +43,7 @@ import frc.robot.utils.TargetTracker;
 public class RobotContainer {
     public final static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public final static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    public static boolean prescisionMode = false;
     private final EventLoop loop = new EventLoop();
     private final Telemetry logger = new Telemetry(MaxSpeed);
     private final NetworkTableGroup robotNT = new NetworkTableGroup("Robot", true);
@@ -68,7 +69,8 @@ public class RobotContainer {
     private final double[] gameEvents = {/*Start 1st Shift*/10, /*2nd Shift*/35, /*3st Shift*/60, /*4th Shift*/85, /*Start Endgame*/110, /*End of Game*/140};
 
     private final Intake intake = new Intake();
-    private final Climber climber = new Climber();
+    private final Climber climber = new Climber(intake);
+    
 
     // events
     private final BooleanEvent inTrenchEvent = new BooleanEvent(loop, () -> {
@@ -79,6 +81,7 @@ public class RobotContainer {
     SendableChooser<Command> autonChooser;
 
     public RobotContainer() {
+        intake.getClimber(climber);
         NamedCommands.registerCommand("EnableAiming", Commands.runOnce(shooter::enableAiming));
         NamedCommands.registerCommand("ShootSequence", shoot);
         NamedCommands.registerCommand("FaceTarget", driveAndFaceTarget);
@@ -86,6 +89,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("RetractIntake", Commands.runOnce(() -> intake.retract()));
         NamedCommands.registerCommand("StartIntake", new InstantCommand(() -> intake.in(), intake));
         NamedCommands.registerCommand("StopIntake", new InstantCommand(() -> intake.stop(), intake));
+        NamedCommands.registerCommand("ExtendClimb", Commands.run(() -> climber.raiseClimb()));
+        NamedCommands.registerCommand("Climb", new InstantCommand(() -> climber.useClimb()));
 
         configureBindings();
         drivetrain.configureAutoBuilder();
@@ -95,12 +100,12 @@ public class RobotContainer {
         // RobotModeTriggers.autonomous().onTrue(shooter.getZeroCommand());
         RobotModeTriggers.teleop().onTrue(shooter.getZeroCommand());
 
-        // RobotModeTriggers.autonomous().onTrue(climber.getClimberZeroCommand());
+        RobotModeTriggers.autonomous().onTrue(climber.getClimberZeroCommand());
         // //Comment this line out if running autonomous
-        RobotModeTriggers.teleop().onTrue(climber.getClimberZeroCommand());
+        // RobotModeTriggers.teleop().onTrue(climber.getClimberZeroCommand());
 
         //Un-comment this line if running autonomous
-        //RobotMOdeTriggers.teleop().onTrue(climber.raiseClimb());
+        // RobotModeTriggers.teleop().onTrue(climber.raiseClimb());
 
         Field.writeOnceToNT();
     }
@@ -132,6 +137,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
+        controls.prescisionMode().whileTrue(Commands.startEnd(() -> {prescisionMode = true;}, () -> {prescisionMode = false;}));
         controls.driveAndFaceTarget().whileTrue(driveAndFaceTarget);
         controls.shoot().whileTrue(shoot);
         controls.shootSimiple().whileTrue(shootSimple);
@@ -157,6 +163,7 @@ public class RobotContainer {
         controls.raiseClimb().onTrue(new InstantCommand(() -> {climber.raiseClimb(); /*SmartDashboard.putBoolean("Climber/Putting Up", true);*/}));
         controls.lowerClimb().onTrue(new InstantCommand(() -> {climber.lowerClimb(); /*SmartDashboard.putBoolean("Climber/Putting Down", true);*/}));
         controls.useClimb().onTrue(new InstantCommand(() -> {climber.useClimb();}));
+        controls.manualReset().onTrue(climber.getClimberZeroCommand());
         // controls.manualClimb().whileTrue(new RunCommand(() -> climber.manualClimb(controls.getClimbManual()), climber));
 
         // climber.setDefaultCommand(Commands.run(() -> {
@@ -199,6 +206,7 @@ public class RobotContainer {
         changeEvent.rising().ifHigh(() -> {
             controls.setRumble(1);
             controls.setRumble(1);
+            lights.switchColor();
         });
         
         changeEvent.falling().ifHigh(() -> {
