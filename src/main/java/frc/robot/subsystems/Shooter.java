@@ -54,7 +54,7 @@ public class Shooter extends SubsystemBase {
     InterpolatingArrayTreeMap shootCalc = new InterpolatingArrayTreeMap(2);
 
     double currHoodGoal = 0; // number used w/ PID
-    private final Debouncer flywheelReadyDebounce = new Debouncer(0.07, DebounceType.kRising);
+    private final Debouncer flywheelReadyDebounce = new Debouncer(0.0, DebounceType.kRising);
     private TargetTracker targetTracker;
     private boolean overrideAim = false;
     private double hoodOverride = 0.0;
