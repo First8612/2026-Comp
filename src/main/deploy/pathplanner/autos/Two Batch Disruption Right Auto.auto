@@ -38,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Collect (Right to Right)"
+            "pathName": "Improved Collect (right to right)"
           }
         },
         {
@@ -122,15 +122,51 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "RetractIntake"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Middle to Aim2 (Right)"
+            "pathName": "Middle to Climb (Right)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ExtendClimb"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Climb to Onclimb (Right)"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "ShootSequence"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Climb"
           }
         }
       ]

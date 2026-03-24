@@ -48,6 +48,7 @@ public class ShootSequence extends ParallelCommandGroup {
 
             // shoot fuel until storage is empty + 1sec.
             Commands.runOnce(setStatus("Shooting")),
+            Commands.runOnce(shooter::stopWarmup),
             Commands.deadline(
                 finishShootingDeadline,
                 new ShootFuel(shooter, storage)

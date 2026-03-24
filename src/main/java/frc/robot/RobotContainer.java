@@ -91,6 +91,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("StopIntake", new InstantCommand(() -> intake.stop(), intake));
         NamedCommands.registerCommand("ExtendClimb", Commands.run(() -> climber.raiseClimb()));
         NamedCommands.registerCommand("Climb", new InstantCommand(() -> climber.useClimb()));
+        NamedCommands.registerCommand("StartWarmup", new InstantCommand(() -> shooter.setWarmup()));
+        NamedCommands.registerCommand("EndWarmup", new InstantCommand(() -> shooter.stopWarmup()));
 
         configureBindings();
         drivetrain.configureAutoBuilder();

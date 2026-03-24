@@ -38,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Collect (Left to Left)"
+            "pathName": "Improved Collect (left to left)"
           }
         },
         {
@@ -79,28 +79,15 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Aim2 to Climb (Left)"
+            "name": "ExtendClimb"
           }
         },
         {
-          "type": "deadline",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.5
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ExtendClimb"
-                }
-              }
-            ]
+            "pathName": "Aim2 to Climb (Left)"
           }
         },
         {
@@ -112,7 +99,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 0.5
           }
         },
         {

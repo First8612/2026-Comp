@@ -60,6 +60,7 @@ public class Shooter extends SubsystemBase {
     private double hoodOverride = 0.0;
     private double flywheelOverride = 50.0;
     private boolean hasReset = false;
+    private boolean warmingUp = false;
 
 
     public Shooter(TargetTracker targetTracker) {
@@ -231,6 +232,14 @@ public class Shooter extends SubsystemBase {
         return command;
     }
 
+    public void setWarmup() {
+        warmingUp = true;
+    }
+
+    public void stopWarmup() {
+        warmingUp = false;
+    }
+
     @Override
     public void periodic() {
         List<BaseStatusSignal> signals = new ArrayList<>();
@@ -245,6 +254,10 @@ public class Shooter extends SubsystemBase {
         hoodOverride = SmartDashboard.getNumber("Shooter/override/hood", hoodOverride);
         currHoodGoal = 0;
         flywheelSpeedGoal = 0;
+
+        if(warmingUp) {
+            flywheelSpeedGoal = 90;
+        }
         
         if (isAiming) {
             var distance = targetTracker.getRobotToTargetTranslation().getNorm();
@@ -274,12 +287,11 @@ public class Shooter extends SubsystemBase {
             // Cruising
             shootMotorLeft.setControl(new VelocityVoltage(flywheelSpeedGoal).withSlot(0));
         }
-        if(flywheelSpeedGoal > 0 && targetTracker.getRobotToTargetTranslation().getNorm() > 100) {
+        if(targetTracker.getRobotToTargetTranslation().getNorm() > 100 && isFeeding) {
             feedMotor.setControl(new VelocityVoltage(30.0).withSlot(0));
         }
         else if ((flywheelReady() && isFeeding) || isFeedReversed) {
             var speedGoal = isFeedReversed ? -10.0 : 30.0;
-
             feedMotor.setControl(new VelocityVoltage(speedGoal).withSlot(0));
         } else {
             feedMotor.setControl(new CoastOut());
