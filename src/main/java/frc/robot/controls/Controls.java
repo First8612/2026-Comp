@@ -46,10 +46,6 @@ public class Controls {
         return driver.rightBumper();
     }
 
-    public Trigger changeColor() {
-        return driver.b();
-    }
-
     public Trigger prescisionMode() {
         return driver.leftBumper();
     }
@@ -113,6 +109,10 @@ public class Controls {
 
     public Trigger zeroHood() {
         return operator.b();
+    }
+
+        public Trigger changeColor() {
+        return operator.povRight();
     }
 
     // Events

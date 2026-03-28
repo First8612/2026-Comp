@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -150,7 +151,7 @@ public class RobotContainer {
             drivetrain.seedFieldCentric();
             vision.reset();
         }));
-        controls.changeColor().onTrue(new InstantCommand(() -> lights.switchColor()));
+       controls.changeColor().onTrue(new InstantCommand(() -> lights.switchColor()));
 
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
         controls.conveyOut().whileTrue(new RunCommand(() -> storage.conveyOut(), storage));
@@ -243,6 +244,5 @@ public class RobotContainer {
         robotNT.putNumber("inputCurrent", RobotController.getInputCurrent());
         robotNT.putNumber("brownoutVoltage", RobotController.getBrownoutVoltage());
         robotNT.putNumber("cpuTemp", RobotController.getCPUTemp());
-        
     }
 }
