@@ -179,7 +179,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void retract() {
-        if (!enabled || climb.isOut()) return;
+        if (!enabled) return;
 
         intakeExtendSetControl(
             new PositionVoltage(retractedGoal)

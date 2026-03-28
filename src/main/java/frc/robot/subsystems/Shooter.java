@@ -269,7 +269,7 @@ public class Shooter extends SubsystemBase {
             var aimingDistOverride = this.aimingDistOverride;
 
             if (isClimbedSupplier.getAsBoolean()) {
-                aimingDistOverride = Optional.of(3.9);
+                aimingDistOverride = Optional.of(4.1);
             }
 
             if (aimingDistOverride.isPresent()) {

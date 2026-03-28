@@ -23,8 +23,8 @@ public class Field {
     private static final Distance fieldWidth = Inches.of(317.69);
     private static final Distance allianceZoneDepth = Inches.of(158.6);
 
-    private static final Distance towerAlignRightY = Meters.of(3.5);
-    private static final Distance towerAlignLeftY = Meters.of(3.9);
+    private static final Distance towerAlignRightY = Meters.of(3.52);
+    private static final Distance towerAlignLeftY = Meters.of(3.90);
     private static final Distance towerAlignX = Meters.of(1.8);
 
     // using tag 28 from page 11
