@@ -13,26 +13,20 @@ import frc.robot.utils.LimelightHelpers.PoseEstimate;
 
 public class Vision extends SubsystemBase {
 
-    private StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault()
-            .getStructTopic("Poses/Pose", Pose2d.struct).publish();
     private StructPublisher<Pose2d> frontPoseMT1Publisher = NetworkTableInstance.getDefault()
-            .getStructTopic("Poses/front/MT1", Pose2d.struct).publish();
+            .getStructTopic("Vision/front/MT1", Pose2d.struct).publish();
     private StructPublisher<Pose2d> frontPoseMT2Publisher = NetworkTableInstance.getDefault()
-            .getStructTopic("Poses/front/MT2", Pose2d.struct).publish();
+            .getStructTopic("Vision/front/MT2", Pose2d.struct).publish();
     private DoublePublisher frontStdDevPublisher = NetworkTableInstance.getDefault()
-            .getDoubleTopic("Poses/front/StdDev").publish();
+            .getDoubleTopic("Vision/front/StdDev").publish();
     private StructPublisher<Pose2d> backPoseMT1Publisher = NetworkTableInstance.getDefault()
-            .getStructTopic("Poses/back/MT1", Pose2d.struct).publish();
+            .getStructTopic("Vision/back/MT1", Pose2d.struct).publish();
     private StructPublisher<Pose2d> backPoseMT2Publisher = NetworkTableInstance.getDefault()
-            .getStructTopic("Poses/back/MT2", Pose2d.struct).publish();
+            .getStructTopic("Vision/back/MT2", Pose2d.struct).publish();
     private DoublePublisher backStdDevPublisher = NetworkTableInstance.getDefault()
-            .getDoubleTopic("Poses/back/StdDev").publish();
+            .getDoubleTopic("Vision/back/StdDev").publish();
     private BooleanPublisher useMT2Publisher = NetworkTableInstance.getDefault()
-            .getBooleanTopic("Poses/useMT2").publish();
-    private DoublePublisher frontLatencyPublisher = NetworkTableInstance.getDefault()
-            .getDoubleTopic("Poses/front/latency").publish();
-    private DoublePublisher backLatencyPublisher = NetworkTableInstance.getDefault()
-            .getDoubleTopic("Poses/back/latency").publish();
+            .getBooleanTopic("Vision/useMT2").publish();
     private Drivetrain driveBase;
     private Boolean useMT2 = false;
     private long mt1Readings = 0;
@@ -50,10 +44,9 @@ public class Vision extends SubsystemBase {
     }
 
     public void periodic() {
-        handleLimelight("limelight-front", frontPoseMT1Publisher, frontPoseMT2Publisher, frontStdDevPublisher, frontLatencyPublisher);
-        handleLimelight("limelight-back", backPoseMT1Publisher, backPoseMT2Publisher, backStdDevPublisher, backLatencyPublisher);
+        handleLimelight("limelight-front", frontPoseMT1Publisher, frontPoseMT2Publisher, frontStdDevPublisher);
+        handleLimelight("limelight-back", backPoseMT1Publisher, backPoseMT2Publisher, backStdDevPublisher);
 
-        posePublisher.set(driveBase.getCachedState().Pose);
         useMT2Publisher.set(useMT2);
     }
 
@@ -61,15 +54,16 @@ public class Vision extends SubsystemBase {
         String limelightName, 
         StructPublisher<Pose2d> mt1Publisher, 
         StructPublisher<Pose2d> mt2Publisher, 
-        DoublePublisher stdDevPublisher,
-        DoublePublisher latencyPublisher
+        DoublePublisher stdDevPublisher
 
     ) {
         var drivetrainState = driveBase.getCachedState();
-        PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
-        mt1Publisher.set(poseEstimate.pose);
-
+        PoseEstimate poseEstimate;
+        
         if (!useMT2) {
+            poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+            mt1Publisher.set(poseEstimate.pose);
+
             if (poseEstimate.tagCount != 0) {
                 mt1Readings ++;
 

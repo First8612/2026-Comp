@@ -1,5 +1,5 @@
 
-package frc.robot.utils;
+package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.geometry.Pose2d;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.Field;
 
 public class TargetTracker extends SubsystemBase {
@@ -43,9 +42,7 @@ public class TargetTracker extends SubsystemBase {
         newState.robotToTargetRotation = robotToTargetDirection.rotateBy(drivetrain.getOperatorForwardDirection());
 
         var relativeRotations = robotToTargetTranslation.getAngle().minus(robotPose.getRotation()).getRotations() % 1.0;
-
         newState.robotToTargetRelativeRotation = Rotation2d.fromRotations(relativeRotations);
-
         newState.robotToTargetTranslation = robotToTargetTranslation;
 
         return newState;

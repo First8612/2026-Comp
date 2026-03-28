@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -30,7 +33,6 @@ import frc.robot.commands.DixieHornCommand;
 import frc.robot.utils.InterpolatingArrayTreeMap;
 import frc.robot.utils.NetworkTableGroup;
 import frc.robot.utils.TalonFXState;
-import frc.robot.utils.TargetTracker;
 
 public class Shooter extends SubsystemBase {
     private final NetworkTableGroup NT = new NetworkTableGroup("Shooter", false);
@@ -46,7 +48,7 @@ public class Shooter extends SubsystemBase {
     private Follower shootFollow = new Follower(20, MotorAlignmentValue.Opposed);
 
     Boolean isAiming = false;
-    Optional<Double> aimingDistOveride = Optional.empty();
+    Optional<Double> aimingDistOverride = Optional.empty();
     private double flywheelSpeedGoal = 0;
     private boolean isFeeding = false;
     private boolean isFeedReversed = false;
@@ -61,10 +63,12 @@ public class Shooter extends SubsystemBase {
     private double flywheelOverride = 50.0;
     private boolean hasReset = false;
     private boolean warmingUp = false;
+    private BooleanSupplier isClimbedSupplier;
 
 
-    public Shooter(TargetTracker targetTracker) {
+    public Shooter(TargetTracker targetTracker, BooleanSupplier isClimbedSupplier) {
         super();
+        this.isClimbedSupplier = isClimbedSupplier;
 
         //OLD NUMBER
         // shootCalc.put(0.0, new double[] { 0.0, 49.0 * 1.5 });
@@ -172,19 +176,19 @@ public class Shooter extends SubsystemBase {
 
     public void enableAiming() {
         isAiming = true;
-        aimingDistOveride = Optional.empty();
+        aimingDistOverride = Optional.empty();
     }
 
     public void enableAiming(double distOverride) {
         isAiming = true;
-        aimingDistOveride = Optional.of(distOverride);
+        aimingDistOverride = Optional.of(distOverride);
     }
 
     public void stop() {
         isAiming = false;
         isFeeding = false;
         isFeedReversed = false;
-        aimingDistOveride = Optional.empty();
+        aimingDistOverride = Optional.empty();
     }
 
     public boolean readyToShoot() {
@@ -262,8 +266,14 @@ public class Shooter extends SubsystemBase {
         if (isAiming) {
             var distance = targetTracker.getRobotToTargetTranslation().getNorm();
 
-            if (aimingDistOveride.isPresent()) {
-                distance = aimingDistOveride.get();
+            var aimingDistOverride = this.aimingDistOverride;
+
+            if (isClimbedSupplier.getAsBoolean()) {
+                aimingDistOverride = Optional.of(3.9);
+            }
+
+            if (aimingDistOverride.isPresent()) {
+                distance = aimingDistOverride.get();
             }
 
             double[] setAmounts = shootCalc.get(distance);

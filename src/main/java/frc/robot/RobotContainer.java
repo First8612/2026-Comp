@@ -39,8 +39,8 @@ import frc.robot.subsystems.LightStrip;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Storage;
+import frc.robot.subsystems.TargetTracker;
 import frc.robot.utils.NetworkTableGroup;
-import frc.robot.utils.TargetTracker;
 
 public class RobotContainer {
     public final static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -59,19 +59,19 @@ public class RobotContainer {
     private final TargetTracker targetTracker = new TargetTracker(drivetrain);
 
     private final Storage storage = new Storage();
-    private final Shooter shooter = new Shooter(targetTracker);
+    private final Intake intake = new Intake();
+    private final Climber climber = new Climber(intake);
+    private final Shooter shooter = new Shooter(targetTracker, climber::isAtClimb);
     private final Vision vision = new Vision(drivetrain);
     private final LightStrip lights = new LightStrip();
 
     // commands
     private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(controls, drivetrain, targetTracker);
-    private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, false);
-    private final ShootSequence shootSimple = new ShootSequence(shooter, storage, targetTracker, true);
+    private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, false, climber::isAtClimb);
+    private final ShootSequence shootSimple = new ShootSequence(shooter, storage, targetTracker, true, climber::isAtClimb);
     private Timer gameTime = new Timer();
     private final double[] gameEvents = {/*Start 1st Shift*/10, /*2nd Shift*/35, /*3st Shift*/60, /*4th Shift*/85, /*Start Endgame*/110, /*End of Game*/140};
 
-    private final Intake intake = new Intake();
-    private final Climber climber = new Climber(intake);
     
 
     // events
