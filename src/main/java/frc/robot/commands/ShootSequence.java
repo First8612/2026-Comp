@@ -40,15 +40,12 @@ public class ShootSequence extends ParallelCommandGroup {
             //     // driveAndFaceTargetCommand will continue to keep robot pointed at target
             Commands.runOnce(setStatus("Start")),
             aimCommand,
-            Commands.runOnce(shooter::enableFeeding, shooter),
-            Commands.runOnce(storage::conveyIn, storage),
 
             Commands.runOnce(setStatus("WaitingForReady")),
             new WaitForReadyToShoot(shooter, targetTracker, unsmart),
 
             // shoot fuel until storage is empty + 1sec.
             Commands.runOnce(setStatus("Shooting")),
-            Commands.runOnce(shooter::stopWarmup),
             Commands.deadline(
                 finishShootingDeadline,
                 new ShootFuel(shooter, storage)
@@ -62,7 +59,7 @@ public class ShootSequence extends ParallelCommandGroup {
 
     private static Runnable setStatus(String status) {
         return () -> {
-            // SmartDashboard.putString("ShootSequence", status);
+            SmartDashboard.putString("ShootSequence", status);
         };
     }
 }

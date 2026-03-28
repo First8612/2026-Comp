@@ -33,7 +33,7 @@ import frc.robot.utils.TalonFXState;
 import frc.robot.utils.TargetTracker;
 
 public class Shooter extends SubsystemBase {
-    private final NetworkTableGroup NT = new NetworkTableGroup("Shooter", true);
+    private final NetworkTableGroup NT = new NetworkTableGroup("Shooter", false);
     private final TalonFX shootMotorLeft = new TalonFX(20, CANBuses.shooter);
     private final TalonFX shootMotorRight = new TalonFX(21, CANBuses.shooter);
     private final TalonFX hoodMotor = new TalonFX(22, CANBuses.shooter);
@@ -290,7 +290,7 @@ public class Shooter extends SubsystemBase {
         if(targetTracker.getRobotToTargetTranslation().getNorm() > 100 && isFeeding) {
             feedMotor.setControl(new VelocityVoltage(30.0).withSlot(0));
         }
-        else if ((flywheelReady() && isFeeding) || isFeedReversed) {
+        else if (isFeeding) {
             var speedGoal = isFeedReversed ? -10.0 : 30.0;
             feedMotor.setControl(new VelocityVoltage(speedGoal).withSlot(0));
         } else {
