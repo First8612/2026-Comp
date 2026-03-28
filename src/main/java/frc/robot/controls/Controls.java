@@ -22,15 +22,19 @@ public class Controls {
 
     // Driver ******************************
     public SwerveRequest.FieldCentric getDriveRequest() {
-        return drive.withVelocityX(-driver.getLeftY() * RobotContainer.MaxSpeed * (RobotContainer.prescisionMode == true ? 0.25 : 1)) // Drive forward with negative Y
-                                                                                 // (forward)
-                .withVelocityY(-driver.getLeftX() * RobotContainer.MaxSpeed * (RobotContainer.prescisionMode == true ? 0.25 : 1)) // Drive left with negative X (left)
-                .withRotationalRate(-driver.getRightX() * RobotContainer.MaxAngularRate * (RobotContainer.prescisionMode == true ? 0.25 : 1)); // Drive counterclockwise with
-                                                                                          // negative X (left)
+        return drive
+                .withVelocityX(-driver.getLeftY() * RobotContainer.MaxSpeed
+                        * (RobotContainer.prescisionMode == true ? 0.25 : 1)) // Drive forward with negative Y
+                // (forward)
+                .withVelocityY(-driver.getLeftX() * RobotContainer.MaxSpeed
+                        * (RobotContainer.prescisionMode == true ? 0.25 : 1)) // Drive left with negative X (left)
+                .withRotationalRate(-driver.getRightX() * RobotContainer.MaxAngularRate
+                        * (RobotContainer.prescisionMode == true ? 0.25 : 1)); // Drive counterclockwise with
+        // negative X (left)
     }
 
     public Trigger driveAndFaceTarget() {
-        //This is the same event as pressing M2
+        // This is the same event as pressing M2
         return driver.a();
     }
 
@@ -96,7 +100,8 @@ public class Controls {
     }
 
     public Trigger manualClimb() {
-        return operator.axisGreaterThan(XboxController.Axis.kLeftY.value, 0.1).or(operator.axisLessThan(XboxController.Axis.kLeftY.value, -0.1));
+        return operator.axisGreaterThan(XboxController.Axis.kLeftY.value, 0.1)
+                .or(operator.axisLessThan(XboxController.Axis.kLeftY.value, -0.1));
     }
 
     public Trigger manualReset() {
@@ -111,7 +116,7 @@ public class Controls {
         return operator.b();
     }
 
-        public Trigger changeColor() {
+    public Trigger changeColor() {
         return operator.povRight();
     }
 

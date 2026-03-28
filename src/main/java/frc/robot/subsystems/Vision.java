@@ -53,8 +53,8 @@ public class Vision extends SubsystemBase {
         handleLimelight("limelight-front", frontPoseMT1Publisher, frontPoseMT2Publisher, frontStdDevPublisher, frontLatencyPublisher);
         handleLimelight("limelight-back", backPoseMT1Publisher, backPoseMT2Publisher, backStdDevPublisher, backLatencyPublisher);
 
-        // posePublisher.set(driveBase.getCachedState().Pose);
-        // useMT2Publisher.set(useMT2);
+        posePublisher.set(driveBase.getCachedState().Pose);
+        useMT2Publisher.set(useMT2);
     }
 
     private void handleLimelight(

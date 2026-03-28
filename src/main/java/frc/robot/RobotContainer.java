@@ -244,5 +244,8 @@ public class RobotContainer {
         robotNT.putNumber("inputCurrent", RobotController.getInputCurrent());
         robotNT.putNumber("brownoutVoltage", RobotController.getBrownoutVoltage());
         robotNT.putNumber("cpuTemp", RobotController.getCPUTemp());
+        robotNT.putNumber("pitch", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
+        robotNT.putNumber("roll", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
+        robotNT.putNumber("yaw", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
     }
 }
