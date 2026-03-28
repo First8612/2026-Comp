@@ -37,7 +37,10 @@ public class Controls {
         // This is the same event as pressing M2
         return driver.a();
     }
-
+    public Trigger alignToTower() {
+        return driver.b();
+    }
+    
     public Trigger horn() {
         return driver.rightStick();
     }

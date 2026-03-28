@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.AutoTower;
 import frc.robot.commands.DixieHornCommand;
 import frc.robot.commands.DriveAndFaceTargetCommand;
 import frc.robot.commands.DriveCommand;
@@ -95,8 +96,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("StartWarmup", new InstantCommand(() -> shooter.setWarmup()));
         NamedCommands.registerCommand("EndWarmup", new InstantCommand(() -> shooter.stopWarmup()));
 
-        configureBindings();
         drivetrain.configureAutoBuilder();
+        configureBindings();
         autonChooser = AutoBuilder.buildAutoChooser("Testing Auton");
 
         SmartDashboard.putData("Auto Path", autonChooser);
@@ -151,8 +152,8 @@ public class RobotContainer {
             drivetrain.seedFieldCentric();
             vision.reset();
         }));
-       controls.changeColor().onTrue(new InstantCommand(() -> lights.switchColor()));
-
+        controls.changeColor().onTrue(new InstantCommand(() -> lights.switchColor()));
+        controls.alignToTower().whileTrue(AutoTower.get(drivetrain));
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
         controls.conveyOut().whileTrue(new RunCommand(() -> storage.conveyOut(), storage));
         controls.trenchRun().whileTrue(new DriveTrenchRun(drivetrain, controls::getDriveRequest));
