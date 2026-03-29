@@ -37,6 +37,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LightStrip;
+import frc.robot.subsystems.PositionAccuracyEstimator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Storage;
@@ -64,7 +65,8 @@ public class RobotContainer {
     private final Climber climber = new Climber(intake);
     private final Shooter shooter = new Shooter(targetTracker, climber::isAtClimb);
     private final Vision vision = new Vision(drivetrain);
-    private final LightStrip lights = new LightStrip();
+    private final PositionAccuracyEstimator positionAccuracyEstimator = new PositionAccuracyEstimator(drivetrain::getCachedState);
+     private final LightStrip lights = new LightStrip();
 
     // commands
     private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(controls, drivetrain, targetTracker);
@@ -73,18 +75,11 @@ public class RobotContainer {
     private Timer gameTime = new Timer();
     private final double[] gameEvents = {/*Start 1st Shift*/10, /*2nd Shift*/35, /*3st Shift*/60, /*4th Shift*/85, /*Start Endgame*/110, /*End of Game*/140};
 
-    
-
-    // events
-    private final BooleanEvent inTrenchEvent = new BooleanEvent(loop, () -> {
-        var robotPose = drivetrain.getCachedState().Pose;
-        return Field.inTrenchZone(robotPose);
-    });
-
     SendableChooser<Command> autonChooser;
 
     public RobotContainer() {
         intake.getClimber(climber);
+        drivetrain.setPositionAccuracyEstimator(positionAccuracyEstimator);
         NamedCommands.registerCommand("EnableAiming", Commands.runOnce(shooter::enableAiming));
         NamedCommands.registerCommand("ShootSequence", shoot);
         NamedCommands.registerCommand("FaceTarget", driveAndFaceTarget);
@@ -194,18 +189,6 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-         // Field events
-
-         // disabling until we figure out field positioning better.
-        //  var safeRobotForTrench = new SafeRobotForTrench(intake, shooter);
-        // SmartDashboard.putBoolean("Field/inTrench", false);
-        //  inTrenchEvent.rising().ifHigh(() -> {
-        //     SmartDashboard.putBoolean("Field/inTrench", true);
-        //     CommandScheduler.getInstance().schedule(safeRobotForTrench);
-        //  });
-        //  inTrenchEvent.falling().ifHigh(() -> {
-        //     SmartDashboard.putBoolean("Field/inTrench", false);
-        //  });
         
         BooleanEvent changeEvent = new BooleanEvent(loop, () -> atGameScheduleTime(gameTime.get(), 0.5));
         changeEvent.rising().ifHigh(() -> {

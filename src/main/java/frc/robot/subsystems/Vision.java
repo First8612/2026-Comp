@@ -92,8 +92,10 @@ public class Vision extends SubsystemBase {
             double angularStdDev = 999999999 * stdDevFactor;
             // stdDevPublisher.set(linearStdDev);
 
-            driveBase.setVisionMeasurementStdDevs(VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
-            driveBase.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
+            driveBase.addVisionMeasurement(
+                poseEstimate.pose, 
+                poseEstimate.timestampSeconds, 
+                VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
         }
 
     }
