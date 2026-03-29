@@ -1,5 +1,5 @@
 
-package frc.robot.utils;
+package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.geometry.Pose2d;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.Field;
 
 public class TargetTracker extends SubsystemBase {
@@ -23,28 +22,30 @@ public class TargetTracker extends SubsystemBase {
 
     private State getCurrentState() {
         var robotPose = drivetrain.getCachedState().Pose;
-        State state = new State();
+        State newState = new State();
 
         // Alliance/target logic
-        state.currentAllianceField = DriverStation.getAlliance()
+        newState.currentAllianceField = DriverStation.getAlliance()
             .map(color -> color == Alliance.Red ? Field.redAlliance : Field.blueAlliance)
             .orElse(Field.blueAlliance);
 
-        if (state.currentAllianceField.zone.contains(robotPose.getTranslation())) {
-            state.currentTarget = state.currentAllianceField.hub;
+        if (newState.currentAllianceField.zone.contains(robotPose.getTranslation())) {
+            newState.currentTarget = newState.currentAllianceField.hub;
         } else {
-            state.currentTarget = state.currentAllianceField.passingTargetRight;
+            newState.currentTarget = newState.currentAllianceField.passingTargetRight;
         }
 
         // Directly compute target state
-        Translation2d robotToTargetTranslation = state.currentTarget.getTranslation().minus(robotPose.getTranslation());
+        Translation2d robotToTargetTranslation = newState.currentTarget.getTranslation().minus(robotPose.getTranslation());
         Rotation2d robotToTargetDirection = robotToTargetTranslation.getAngle();
 
-        state.robotToTargetRotation = robotToTargetDirection.rotateBy(drivetrain.getOperatorForwardDirection());
-        state.robotToTargetRelativeRotation = robotToTargetTranslation.getAngle().minus(robotPose.getRotation());
-        state.robotToTargetTranslation = robotToTargetTranslation;
+        newState.robotToTargetRotation = robotToTargetDirection.rotateBy(drivetrain.getOperatorForwardDirection());
 
-        return state;
+        var relativeRotations = robotToTargetTranslation.getAngle().minus(robotPose.getRotation()).getRotations() % 1.0;
+        newState.robotToTargetRelativeRotation = Rotation2d.fromRotations(relativeRotations);
+        newState.robotToTargetTranslation = robotToTargetTranslation;
+
+        return newState;
     }
 
     public Rotation2d getRobotToTargetRotation() {
@@ -63,8 +64,8 @@ public class TargetTracker extends SubsystemBase {
     public void periodic() {
         super.periodic();
         this.state = getCurrentState();
-        SmartDashboard.putNumber("Target/robotToTargetAbsoluteRotation", getRobotToTargetRotation().getDegrees());
-        SmartDashboard.putNumber("Target/robotToTargetRelativeRotation", getRobotToTargetRelativeRotation().getDegrees());
+        SmartDashboard.putNumber("Target/robotToTargetAbsoluteRotation", getRobotToTargetRotation().getRotations());
+        SmartDashboard.putNumber("Target/robotToTargetRelativeRotation", getRobotToTargetRelativeRotation().getRotations());
     }
 
     private static class State {

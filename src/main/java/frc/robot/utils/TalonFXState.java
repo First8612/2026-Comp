@@ -63,6 +63,17 @@ public class TalonFXState {
         collection.add(closedLoopReference);
     }
 
+    public void refresh() {
+        BaseStatusSignal.refreshAll(
+            position,
+            velocity,
+            motorVoltage,
+            supplyCurrent,
+            statorCurrent,
+            closedLoopReference
+        );
+    }
+
     /**
      * Returns all signals from this state as a list.
      *

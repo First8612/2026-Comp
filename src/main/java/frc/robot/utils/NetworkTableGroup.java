@@ -17,7 +17,7 @@ public class NetworkTableGroup {
     }
 
     public void putTalonFX(String name, TalonFX motor) {
-         if (!enabled) return;
+        if (!enabled) return;
         
        putTalonFX(name, TalonFXState.capture(motor));
     }

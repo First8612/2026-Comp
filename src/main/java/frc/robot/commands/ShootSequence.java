@@ -1,12 +1,13 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Storage;
+import frc.robot.subsystems.TargetTracker;
 import frc.robot.subsystems.Shooter;
-import frc.robot.utils.TargetTracker;
 
 // shoot sequence without controlling drivetrain.
 public class ShootSequence extends ParallelCommandGroup {
@@ -14,7 +15,8 @@ public class ShootSequence extends ParallelCommandGroup {
         Shooter shooter,
         Storage storage,
         TargetTracker targetTracker,
-        boolean unsmart
+        boolean unsmart,
+        BooleanSupplier hasClimbedSupplier
     ) {
         super();
 
@@ -40,15 +42,12 @@ public class ShootSequence extends ParallelCommandGroup {
             //     // driveAndFaceTargetCommand will continue to keep robot pointed at target
             Commands.runOnce(setStatus("Start")),
             aimCommand,
-            Commands.runOnce(shooter::enableFeeding, shooter),
-            Commands.runOnce(storage::conveyIn, storage),
 
             Commands.runOnce(setStatus("WaitingForReady")),
-            new WaitForReadyToShoot(shooter, targetTracker, unsmart),
+            new WaitForReadyToShoot(shooter, targetTracker, unsmart, hasClimbedSupplier),
 
             // shoot fuel until storage is empty + 1sec.
             Commands.runOnce(setStatus("Shooting")),
-            Commands.runOnce(shooter::stopWarmup),
             Commands.deadline(
                 finishShootingDeadline,
                 new ShootFuel(shooter, storage)
@@ -62,7 +61,7 @@ public class ShootSequence extends ParallelCommandGroup {
 
     private static Runnable setStatus(String status) {
         return () -> {
-            // SmartDashboard.putString("ShootSequence", status);
+            SmartDashboard.putString("ShootSequence", status);
         };
     }
 }

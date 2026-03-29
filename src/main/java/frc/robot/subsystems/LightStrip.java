@@ -22,11 +22,13 @@ public class LightStrip extends SubsystemBase {
     private final CANdle rightCANdle = new CANdle(4, CANBuses.shooter);
     private final CANdle leftCANdle = new CANdle(5, CANBuses.shooter);
 
-    private boolean isOn = false;
+    private boolean isOn = true;
 
-    private final SolidColor[] m_colors = new SolidColor[] {
-        new SolidColor(0, 3).withColor(new RGBWColor(0, 255, 255, 0)),
-        new SolidColor(4, 7).withColor(new RGBWColor(255, 0, 255, 0)),
+    private final SolidColor[] color1 = new SolidColor[] {
+        new SolidColor(0, 8).withColor(new RGBWColor(24, 72, 255, 0)),
+    };
+    private final SolidColor[] color2 = new SolidColor[] {
+        new SolidColor(0, 8).withColor(new RGBWColor(255, 0, 0, 0)),
     };
 
     public LightStrip() {
@@ -44,12 +46,11 @@ public class LightStrip extends SubsystemBase {
             toGreen();
         }
     }
-
+  
     private void setColors(SolidColor color) {
         rightCANdle.setControl(color);
         leftCANdle.setControl(color);
     }
-
     /**
      * Updates the animations and LEDs of the CANdle.
      *
@@ -57,11 +58,15 @@ public class LightStrip extends SubsystemBase {
      */
     public Command updateLEDs() {
         return run(() -> {
-            for (var solidColor : m_colors) {
-                setColors(solidColor);
+            for (var solidColor : color1) {
+                leftCANdle.setControl(solidColor);
+            }    
+
+            for (var solidColor : color2) {
+                rightCANdle.setControl(solidColor);
             }
         });
-    }
+    };
 
     public void toRed() {
         SolidColor red = new SolidColor(0, 135).withColor(new RGBWColor(255, 0, 0));
@@ -89,12 +94,11 @@ public class LightStrip extends SubsystemBase {
 
     public void switchColor() {
         if(isOn) {
-            toGreen();
+            toBlue();
             isOn = false;
         } else {
-            toOrange();
+            toRed();
             isOn = true;
         }
     }
-
 }

@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -23,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.DriveToLocation;
+import frc.robot.commands.GoToClimb;
 import frc.robot.commands.DixieHornCommand;
 import frc.robot.commands.DriveAndFaceTargetCommand;
 import frc.robot.commands.DriveCommand;
@@ -34,11 +37,12 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LightStrip;
+import frc.robot.subsystems.PositionAccuracyEstimator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Storage;
+import frc.robot.subsystems.TargetTracker;
 import frc.robot.utils.NetworkTableGroup;
-import frc.robot.utils.TargetTracker;
 
 public class RobotContainer {
     public final static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -57,31 +61,25 @@ public class RobotContainer {
     private final TargetTracker targetTracker = new TargetTracker(drivetrain);
 
     private final Storage storage = new Storage();
-    private final Shooter shooter = new Shooter(targetTracker);
+    private final Intake intake = new Intake();
+    private final Climber climber = new Climber(intake);
+    private final Shooter shooter = new Shooter(targetTracker, climber::isAtClimb);
     private final Vision vision = new Vision(drivetrain);
-    private final LightStrip lights = new LightStrip();
+    private final PositionAccuracyEstimator positionAccuracyEstimator = new PositionAccuracyEstimator(drivetrain::getCachedState);
+     private final LightStrip lights = new LightStrip();
 
     // commands
     private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(controls, drivetrain, targetTracker);
-    private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, false);
-    private final ShootSequence shootSimple = new ShootSequence(shooter, storage, targetTracker, true);
+    private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, false, climber::isAtClimb);
+    private final ShootSequence shootSimple = new ShootSequence(shooter, storage, targetTracker, true, climber::isAtClimb);
     private Timer gameTime = new Timer();
     private final double[] gameEvents = {/*Start 1st Shift*/10, /*2nd Shift*/35, /*3st Shift*/60, /*4th Shift*/85, /*Start Endgame*/110, /*End of Game*/140};
-
-    private final Intake intake = new Intake();
-    private final Climber climber = new Climber(intake);
-    
-
-    // events
-    private final BooleanEvent inTrenchEvent = new BooleanEvent(loop, () -> {
-        var robotPose = drivetrain.getCachedState().Pose;
-        return Field.inTrenchZone(robotPose);
-    });
 
     SendableChooser<Command> autonChooser;
 
     public RobotContainer() {
         intake.getClimber(climber);
+        drivetrain.setPositionAccuracyEstimator(positionAccuracyEstimator);
         NamedCommands.registerCommand("EnableAiming", Commands.runOnce(shooter::enableAiming));
         NamedCommands.registerCommand("ShootSequence", shoot);
         NamedCommands.registerCommand("FaceTarget", driveAndFaceTarget);
@@ -94,8 +92,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("StartWarmup", new InstantCommand(() -> shooter.setWarmup()));
         NamedCommands.registerCommand("EndWarmup", new InstantCommand(() -> shooter.stopWarmup()));
 
-        configureBindings();
         drivetrain.configureAutoBuilder();
+        configureBindings();
         autonChooser = AutoBuilder.buildAutoChooser("Testing Auton");
 
         SmartDashboard.putData("Auto Path", autonChooser);
@@ -151,7 +149,7 @@ public class RobotContainer {
             vision.reset();
         }));
         controls.changeColor().onTrue(new InstantCommand(() -> lights.switchColor()));
-
+        controls.goToClimb().whileTrue(new GoToClimb(drivetrain));
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
         controls.conveyOut().whileTrue(new RunCommand(() -> storage.conveyOut(), storage));
         controls.trenchRun().whileTrue(new DriveTrenchRun(drivetrain, controls::getDriveRequest));
@@ -191,18 +189,6 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-         // Field events
-
-         // disabling until we figure out field positioning better.
-        //  var safeRobotForTrench = new SafeRobotForTrench(intake, shooter);
-        // SmartDashboard.putBoolean("Field/inTrench", false);
-        //  inTrenchEvent.rising().ifHigh(() -> {
-        //     SmartDashboard.putBoolean("Field/inTrench", true);
-        //     CommandScheduler.getInstance().schedule(safeRobotForTrench);
-        //  });
-        //  inTrenchEvent.falling().ifHigh(() -> {
-        //     SmartDashboard.putBoolean("Field/inTrench", false);
-        //  });
         
         BooleanEvent changeEvent = new BooleanEvent(loop, () -> atGameScheduleTime(gameTime.get(), 0.5));
         changeEvent.rising().ifHigh(() -> {
@@ -243,6 +229,8 @@ public class RobotContainer {
         robotNT.putNumber("inputCurrent", RobotController.getInputCurrent());
         robotNT.putNumber("brownoutVoltage", RobotController.getBrownoutVoltage());
         robotNT.putNumber("cpuTemp", RobotController.getCPUTemp());
-        
+        robotNT.putNumber("pitch", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
+        robotNT.putNumber("roll", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
+        robotNT.putNumber("yaw", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
     }
 }

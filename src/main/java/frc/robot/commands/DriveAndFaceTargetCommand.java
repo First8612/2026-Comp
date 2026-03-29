@@ -9,7 +9,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.controls.Controls;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.utils.TargetTracker;
+import frc.robot.subsystems.TargetTracker;
 
 public class DriveAndFaceTargetCommand extends Command {
     private final Controls controls;
