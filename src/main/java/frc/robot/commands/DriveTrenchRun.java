@@ -70,9 +70,13 @@ public class DriveTrenchRun extends Command {
             this.exit = nearestTrench.entrance;
         }
 
-        robotTargetDirection = entrance.getX() > robotPose.getX()
-            ? Rotation2d.kZero
-            : Rotation2d.k180deg;
+        // Rear towards nearest trench
+        // robotTargetDirection = entrance.getX() > robotPose.getX()
+        //     ? facingBackwards
+        //     : facingForwards;
+
+        // Per Andrew's request
+        robotTargetDirection = Rotation2d.kZero;
 
         entrancePublisher.set(entrance);
         exitPublisher.set(exit);
