@@ -28,7 +28,7 @@ public class Field {
     private static final Distance towerAlignX = Meters.of(1.8);
 
     // using tag 28 from page 11
-    private static final Distance trenchYOffset = Inches.of(25);
+    private static final Distance trenchYOffset = Inches.of(16);
     private static final Distance trenchXOffset = Inches.of(180);
     
 
