@@ -4,8 +4,8 @@
   "holonomicMode": true,
   "pathFolders": [
     "Aiming Paths",
-    "Collection Paths",
     "Climbing Paths",
+    "Collection Paths",
     "Outpost Paths",
     "Traversal Paths"
   ],

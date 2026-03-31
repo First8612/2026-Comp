@@ -31,8 +31,8 @@ public class WaitForReadyToShoot extends Command {
                 || yawDebounce.calculate(
                     Math.abs(targetTracker.getRobotToTargetRelativeRotation().getDegrees()) < 3
                 ) 
-                || targetTracker.getRobotToTargetTranslation().getNorm() > 100
-                ;
+                || targetTracker.getRobotToTargetTranslation().getNorm() > 100;
+                
         var shooterIsReady = shooter.readyToShoot();
 
         return yawIsReady && shooterIsReady;

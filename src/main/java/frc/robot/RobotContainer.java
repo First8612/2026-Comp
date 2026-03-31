@@ -107,6 +107,8 @@ public class RobotContainer {
         //Un-comment this line if running autonomous
         // RobotModeTriggers.teleop().onTrue(climber.raiseClimb());
 
+        RobotModeTriggers.teleop().onTrue(new InstantCommand(() -> shooter.stopWarmup()));
+
         Field.writeOnceToNT();
     }
 

@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.5,
-        "y": 0.65
+        "x": 0.0,
+        "y": 7.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.0,
-        "y": 0.65
+        "x": 0.9156506024096385,
+        "y": 7.619289156626506
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.220939759036145,
-        "y": 1.8494578313253012
+        "x": 6.0,
+        "y": 7.5
       },
       "prevControl": {
-        "x": 7.420498749946339,
-        "y": 0.8695720169842172
+        "x": 6.0,
+        "y": 7.833333333333333
       },
       "nextControl": {
-        "x": 6.3685783132530105,
-        "y": 6.034771084337347
+        "x": 6.0,
+        "y": 7.166666666666667
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.5,
-        "y": 0.65
+        "x": 0.0,
+        "y": 7.5
       },
       "prevControl": {
-        "x": 6.366025403784438,
-        "y": 0.15000000000000002
+        "x": 0.24588778673575143,
+        "y": 7.4548425384438675
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,21 +46,26 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6,
-      "rotationDegrees": 90.0
-    },
-    {
-      "waypointRelativePos": 1.07,
-      "rotationDegrees": 100.0
-    },
-    {
-      "waypointRelativePos": 1.5,
-      "rotationDegrees": -92.43644701454681
+      "waypointRelativePos": 1,
+      "rotationDegrees": -90.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "StartWarmup",
+      "waypointRelativePos": 0.5287769784172627,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "StopWarmup",
+      "waypointRelativePos": 0.5517985611510783,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 5.0,
@@ -70,14 +75,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 5.0,
+    "velocity": 0,
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Collection Paths",
+  "folder": null,
   "idealStartingState": {
-    "velocity": 5.0,
-    "rotation": 180.0
+    "velocity": 0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
