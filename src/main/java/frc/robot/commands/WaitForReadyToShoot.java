@@ -26,14 +26,19 @@ public class WaitForReadyToShoot extends Command {
     @Override
     public boolean isFinished() {
         var yawIsReady = 
-                ignoreYaw 
-                || hasClimbedSupplier.getAsBoolean()
-                || yawDebounce.calculate(
+                yawDebounce.calculate(
                     Math.abs(targetTracker.getRobotToTargetRelativeRotation().getDegrees()) < 5
                 ) 
-                || targetTracker.getRobotToTargetTranslation().getNorm() > 100
-                ;
+                || hasClimbedSupplier.getAsBoolean()
+                || ignoreYaw;
         var shooterIsReady = shooter.readyToShoot();
+
+        // passing
+        if (targetTracker.getRobotToTargetTranslation().getNorm() > 10) {
+            // when passing, force to true.
+            shooterIsReady = true;
+        };
+
 
         return yawIsReady && shooterIsReady;
     }

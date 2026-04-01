@@ -19,6 +19,7 @@ public class LightStrip extends SubsystemBase {
     private final CANdle rightCANdle = new CANdle(4, CANBuses.shooter);
     private final CANdle leftCANdle = new CANdle(5, CANBuses.shooter);
     private DoubleSupplier confidenceSupplier;
+    private final SolidColor solidColor = new SolidColor(0, 7);
 
     public LightStrip(DoubleSupplier confidenceSupplier) {
         this.confidenceSupplier = confidenceSupplier;
@@ -37,7 +38,7 @@ public class LightStrip extends SubsystemBase {
         var green = (int)(255 * (Math.pow(confidence / 100, 5)));
         var red = 255 - green;
 
-        setColors(new SolidColor(0, 7)
+        setColors(solidColor
             .withColor(new RGBWColor(red, green, 0)));
     }
 
