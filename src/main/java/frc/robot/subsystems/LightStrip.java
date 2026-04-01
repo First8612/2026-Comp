@@ -34,7 +34,7 @@ public class LightStrip extends SubsystemBase {
 
         var confidence = confidenceSupplier.getAsDouble(); // 0 - 100
 
-        var green = (int)(255 * (Math.pow(confidence / 100, 4)));
+        var green = (int)(255 * (Math.pow(confidence / 100, 6)));
         var red = 255 - green;
 
         setColors(new SolidColor(0, 7)
