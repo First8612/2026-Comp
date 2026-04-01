@@ -4,7 +4,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.controls.Controls;
@@ -18,8 +17,8 @@ public class DriveAndFaceTargetCommand extends Command {
     private BooleanPublisher activePublisher = NetworkTableInstance.getDefault().getBooleanTopic("Commands/DriveAndFaceTarget/active").publish();
 
     private final SwerveRequest.FieldCentricFacingAngle driveFacingTarget = new SwerveRequest.FieldCentricFacingAngle()
-        .withHeadingPID(10,0,0)
-        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+        .withHeadingPID(12,0,0.1)
+        .withDriveRequestType(DriveRequestType.Velocity); // Use open-loop control for drive motors
         
     public DriveAndFaceTargetCommand(Controls controls, Drivetrain drivetrain, TargetTracker targetTracker) {
         super();
