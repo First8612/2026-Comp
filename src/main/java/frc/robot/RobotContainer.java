@@ -10,10 +10,8 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.DriveToLocation;
 import frc.robot.commands.GoToClimb;
 import frc.robot.commands.DixieHornCommand;
 import frc.robot.commands.DriveAndFaceTargetCommand;
@@ -66,7 +63,7 @@ public class RobotContainer {
     private final Shooter shooter = new Shooter(targetTracker, climber::isAtClimb);
     private final Vision vision = new Vision(drivetrain);
     private final PositionAccuracyEstimator positionAccuracyEstimator = new PositionAccuracyEstimator(drivetrain::getCachedState);
-     private final LightStrip lights = new LightStrip();
+    private final LightStrip lights = new LightStrip(positionAccuracyEstimator::getEstimation);
 
     // commands
     private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(controls, drivetrain, targetTracker);
@@ -148,7 +145,6 @@ public class RobotContainer {
             drivetrain.seedFieldCentric();
             vision.reset();
         }));
-        controls.changeColor().onTrue(new InstantCommand(() -> lights.switchColor()));
         controls.goToClimb().whileTrue(new GoToClimb(drivetrain));
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
         controls.conveyOut().whileTrue(new RunCommand(() -> storage.conveyOut(), storage));
@@ -194,7 +190,6 @@ public class RobotContainer {
         changeEvent.rising().ifHigh(() -> {
             controls.setRumble(1);
             controls.setRumble(1);
-            lights.switchColor();
         });
         
         changeEvent.falling().ifHigh(() -> {
