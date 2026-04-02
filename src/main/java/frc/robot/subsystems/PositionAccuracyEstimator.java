@@ -2,11 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
-
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
@@ -74,10 +71,6 @@ public class PositionAccuracyEstimator extends SubsystemBase {
         }
 
         SmartDashboard.putNumber("PositionAccuracyEstimator/estimate", estimation);
-        // SmartDashboard.putNumber("PositionAccuracyEstimator/visionReadingTimer", visionReadingTimer.get() );
-        // SmartDashboard.putNumber("PositionAccuracyEstimator/distanceAvg", distanceAvg);
-        // SmartDashboard.putNumber("PositionAccuracyEstimator/visionDiffDist", visionDiffDist);
-        // SmartDashboard.putNumber("PositionAccuracyEstimator/lastVisionPoses", lastVisionPoses.size());
         lastVisionPoses.clear();
     }
 }

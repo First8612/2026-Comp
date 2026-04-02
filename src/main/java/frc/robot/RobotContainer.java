@@ -63,6 +63,8 @@ public class RobotContainer {
     private final Shooter shooter = new Shooter(targetTracker, climber::isAtClimb);
     private final Vision vision = new Vision(drivetrain);
     private final PositionAccuracyEstimator positionAccuracyEstimator = new PositionAccuracyEstimator(drivetrain::getCachedState);
+
+    @SuppressWarnings("unused")
     private final LightStrip lights = new LightStrip(positionAccuracyEstimator::getEstimation);
 
     // commands
@@ -227,8 +229,5 @@ public class RobotContainer {
         robotNT.putNumber("inputCurrent", RobotController.getInputCurrent());
         robotNT.putNumber("brownoutVoltage", RobotController.getBrownoutVoltage());
         robotNT.putNumber("cpuTemp", RobotController.getCPUTemp());
-        robotNT.putNumber("pitch", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
-        robotNT.putNumber("roll", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
-        robotNT.putNumber("yaw", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
     }
 }
