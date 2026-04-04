@@ -91,7 +91,7 @@ public class RobotContainer {
 
         drivetrain.configureAutoBuilder();
         configureBindings();
-        autonChooser = AutoBuilder.buildAutoChooser("Testing Auton");
+        autonChooser = AutoBuilder.buildAutoChooser("BAuto test");
 
         SmartDashboard.putData("Auto Path", autonChooser);
         // RobotModeTriggers.autonomous().onTrue(shooter.getZeroCommand());
