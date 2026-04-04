@@ -24,13 +24,6 @@ public class LightStrip extends SubsystemBase {
 
     private boolean isOn = true;
 
-    private final SolidColor[] color1 = new SolidColor[] {
-        new SolidColor(0, 8).withColor(new RGBWColor(24, 72, 255, 0)),
-    };
-    private final SolidColor[] color2 = new SolidColor[] {
-        new SolidColor(0, 8).withColor(new RGBWColor(255, 0, 0, 0)),
-    };
-
     public LightStrip() {
         CANdleConfiguration configs = new CANdleConfiguration();
         configs.LED.StripType = StripTypeValue.GRB;
@@ -51,22 +44,6 @@ public class LightStrip extends SubsystemBase {
         rightCANdle.setControl(color);
         leftCANdle.setControl(color);
     }
-    /**
-     * Updates the animations and LEDs of the CANdle.
-     *
-     * @return Command to run
-     */
-    public Command updateLEDs() {
-        return run(() -> {
-            for (var solidColor : color1) {
-                leftCANdle.setControl(solidColor);
-            }    
-
-            for (var solidColor : color2) {
-                rightCANdle.setControl(solidColor);
-            }
-        });
-    };
 
     public void toRed() {
         SolidColor red = new SolidColor(0, 135).withColor(new RGBWColor(255, 0, 0));

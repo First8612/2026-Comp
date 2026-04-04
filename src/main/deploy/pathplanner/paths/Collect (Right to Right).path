@@ -12,7 +12,7 @@
         "y": 0.65
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Middle R"
     },
     {
       "anchor": {
@@ -41,7 +41,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Middle R"
     }
   ],
   "rotationTargets": [
@@ -73,7 +73,7 @@
   "folder": "Collection Paths",
   "idealStartingState": {
     "velocity": 2.5,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

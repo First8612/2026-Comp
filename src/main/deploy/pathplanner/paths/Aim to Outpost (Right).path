@@ -12,7 +12,7 @@
         "y": 1.1476797980550972
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Aim R"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost"
     }
   ],
   "rotationTargets": [],
