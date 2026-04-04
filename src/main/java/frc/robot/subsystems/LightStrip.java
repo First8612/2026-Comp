@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CANBuses;
+import frc.robot.utils.NetworkTableGroup;
 
 import com.ctre.phoenix6.configs.CANdleConfiguration;
 import com.ctre.phoenix6.controls.SolidColor;
@@ -19,6 +20,7 @@ import com.ctre.phoenix6.signals.StripTypeValue;
  * Subsystem that controls an addressable LED strip using a CANdle.
  */
 public class LightStrip extends SubsystemBase {
+    private NetworkTableGroup NT = new NetworkTableGroup("Lightstrip", false);
     private final CANdle rightCANdle = new CANdle(4, CANBuses.shooter);
     private final CANdle leftCANdle = new CANdle(5, CANBuses.shooter);
 
@@ -48,25 +50,25 @@ public class LightStrip extends SubsystemBase {
     public void toRed() {
         SolidColor red = new SolidColor(0, 135).withColor(new RGBWColor(255, 0, 0));
         setColors(red);
-        SmartDashboard.putString("Lights/color", "red");
+        NT.putString("Lights/color", "red");
     }
 
     public void toOrange() {
         SolidColor orange = new SolidColor(0, 135).withColor(new RGBWColor(255, 150, 0));
         setColors(orange);
-        SmartDashboard.putString("Lights/color", "orange");
+        NT.putString("Lights/color", "orange");
     }
 
     public void toGreen() {
         SolidColor green = new SolidColor(0, 135).withColor(new RGBWColor(0, 255, 0));
         setColors(green);
-        SmartDashboard.putString("Lights/color", "green");
+        NT.putString("Lights/color", "green");
     }
 
     public void toBlue() {
         SolidColor blue = new SolidColor(0, 135).withColor(new RGBWColor(0, 0, 255));
         setColors(blue);
-        SmartDashboard.putString("Lights/color", "blue");
+        NT.putString("Lights/color", "blue");
     }
 
     public void switchColor() {

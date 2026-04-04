@@ -4,8 +4,8 @@
   "holonomicMode": true,
   "pathFolders": [
     "Aiming Paths",
-    "Climbing Paths",
     "Collection Paths",
+    "Climbing Paths",
     "Outpost Paths",
     "Traversal Paths"
   ],
@@ -13,8 +13,8 @@
     "Disruption Autons",
     "Simple Autons"
   ],
-  "defaultMaxVel": 5.0,
-  "defaultMaxAccel": 5.0,
+  "defaultMaxVel": 3.0,
+  "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,

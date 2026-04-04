@@ -82,6 +82,7 @@ public class RobotContainer {
         drivetrain.setPositionAccuracyEstimator(positionAccuracyEstimator);
         NamedCommands.registerCommand("EnableAiming", Commands.runOnce(shooter::enableAiming));
         NamedCommands.registerCommand("ShootSequence", shoot);
+        NamedCommands.registerCommand("StopShoot", Commands.runOnce(() -> shooter.stop()));
         NamedCommands.registerCommand("FaceTarget", driveAndFaceTarget);
         NamedCommands.registerCommand("ExtendIntake", Commands.runOnce(() -> intake.extend()));
         NamedCommands.registerCommand("RetractIntake", Commands.runOnce(() -> intake.retract()));
