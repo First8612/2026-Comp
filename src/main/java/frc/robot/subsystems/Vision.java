@@ -89,8 +89,7 @@ public class Vision extends SubsystemBase {
             // stolen from https://github.com/Enigma2075/FRC2025/blob/05b738aa4bcf2dd822304b07f8c74f97dc0b25d0/src/main/java/frc/robot/subsystems/Vision.java#L287-L297
             double stdDevFactor = Math.pow(poseEstimate.avgTagDist, 2.0) / poseEstimate.tagCount;
             double linearStdDev = 0.25 * stdDevFactor * (Math.pow(drivetrainState.Speeds.omegaRadiansPerSecond, 2) + 1);
-            double angularStdDev = 999999999 * stdDevFactor;
-            // stdDevPublisher.set(linearStdDev);
+            double angularStdDev = 2 * stdDevFactor * (Math.pow(drivetrainState.Speeds.omegaRadiansPerSecond, 2) + 1);
 
             driveBase.addVisionMeasurement(
                 poseEstimate.pose, 

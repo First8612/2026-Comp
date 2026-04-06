@@ -35,7 +35,7 @@ import frc.robot.utils.NetworkTableGroup;
 import frc.robot.utils.TalonFXState;
 
 public class Shooter extends SubsystemBase {
-    private final NetworkTableGroup NT = new NetworkTableGroup("Shooter", false);
+    private final NetworkTableGroup NT = new NetworkTableGroup("Shooter", true);
     private final TalonFX shootMotorLeft = new TalonFX(20, CANBuses.shooter);
     private final TalonFX shootMotorRight = new TalonFX(21, CANBuses.shooter);
     private final TalonFX hoodMotor = new TalonFX(22, CANBuses.shooter);

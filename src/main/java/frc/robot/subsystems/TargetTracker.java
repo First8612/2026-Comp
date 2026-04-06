@@ -3,49 +3,52 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.util.List;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Field;
 
 public class TargetTracker extends SubsystemBase {
     private Drivetrain drivetrain;
     private State state;
+    private StructPublisher<Pose2d> targetLocation = NetworkTableInstance.getDefault()
+            .getStructTopic("SmartDashboard/Target/location", Pose2d.struct).publish();
 
     public TargetTracker(Drivetrain drivetrain) {
         super();
         this.drivetrain = drivetrain;
-        this.state = getCurrentState();
+        this.state = new State();
+
+        updateState();
     }
 
-    private State getCurrentState() {
+    private void updateState() {
         var robotPose = drivetrain.getCachedState().Pose;
-        State newState = new State();
 
         // Alliance/target logic
-        newState.currentAllianceField = DriverStation.getAlliance()
-            .map(color -> color == Alliance.Red ? Field.redAlliance : Field.blueAlliance)
-            .orElse(Field.blueAlliance);
+        state.currentAllianceField = Field.getMyAlliance();
 
-        if (newState.currentAllianceField.zone.contains(robotPose.getTranslation())) {
-            newState.currentTarget = newState.currentAllianceField.hub;
+        if (state.currentAllianceField.zone.contains(robotPose.getTranslation())) {
+            state.currentTarget = state.currentAllianceField.hub;
         } else {
-            newState.currentTarget = newState.currentAllianceField.passingTargetRight;
+            state.currentTarget = robotPose.nearest(List.of(
+                state.currentAllianceField.passingTargetRight,
+                state.currentAllianceField.passingTargetLeft
+            ));
         }
 
         // Directly compute target state
-        Translation2d robotToTargetTranslation = newState.currentTarget.getTranslation().minus(robotPose.getTranslation());
+        Translation2d robotToTargetTranslation = state.currentTarget.getTranslation().minus(robotPose.getTranslation());
         Rotation2d robotToTargetDirection = robotToTargetTranslation.getAngle();
 
-        newState.robotToTargetRotation = robotToTargetDirection.rotateBy(drivetrain.getOperatorForwardDirection());
+        state.robotToTargetRotation = robotToTargetDirection.rotateBy(drivetrain.getOperatorForwardDirection());
 
         var relativeRotations = robotToTargetTranslation.getAngle().minus(robotPose.getRotation()).getRotations() % 1.0;
-        newState.robotToTargetRelativeRotation = Rotation2d.fromRotations(relativeRotations);
-        newState.robotToTargetTranslation = robotToTargetTranslation;
-
-        return newState;
+        state.robotToTargetRelativeRotation = Rotation2d.fromRotations(relativeRotations);
+        state.robotToTargetTranslation = robotToTargetTranslation;
     }
 
     public Rotation2d getRobotToTargetRotation() {
@@ -63,7 +66,10 @@ public class TargetTracker extends SubsystemBase {
     @Override
     public void periodic() {
         super.periodic();
-        this.state = getCurrentState();
+        updateState();
+
+        targetLocation.set(state.currentTarget);
+        SmartDashboard.putString("Target/alliance", state.currentAllianceField.name);
         SmartDashboard.putNumber("Target/robotToTargetAbsoluteRotation", getRobotToTargetRotation().getRotations());
         SmartDashboard.putNumber("Target/robotToTargetRelativeRotation", getRobotToTargetRelativeRotation().getRotations());
     }
