@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -25,6 +26,8 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CANBuses;
@@ -78,15 +81,20 @@ public class Intake extends SubsystemBase {
          * configured to the ratio between the absolute sensor and the Talon FX rotor.
          */
 
-        extendEncoderLeft.getConfigurator().apply(new CANcoderConfiguration()
-            .withMagnetSensor(new MagnetSensorConfigs()
-                .withMagnetOffset(Rotations.of(-0.2))
-                .withSensorDirection(SensorDirectionValue.Clockwise_Positive)));
+        if (RobotBase.isReal()) {
+            // don't do this if in simulation mode.
+            // simulation doesn't separate devices by CANivore, so these incoders conflict with drive train encoders
 
-        extendEncoderRight.getConfigurator().apply(new CANcoderConfiguration()
-            .withMagnetSensor(new MagnetSensorConfigs()
-                .withMagnetOffset(Rotations.of(-0.4705))
-                .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)));
+            extendEncoderLeft.getConfigurator().apply(new CANcoderConfiguration()
+                .withMagnetSensor(new MagnetSensorConfigs()
+                    .withMagnetOffset(Rotations.of(-0.2))
+                    .withSensorDirection(SensorDirectionValue.Clockwise_Positive)));
+
+            extendEncoderRight.getConfigurator().apply(new CANcoderConfiguration()
+                .withMagnetSensor(new MagnetSensorConfigs()
+                    .withMagnetOffset(Rotations.of(-0.4705))
+                    .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)));
+        }
 
         intakeExtendSlot0Config = new Slot0Configs()
                 .withGravityType(GravityTypeValue.Arm_Cosine)
