@@ -38,7 +38,7 @@ import java.util.List;
 
 public class Intake extends SubsystemBase {
     private final boolean enabled = true;
-    private final NetworkTableGroup NT = new NetworkTableGroup("Intake", false);
+    private final NetworkTableGroup NT = new NetworkTableGroup("Intake", true);
     private final TalonFX intakeMotor = new TalonFX(10, CANBuses.intake);
     private final TalonFX intakeExtendLeft = new TalonFX(11, CANBuses.intake);
     private final TalonFX intakeExtendRight = new TalonFX(12, CANBuses.intake);
