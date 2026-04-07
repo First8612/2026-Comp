@@ -16,64 +16,64 @@
     },
     {
       "anchor": {
-        "x": 7.7454698795180725,
+        "x": 7.745,
         "y": 6.286
       },
       "prevControl": {
-        "x": 7.614015646335976,
+        "x": 7.613545766817904,
         "y": 7.153561972772446
       },
       "nextControl": {
-        "x": 8.007738786944039,
-        "y": 4.555096968462368
+        "x": 8.007268907425967,
+        "y": 4.555096968462367
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.806,
+        "x": 6.805686746987951,
         "y": 4.603
       },
       "prevControl": {
-        "x": 7.702264346752281,
-        "y": 4.513051141899797
+        "x": 7.695316698219276,
+        "y": 4.461794029145462
       },
       "nextControl": {
-        "x": 6.303325551550102,
-        "y": 4.653448277673947
+        "x": 6.084954553409368,
+        "y": 4.71739777738994
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.756626506024096,
-        "y": 5.145
+        "x": 4.178193181818182,
+        "y": 5.449
       },
       "prevControl": {
-        "x": 6.007963205319229,
-        "y": 5.068503888074757
+        "x": 6.095262100781209,
+        "y": 5.686050856847409
       },
       "nextControl": {
-        "x": 5.313697455950188,
-        "y": 5.27980860648054
+        "x": 2.114840795502335,
+        "y": 5.193860789136944
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.25,
-        "y": 5.5
+        "x": 1.7,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 4.794988010046268,
-        "y": 5.440242469584188
+        "x": 3.2449879518062303,
+        "y": 4.059759036151141
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Aim4 L"
+      "linkedName": "Climb L"
     }
   ],
   "rotationTargets": [
@@ -83,17 +83,38 @@
     },
     {
       "waypointRelativePos": 2.0,
-      "rotationDegrees": 180.0
+      "rotationDegrees": 179.0
+    },
+    {
+      "waypointRelativePos": 2.611850060459485,
+      "rotationDegrees": 140.97827241050314
+    },
+    {
+      "waypointRelativePos": 3.105199516324059,
+      "rotationDegrees": 138.76843286194753
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0,
+      "minWaypointRelativePos": 3.229946524064171,
+      "maxWaypointRelativePos": 3.6,
       "constraints": {
-        "maxVelocity": 5.0,
-        "maxAcceleration": 5.0,
+        "maxVelocity": 2.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 3.6,
+      "maxWaypointRelativePos": 4,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -104,12 +125,6 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
       "name": "StartWarmup",
       "waypointRelativePos": 2.0,
       "endWaypointRelativePos": null,
@@ -117,7 +132,13 @@
     },
     {
       "name": "StopIntake",
-      "waypointRelativePos": 2.853237410071915,
+      "waypointRelativePos": 2.5,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "RetractIntake",
+      "waypointRelativePos": 2.5,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -132,12 +153,12 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -48.00000000000001
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Collection Paths",
   "idealStartingState": {
-    "velocity": 5.0,
+    "velocity": 3.0,
     "rotation": 0.0
   },
   "useDefaultConstraints": true

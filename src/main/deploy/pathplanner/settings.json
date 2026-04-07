@@ -13,8 +13,8 @@
     "Disruption Autons",
     "Simple Autons"
   ],
-  "defaultMaxVel": 3.0,
-  "defaultMaxAccel": 3.0,
+  "defaultMaxVel": 2.0,
+  "defaultMaxAccel": 2.0,
   "defaultMaxAngVel": 478.0,
   "defaultMaxAngAccel": 478.0,
   "defaultNominalVoltage": 12.0,

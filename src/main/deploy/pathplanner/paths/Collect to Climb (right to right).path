@@ -87,11 +87,11 @@
     },
     {
       "waypointRelativePos": 2.611850060459485,
-      "rotationDegrees": 140.97827241050314
+      "rotationDegrees": -140.978
     },
     {
       "waypointRelativePos": 3.105199516324059,
-      "rotationDegrees": 138.76843286194753
+      "rotationDegrees": -138.768
     }
   ],
   "constraintZones": [
@@ -132,20 +132,20 @@
     },
     {
       "name": "StopIntake",
-      "waypointRelativePos": 2.853237410071915,
+      "waypointRelativePos": 2.5,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
       "name": "RetractIntake",
-      "waypointRelativePos": 2.8663101604278074,
+      "waypointRelativePos": 2.5,
       "endWaypointRelativePos": null,
       "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 478.0,
     "maxAngularAcceleration": 478.0,
     "nominalVoltage": 12.0,

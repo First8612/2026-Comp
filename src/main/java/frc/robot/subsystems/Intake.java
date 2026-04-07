@@ -147,11 +147,11 @@ public class Intake extends SubsystemBase {
     }
 
     public void in() {
-        speed = -0.75;
+        speed = 0.75;
     }
 
     public void out() {
-        speed = 0.75;
+        speed = -0.75;
     }
 
     // intended for prototyping time
