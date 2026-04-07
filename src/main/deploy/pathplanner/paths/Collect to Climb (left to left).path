@@ -141,11 +141,17 @@
       "waypointRelativePos": 2.5,
       "endWaypointRelativePos": null,
       "command": null
+    },
+    {
+      "name": "RetractIntake",
+      "waypointRelativePos": 3.197860962566848,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 478.0,
     "maxAngularAcceleration": 478.0,
     "nominalVoltage": 12.0,
@@ -158,7 +164,7 @@
   "reversed": false,
   "folder": "Collection Paths",
   "idealStartingState": {
-    "velocity": 3.0,
+    "velocity": 2.5,
     "rotation": 0.0
   },
   "useDefaultConstraints": true

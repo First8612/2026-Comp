@@ -76,10 +76,23 @@
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "StopIntake",
+      "waypointRelativePos": 2.799465240641712,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "StartWarmup",
+      "waypointRelativePos": 2.799465240641713,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 478.0,
     "maxAngularAcceleration": 478.0,
     "nominalVoltage": 12.0,
