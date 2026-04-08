@@ -3,33 +3,52 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 4.0
+        "x": 5.5,
+        "y": 0.65
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8880810370968537,
-        "y": 3.7764510216022353
+        "x": -0.4894721826032091,
+        "y": 0.043423680454586444
       },
       "isLocked": false,
-      "linkedName": "Aim C"
+      "linkedName": "Middle R"
     },
     {
       "anchor": {
         "x": 1.7,
-        "y": 3.5
+        "y": 4.0
       },
       "prevControl": {
-        "x": 2.072382310984308,
-        "y": 3.498045649072753
+        "x": 3.2,
+        "y": 4.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Climb R"
+      "linkedName": "Climb L"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.6010791366906476,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 5.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -47,7 +66,7 @@
   "reversed": false,
   "folder": "Climbing Paths",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 2.5,
     "rotation": 0.0
   },
   "useDefaultConstraints": true

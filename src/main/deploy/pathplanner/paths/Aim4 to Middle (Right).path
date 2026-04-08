@@ -3,34 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.5,
-        "y": 7.4
+        "x": 3.25,
+        "y": 2.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.4809272467903005,
-        "y": 7.987760342368046
+        "x": 3.144518330377204,
+        "y": 2.273342510881314
       },
       "isLocked": false,
-      "linkedName": "Middle L"
+      "linkedName": "Aim4 R"
     },
     {
       "anchor": {
-        "x": 1.7,
-        "y": 4.0
+        "x": 3.6,
+        "y": 0.65
       },
       "prevControl": {
-        "x": 2.30527817403709,
-        "y": 4.274365192582025
+        "x": 2.9744235922458806,
+        "y": 0.8053121930000139
+      },
+      "nextControl": {
+        "x": 3.842634038934955,
+        "y": 0.5897611159622724
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.5,
+        "y": 0.65
+      },
+      "prevControl": {
+        "x": 4.881867735961044,
+        "y": 0.6500000000000001
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Climb L"
+      "linkedName": "Middle R"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.9987908101571956,
       "rotationDegrees": 0.0
     }
   ],
@@ -46,14 +62,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 5.0,
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Climbing Paths",
+  "folder": "Traversal Paths",
   "idealStartingState": {
-    "velocity": 2.5,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": 48.00000000000001
   },
   "useDefaultConstraints": true
 }

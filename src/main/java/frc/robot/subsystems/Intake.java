@@ -38,7 +38,7 @@ import java.util.List;
 
 public class Intake extends SubsystemBase {
     private final boolean enabled = true;
-    private final NetworkTableGroup NT = new NetworkTableGroup("Intake", false);
+    private final NetworkTableGroup NT = new NetworkTableGroup("Intake", true);
     private final TalonFX intakeMotor = new TalonFX(10, CANBuses.intake);
     private final TalonFX intakeExtendLeft = new TalonFX(11, CANBuses.intake);
     private final TalonFX intakeExtendRight = new TalonFX(12, CANBuses.intake);
@@ -80,12 +80,12 @@ public class Intake extends SubsystemBase {
 
         extendEncoderLeft.getConfigurator().apply(new CANcoderConfiguration()
             .withMagnetSensor(new MagnetSensorConfigs()
-                .withMagnetOffset(Rotations.of(-0.2))
+                .withMagnetOffset(Rotations.of(-.703))
                 .withSensorDirection(SensorDirectionValue.Clockwise_Positive)));
 
         extendEncoderRight.getConfigurator().apply(new CANcoderConfiguration()
             .withMagnetSensor(new MagnetSensorConfigs()
-                .withMagnetOffset(Rotations.of(-0.4705))
+                .withMagnetOffset(Rotations.of(-.981))
                 .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)));
 
         intakeExtendSlot0Config = new Slot0Configs()

@@ -48,6 +48,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "StartWarmup"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Middle to Aim2 (Right)"
@@ -66,7 +72,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.0
+                  "waitTime": 3.5
                 }
               },
               {
@@ -112,7 +118,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Collect Close (Right to Right)"
+            "pathName": "Improved Collect (right to right)"
           }
         },
         {
@@ -128,9 +134,15 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "StartWarmup"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Middle to Climb (Right)"
+            "pathName": "Middle to Climb (Right to Left)"
           }
         },
         {
@@ -148,13 +160,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Climb to Onclimb (Right)"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootSequence"
+            "pathName": "Climb to Onclimb (Left)"
           }
         },
         {
@@ -167,6 +173,12 @@
           "type": "named",
           "data": {
             "name": "Climb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSequence"
           }
         }
       ]

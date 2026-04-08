@@ -79,6 +79,7 @@ public class RobotContainer {
         drivetrain.setPositionAccuracyEstimator(positionAccuracyEstimator);
         NamedCommands.registerCommand("EnableAiming", Commands.runOnce(shooter::enableAiming));
         NamedCommands.registerCommand("ShootSequence", shoot);
+        NamedCommands.registerCommand("StopShoot", Commands.runOnce(() -> shooter.stop()));
         NamedCommands.registerCommand("FaceTarget", driveAndFaceTarget);
         NamedCommands.registerCommand("ExtendIntake", Commands.runOnce(() -> intake.extend()));
         NamedCommands.registerCommand("RetractIntake", Commands.runOnce(() -> intake.retract()));
@@ -103,6 +104,8 @@ public class RobotContainer {
 
         //Un-comment this line if running autonomous
         // RobotModeTriggers.teleop().onTrue(climber.raiseClimb());
+
+        RobotModeTriggers.teleop().onTrue(new InstantCommand(() -> shooter.stopWarmup()));
 
         Field.writeOnceToNT();
     }

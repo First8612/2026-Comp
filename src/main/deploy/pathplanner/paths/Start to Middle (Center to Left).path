@@ -12,7 +12,7 @@
         "y": 5.181606579292375
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Start C"
     },
     {
       "anchor": {
@@ -41,29 +41,24 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Middle L"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.9987908101571956,
-      "rotationDegrees": 180.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 5.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 478.0,
+    "maxAngularAcceleration": 478.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 2.5,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Traversal Paths",

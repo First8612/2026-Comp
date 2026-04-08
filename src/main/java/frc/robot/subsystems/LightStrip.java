@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.CANBuses;
+import frc.robot.utils.NetworkTableGroup;
 
 import java.util.function.DoubleSupplier;
 
@@ -16,6 +17,7 @@ import com.ctre.phoenix6.signals.StripTypeValue;
  * Subsystem that controls an addressable LED strip using a CANdle.
  */
 public class LightStrip extends SubsystemBase {
+    private NetworkTableGroup NT = new NetworkTableGroup("Lightstrip", false);
     private final CANdle rightCANdle = new CANdle(4, CANBuses.shooter);
     private final CANdle leftCANdle = new CANdle(5, CANBuses.shooter);
     private DoubleSupplier confidenceSupplier;
