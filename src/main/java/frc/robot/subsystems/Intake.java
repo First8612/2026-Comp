@@ -3,14 +3,12 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -42,13 +40,13 @@ public class Intake extends SubsystemBase {
     private final CANcoder extendEncoderLeft = new CANcoder(13, CANBuses.intake);
     private final CANcoder extendEncoderRight = new CANcoder(14, CANBuses.intake);
     private final Slot0Configs intakeExtendSlot0Config;
-    private final Slot1Configs intakeExtendSlot1Config;
 
     // Status signals - captured as states for efficient refresh management
     private TalonFXState extendLeftState;
     private TalonFXState extendRightState;
     private CANCoderState extendEncoderLeftState;
     private CANCoderState extendEncoderRightState;
+    private List<BaseStatusSignal> signals = new ArrayList<>();
 
     // these are off the absolute encoder.
     // to use KG in feed-forward, the horizontal angle should be "0".
@@ -56,15 +54,18 @@ public class Intake extends SubsystemBase {
     private final Angle extendedGoal = Rotations.of(0.01);
 
     private boolean extended = false;
-    private boolean extending = false;
     private double speed = 0;
     private Climber climb;
     // extendRatio = 16 / 3;
 
     public Intake() {
         super();
+
+        extendLeftState.addTo(signals);
+        extendRightState.addTo(signals);
+        extendEncoderLeftState.addTo(signals);
+        extendEncoderRightState.addTo(signals);
         
-        // setDefaultCommand(Commands.runOnce(this::stop, this));
         DixieHornCommand.enrollSubsystemMotors(this, intakeMotor, intakeExtendLeft, intakeExtendRight);
 
         // Extension CANcoder
@@ -93,13 +94,6 @@ public class Intake extends SubsystemBase {
                 .withGravityType(GravityTypeValue.Arm_Cosine)
                 .withKG(-0.8)
                 .withKP(20)
-                .withKI(0)
-                .withKD(0);
-
-        intakeExtendSlot1Config = new Slot1Configs()
-                .withGravityType(GravityTypeValue.Arm_Cosine)
-                .withKG(-0.8)
-                .withKP(100)
                 .withKI(0)
                 .withKD(0);
         
@@ -212,12 +206,7 @@ public class Intake extends SubsystemBase {
         if (!enabled) return;
         
         // Batch refresh all status signals in parallel using BaseStatusSignal.refreshAll()
-        List<BaseStatusSignal> signals = new ArrayList<>();
-        extendLeftState.addTo(signals);
-        extendRightState.addTo(signals);
-        extendEncoderLeftState.addTo(signals);
-        extendEncoderRightState.addTo(signals);
-        BaseStatusSignal.refreshAll(signals.toArray(new StatusSignal<?>[0]));
+        BaseStatusSignal.refreshAll(signals);
 
         if(isExtended()) {
             intakeMotor.set(speed);
