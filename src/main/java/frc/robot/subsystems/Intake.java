@@ -80,12 +80,12 @@ public class Intake extends SubsystemBase {
 
         extendEncoderLeft.getConfigurator().apply(new CANcoderConfiguration()
             .withMagnetSensor(new MagnetSensorConfigs()
-                .withMagnetOffset(Rotations.of(-0.2 + 0.495))
+                .withMagnetOffset(Rotations.of(-.703))
                 .withSensorDirection(SensorDirectionValue.Clockwise_Positive)));
 
         extendEncoderRight.getConfigurator().apply(new CANcoderConfiguration()
             .withMagnetSensor(new MagnetSensorConfigs()
-                .withMagnetOffset(Rotations.of(-0.4705 + 0.487))
+                .withMagnetOffset(Rotations.of(-.981))
                 .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)));
 
         intakeExtendSlot0Config = new Slot0Configs()
