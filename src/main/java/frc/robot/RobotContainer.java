@@ -10,10 +10,8 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.event.BooleanEvent;
-import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,6 +36,7 @@ import frc.robot.subsystems.PositionAccuracyEstimator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Storage;
+import frc.robot.subsystems.MatchTimer;
 import frc.robot.subsystems.TargetTracker;
 import frc.robot.utils.NetworkTableGroup;
 
@@ -45,7 +44,6 @@ public class RobotContainer {
     public final static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public final static double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     public static boolean prescisionMode = false;
-    private final EventLoop loop = new EventLoop();
     private final Telemetry logger = new Telemetry(MaxSpeed);
     private final NetworkTableGroup robotNT = new NetworkTableGroup("Robot", true);
 
@@ -69,8 +67,7 @@ public class RobotContainer {
     private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(controls, drivetrain, targetTracker);
     private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, false, climber::isAtClimb);
     private final ShootSequence shootSimple = new ShootSequence(shooter, storage, targetTracker, true, climber::isAtClimb);
-    private Timer gameTime = new Timer();
-    private final double[] gameEvents = {/*Start 1st Shift*/10, /*2nd Shift*/35, /*3st Shift*/60, /*4th Shift*/85, /*Start Endgame*/110, /*End of Game*/140};
+    private final MatchTimer matchTimer = new MatchTimer();
 
     SendableChooser<Command> autonChooser;
 
@@ -110,21 +107,12 @@ public class RobotContainer {
         Field.writeOnceToNT();
     }
 
-    private boolean atGameScheduleTime(double sec, double threshold) {
-        for(int i = 0; i < gameEvents.length; i++) {
-            if(Math.abs(sec - gameEvents[i]) < threshold && sec > gameEvents[i]) {
-                return true;
-            }
-        }
-        return false;
+    public void startGameTimer() {
+        matchTimer.start();
     }
 
-    public void startGameTimer() {
-        gameTime.start();
-    }
     public void stopGameTimer() {
-        gameTime.reset();
-        gameTime.stop();
+        matchTimer.stop();
     }
 
     private void configureBindings() {
@@ -188,28 +176,23 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        
-        BooleanEvent changeEvent = new BooleanEvent(loop, () -> atGameScheduleTime(gameTime.get(), 0.5));
-        changeEvent.rising().ifHigh(() -> {
-            controls.setRumble(1);
-            controls.setRumble(1);
-        });
-        
-        changeEvent.falling().ifHigh(() -> {
-            controls.setRumble(0);
-            controls.setRumble(0);
-        });
-        
-        BooleanEvent aboutToChange = new BooleanEvent(loop, () -> atGameScheduleTime(gameTime.get() + 3, 1));
-        aboutToChange.rising().ifHigh(() -> {
+        matchTimer.aboutToChangeTrigger.onTrue(Commands.runOnce(() -> {
             controls.setRumble(0.2);
-            controls.setRumble(0.2);
-        });
+        })).onFalse(Commands.runOnce(() -> {
+            controls.setRumble(0);
+        }));
+        
+        matchTimer.onChangeTrigger.onTrue(Commands.runOnce(() -> {
+            controls.setRumble(1);
+        })).onFalse(Commands.runOnce(() -> {
+            controls.setRumble(0);
+        }));
 
-        aboutToChange.falling().ifHigh(() -> {
-            controls.setRumble(0);
-            controls.setRumble(0);
-        });
+        matchTimer.gameFinishedTrigger.onTrue(Commands.runOnce(() -> {
+            if (DriverStation.getMatchNumber() != 0) {
+                vision.triggerRewindCapture();
+            }
+        }));
     }
 
     public Command getAutonomousCommand() {
@@ -219,8 +202,6 @@ public class RobotContainer {
     }
 
     public void robotPeriodic() {
-        loop.poll();
-
         robotNT.putNumber("batteryVoltage", RobotController.getBatteryVoltage());
         robotNT.putNumber("batteryVoltage", RobotController.getBatteryVoltage());
         robotNT.putNumber("inputVoltage", RobotController.getInputVoltage());
