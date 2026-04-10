@@ -34,7 +34,7 @@ public class WaitForReadyToShoot extends Command {
         var shooterIsReady = shooter.readyToShoot();
 
         // passing
-        if (!targetTracker.getTargetIsHub()) {
+        if (targetTracker.getRobotToTargetTranslation().getNorm() > 10) {
             // when passing, force to true.
             shooterIsReady = true;
         };

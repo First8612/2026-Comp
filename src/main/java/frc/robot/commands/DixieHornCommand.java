@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -54,6 +55,8 @@ public class DixieHornCommand extends Command {
 
     @Override
     public void execute() {
+    // SmartDashboard.putNumber("DixieHorn/noteIndex", noteIndex);
+        
         // if current note is outside of array bounds, return
         if (noteIndex < 0 || noteIndex >= DIXIE_HORN_NOTES.length) {
             setControlOnAll(new MusicTone(0));

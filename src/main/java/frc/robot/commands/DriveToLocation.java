@@ -11,6 +11,8 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
@@ -29,6 +31,7 @@ public class DriveToLocation extends Command {
     private Translation2d translationDiff = new Translation2d();
     private Rotation2d rotationDiff = new Rotation2d();
     private Debouncer atLocationDebounce = new Debouncer(0.06, DebounceType.kRising);
+    private Timer timer = new Timer();
     private Supplier<Pose2d> locationSupplier;
 
     public DriveToLocation(Drivetrain drivetrain, Supplier<Pose2d> locationSupplier) {
@@ -50,6 +53,8 @@ public class DriveToLocation extends Command {
         oController.reset();
 
         targetLocation = locationSupplier.get();
+
+        timer.restart();
     }
 
     @Override
@@ -64,10 +69,8 @@ public class DriveToLocation extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        drivetrain.setControl(driveRequest
-            .withVelocityX(0)            
-            .withVelocityY(0)            
-            .withRotationalRate(0));
+        timer.stop();
+        drivetrain.setControl(driveRequest);
     }
 
     @Override
@@ -107,6 +110,11 @@ public class DriveToLocation extends Command {
                 .withVelocityY(ySpeed)            
                 .withRotationalRate(oSpeed)            
         );
+
+        SmartDashboard.putNumber("AutoTower/seconds", timer.get());
+        SmartDashboard.putNumber("AutoTower/translation/x", translationDiff.getX());
+        SmartDashboard.putNumber("AutoTower/translation/y", translationDiff.getY());
+        SmartDashboard.putNumber("AutoTower/translation/o", rotationDiff.getRadians());
     }
 
 

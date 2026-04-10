@@ -33,13 +33,11 @@ public class TargetTracker extends SubsystemBase {
 
         if (state.currentAllianceField.zone.contains(robotPose.getTranslation())) {
             state.currentTarget = state.currentAllianceField.hub;
-            state.targetIsHub = true;
         } else {
             state.currentTarget = robotPose.nearest(List.of(
                 state.currentAllianceField.passingTargetRight,
                 state.currentAllianceField.passingTargetLeft
             ));
-            state.targetIsHub = true;
         }
 
         // Directly compute target state
@@ -65,10 +63,6 @@ public class TargetTracker extends SubsystemBase {
         return state.robotToTargetTranslation;
     }
 
-    public boolean getTargetIsHub() {
-        return state.targetIsHub;
-    }
-
     @Override
     public void periodic() {
         super.periodic();
@@ -86,6 +80,5 @@ public class TargetTracker extends SubsystemBase {
         public Rotation2d robotToTargetRotation;
         public Rotation2d robotToTargetRelativeRotation;
         public Translation2d robotToTargetTranslation;
-        public boolean targetIsHub;
     }
 }

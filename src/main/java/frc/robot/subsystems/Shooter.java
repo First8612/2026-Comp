@@ -3,7 +3,10 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
@@ -41,7 +44,6 @@ public class Shooter extends SubsystemBase {
     private final TalonFXState shootMotorRightSignals = TalonFXState.capture(shootMotorRight);
     private final TalonFXState hoodMotorSignals = TalonFXState.capture(hoodMotor);
     private final TalonFXState feedMotorSignals = TalonFXState.capture(feedMotor);
-    private final List<BaseStatusSignal> signals = new ArrayList<BaseStatusSignal>();
 
     private Follower shootFollow = new Follower(20, MotorAlignmentValue.Opposed);
 
@@ -63,19 +65,10 @@ public class Shooter extends SubsystemBase {
     private boolean warmingUp = false;
     private BooleanSupplier isClimbedSupplier;
 
-    private PositionVoltage hoodPositionControl = new PositionVoltage(0).withSlot(0);
-    private VelocityVoltage flywheelVelocityControl = new VelocityVoltage(0).withSlot(0);
-    private VelocityVoltage feedVelocityControl = new VelocityVoltage(0).withSlot(0);
-    private CoastOut coastControl = new CoastOut();
-
 
     public Shooter(TargetTracker targetTracker, BooleanSupplier isClimbedSupplier) {
         super();
         this.isClimbedSupplier = isClimbedSupplier;
-        shootMotorLeftSignals.addTo(signals);
-        shootMotorRightSignals.addTo(signals);
-        hoodMotorSignals.addTo(signals);
-        feedMotorSignals.addTo(signals);
 
         //OLD NUMBER
         // shootCalc.put(0.0, new double[] { 0.0, 49.0 * 1.5 });
@@ -134,9 +127,18 @@ public class Shooter extends SubsystemBase {
                         .withPeakReverseDutyCycle(0));
         shootMotorRight.setControl(shootFollow);
 
+        /*
+         * NOTES: (with two brass flywheels)
+         * At KV of .13 it starts to overrun a little bit.
+         * Adding KP caused recovery to be faster, but at 1 or above (with 0 I and D)
+         * it would oscillate and not stay in the "ready" range, and you could hear
+         * the belt vibrating.
+         * At KV .125, KP .8 recovery time is about .5sec
+         */
         shootMotorLeft.getConfigurator().apply(
                 new Slot0Configs()
-                        .withKV(.125)
+                        // TODO: still iterating on what these values should be
+                        .withKV(.125) // this seems right
                         .withKP(.7)
                         .withKI(0)
                         .withKD(0)
@@ -160,6 +162,7 @@ public class Shooter extends SubsystemBase {
     public void enableFeeding() {
         enableFeeding(true);
     }
+
 
     public void enableFeeding(boolean enabled) {
         isFeeding = enabled;
@@ -238,6 +241,11 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        List<BaseStatusSignal> signals = new ArrayList<>();
+        shootMotorLeftSignals.addTo(signals);
+        shootMotorRightSignals.addTo(signals);
+        hoodMotorSignals.addTo(signals);
+        feedMotorSignals.addTo(signals);
         BaseStatusSignal.refreshAll(signals);
 
         overrideAim = SmartDashboard.getBoolean("Shooter/override/active", overrideAim);
@@ -275,35 +283,34 @@ public class Shooter extends SubsystemBase {
         }
 
         if(hasReset) {
-            hoodMotor.setControl(hoodPositionControl.withPosition(currHoodGoal));
+            hoodMotor.setControl(new PositionVoltage(0).withSlot(0).withPosition(currHoodGoal));
         }
 
         if (flywheelSpeedGoal == 0) {
-            shootMotorLeft.setControl(coastControl);
+            shootMotorLeft.setControl(new CoastOut());
         } else {
             // Cruising
-            shootMotorLeft.setControl(flywheelVelocityControl.withVelocity(flywheelSpeedGoal));
+            shootMotorLeft.setControl(new VelocityVoltage(flywheelSpeedGoal).withSlot(0));
         }
         if(targetTracker.getRobotToTargetTranslation().getNorm() > 100 && isFeeding) {
-            feedMotor.setControl(feedVelocityControl.withVelocity(30.0));
+            feedMotor.setControl(new VelocityVoltage(30.0).withSlot(0));
         }
         else if (isFeeding) {
             var speedGoal = isFeedReversed ? -10.0 : 30.0;
-            feedMotor.setControl(feedVelocityControl.withVelocity(speedGoal));
+            feedMotor.setControl(new VelocityVoltage(speedGoal).withSlot(0));
         } else {
-            feedMotor.setControl(coastControl);
+            feedMotor.setControl(new CoastOut());
         }
         
         NT.putNumber("Distance", targetTracker.getRobotToTargetTranslation().getNorm());
         NT.putBoolean("isAiming", isAiming);
         NT.putBoolean("isFeeding", isFeeding);
         NT.putBoolean("readyToShoot", readyToShoot());
-        NT.putTalonFX("shootMotorLeft", shootMotorLeftSignals);
-        NT.putTalonFX("shootMotorRight", shootMotorRightSignals);
+        NT.putTalonFX("shootMotorLeft", shootMotorLeft);
+        NT.putTalonFX("shootMotorRight", shootMotorRight);
         NT.putNumber("shootMotor/targetVelocity", flywheelSpeedGoal);
-        NT.putBoolean("shootMotor/ready", readyToShoot());
-        NT.putTalonFX("hood/motor", hoodMotorSignals);
+        NT.putTalonFX("hood/motor", hoodMotor);
         NT.putBoolean("hood/ready", hoodReady());
-        NT.putTalonFX("feed/motor", feedMotorSignals);
+        NT.putTalonFX("feed/motor", feedMotor);
     }
 }
