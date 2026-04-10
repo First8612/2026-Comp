@@ -57,6 +57,10 @@ public class Controls {
         return driver.leftBumper();
     }
 
+    public Trigger xLock() {
+        return driver.x();
+    }
+
     // Operator ******************************
     public Trigger intakeRetract() {
         return operator.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.8);

@@ -11,7 +11,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.2
+                  "waitTime": 0.0
                 }
               },
               {
@@ -32,13 +32,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Middle (Left)"
+            "pathName": "Start to Middle (Right)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Improved Collect (left to left)"
+            "pathName": "Improved Collect (right to right)"
           }
         },
         {
@@ -50,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle to Aim2 (Left)"
+            "pathName": "Middle to Aim2 (Right)"
           }
         },
         {
@@ -81,7 +81,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Aim2 to Climb (Left)"
+            "pathName": "Aim2 to Climb (Right)"
           }
         },
         {
@@ -106,13 +106,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Climb to Onclimb (Left)"
+            "pathName": "Climb to Onclimb (Right)"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 0.5
           }
         },
         {

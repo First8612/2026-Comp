@@ -10,6 +10,8 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -127,6 +129,7 @@ public class RobotContainer {
 
         controls.prescisionMode().whileTrue(Commands.startEnd(() -> {prescisionMode = true;}, () -> {prescisionMode = false;}));
         controls.driveAndFaceTarget().whileTrue(driveAndFaceTarget);
+        controls.xLock().whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.SwerveDriveBrake()));
         controls.shoot().whileTrue(shoot);
         controls.shootSimiple().whileTrue(shootSimple);
         controls.horn().whileTrue(new DixieHornCommand());
