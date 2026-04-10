@@ -38,19 +38,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Improved Collect (right to right)"
+            "pathName": "Collect (Right to Right)"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "StopIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StartWarmup"
           }
         },
         {
@@ -72,7 +66,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.5
+                  "waitTime": 4.0
                 }
               },
               {
@@ -118,7 +112,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Improved Collect (right to right)"
+            "pathName": "Collect Close (Right to Right)"
           }
         },
         {
@@ -128,51 +122,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "RetractIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StartWarmup"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Middle to Climb (Right to Left)"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ExtendClimb"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.1
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Climb to Onclimb (Left)"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Climb"
+            "pathName": "Middle to Aim2 (Right)"
           }
         },
         {
