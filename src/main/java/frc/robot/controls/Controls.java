@@ -82,6 +82,10 @@ public class Controls {
         return operator.rightBumper();
     }
 
+    public Trigger outake() {
+        return operator.b();
+    }
+
     public Trigger conveyIn() {
         return operator.povUp();
     }
@@ -120,7 +124,7 @@ public class Controls {
     }
 
     public Trigger zeroHood() {
-        return operator.b();
+        return operator.leftBumper().and(operator.b());
     }
 
     public Trigger changeColor() {

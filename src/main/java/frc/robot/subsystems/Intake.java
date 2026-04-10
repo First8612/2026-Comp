@@ -80,12 +80,12 @@ public class Intake extends SubsystemBase {
             // simulation doesn't separate devices by CANivore, so these incoders conflict with drive train encoders
             extendEncoderLeft.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
-                    .withMagnetOffset(Rotations.of(-.703))
+                    .withMagnetOffset(Rotations.of(-.703 - 0.337))
                     .withSensorDirection(SensorDirectionValue.Clockwise_Positive)));
 
             extendEncoderRight.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
-                    .withMagnetOffset(Rotations.of(-.981))
+                    .withMagnetOffset(Rotations.of(-.981 + 0.008))
                     .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)));
         }
 
@@ -192,14 +192,14 @@ public class Intake extends SubsystemBase {
         return MathUtil.isNear(
             extendedGoal.magnitude(), 
             extendLeftState.position.getValueAsDouble(),
-            0.2);
+            0.05);
     }
 
     public Boolean isRetracted() {
         return MathUtil.isNear(
             retractedGoal.magnitude(), 
             extendLeftState.position.getValueAsDouble(),
-            0.1);
+            0.05);
     }
 
     private void intakeExtendSetControl(ControlRequest request) {
