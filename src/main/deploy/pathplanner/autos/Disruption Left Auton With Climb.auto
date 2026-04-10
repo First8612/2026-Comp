@@ -38,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Collect (Left to Left)"
+            "pathName": "Improved Collect (left to left)"
           }
         },
         {
@@ -119,6 +119,12 @@
           "type": "named",
           "data": {
             "name": "Climb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSequence"
           }
         }
       ]
