@@ -90,7 +90,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("EndWarmup", new InstantCommand(() -> shooter.stopWarmup()));
         
         new EventTrigger("ExtendIntake").onTrue(Commands.runOnce(() -> intake.extend()));
-        new EventTrigger("StartIntake").onTrue(new InstantCommand(() -> intake.in(), intake));
+        new EventTrigger("StartIntake").onTrue(Commands.runOnce(() -> intake.in()));
         new EventTrigger("RetractIntake").onTrue(Commands.runOnce(() -> intake.retract()));
         new EventTrigger("StopIntake").onTrue(new InstantCommand(() -> intake.stop(), intake));
         new EventTrigger("ExtendClimb").onTrue(Commands.run(() -> climber.raiseClimb()));
