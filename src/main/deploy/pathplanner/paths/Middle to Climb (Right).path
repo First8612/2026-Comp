@@ -12,7 +12,7 @@
         "y": 0.043423680454586444
       },
       "isLocked": false,
-      "linkedName": "Middle R"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Climb R"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -34,28 +34,14 @@
       "rotationDegrees": 0.0
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6010791366906476,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 2.0,
-        "maxAcceleration": 5.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.5,
-    "maxAcceleration": 2.5,
-    "maxAngularVelocity": 478.0,
-    "maxAngularAcceleration": 478.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -66,7 +52,7 @@
   "reversed": false,
   "folder": "Climbing Paths",
   "idealStartingState": {
-    "velocity": 5.0,
+    "velocity": 2.0,
     "rotation": 0.0
   },
   "useDefaultConstraints": true
