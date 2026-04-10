@@ -120,22 +120,13 @@ public class Shooter extends SubsystemBase {
                         withKD(0)
                 );
 
-        var shooterCurrentLimits = new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(80)
-            .withStatorCurrentLimitEnable(true);
-
-        shootMotorLeft.getConfigurator()
-                .apply(new CurrentLimitsConfigs().withStatorCurrentLimit(65).withStatorCurrentLimitEnable(true));
-        shootMotorLeft.getConfigurator().apply(shooterCurrentLimits);
         shootMotorLeft.getConfigurator().apply(
                 new MotorOutputConfigs()
                         .withInverted(InvertedValue.CounterClockwise_Positive)
                         .withNeutralMode(NeutralModeValue.Coast)
                         .withPeakReverseDutyCycle(0));
         shootMotorLeft.getConfigurator().apply(new VoltageConfigs().withPeakReverseVoltage(0));
-        shootMotorRight.getConfigurator()
-                .apply(new CurrentLimitsConfigs().withStatorCurrentLimit(65).withStatorCurrentLimitEnable(true));
-        shootMotorRight.getConfigurator().apply(shooterCurrentLimits);
+
         shootMotorRight.getConfigurator().apply(
                 new MotorOutputConfigs()
                         .withInverted(InvertedValue.Clockwise_Positive)
