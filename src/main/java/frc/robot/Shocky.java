@@ -33,6 +33,12 @@ public class Shocky extends TimedRobot {
     @Override
     public void robotPeriodic() {
         // m_timeAndJoystickReplay.update();
+        
+        // Update Maple-Sim simulation if running in simulation mode
+        if (edu.wpi.first.wpilibj.RobotBase.isSimulation()) {
+            frc.robot.utils.MapleSimManager.getInstance().update();
+        }
+        
         CommandScheduler.getInstance().run();
         m_robotContainer.robotPeriodic();
     }

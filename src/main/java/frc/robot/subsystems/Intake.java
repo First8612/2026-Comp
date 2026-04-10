@@ -61,11 +61,6 @@ public class Intake extends SubsystemBase {
     public Intake() {
         super();
 
-        extendLeftState.addTo(signals);
-        extendRightState.addTo(signals);
-        extendEncoderLeftState.addTo(signals);
-        extendEncoderRightState.addTo(signals);
-        
         DixieHornCommand.enrollSubsystemMotors(this, intakeMotor, intakeExtendLeft, intakeExtendRight);
 
         // Extension CANcoder
@@ -135,6 +130,12 @@ public class Intake extends SubsystemBase {
         extendRightState = TalonFXState.capture(intakeExtendRight);
         extendEncoderLeftState = CANCoderState.capture(extendEncoderLeft);
         extendEncoderRightState = CANCoderState.capture(extendEncoderRight);
+        
+        // Add states to signals list for efficient batch refresh
+        extendLeftState.addTo(signals);
+        extendRightState.addTo(signals);
+        extendEncoderLeftState.addTo(signals);
+        extendEncoderRightState.addTo(signals);
     }
 
     public void getClimber(Climber cl) {

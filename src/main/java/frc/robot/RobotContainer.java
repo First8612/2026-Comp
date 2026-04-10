@@ -10,6 +10,8 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
@@ -40,6 +42,10 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Storage;
 import frc.robot.subsystems.TargetTracker;
 import frc.robot.utils.NetworkTableGroup;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class RobotContainer {
     public final static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -79,6 +85,12 @@ public class RobotContainer {
     public RobotContainer() {
         intake.getClimber(climber);
         drivetrain.setPositionAccuracyEstimator(positionAccuracyEstimator);
+        
+        // Initialize Maple-Sim if in simulation mode
+        if (RobotBase.isSimulation()) {
+            initializeMapleSimulation();
+        }
+        
         NamedCommands.registerCommand("EnableAiming", Commands.runOnce(shooter::enableAiming));
         NamedCommands.registerCommand("ShootSequence", shoot);
         NamedCommands.registerCommand("StopShoot", Commands.runOnce(() -> shooter.stop()));
@@ -92,11 +104,11 @@ public class RobotContainer {
         NamedCommands.registerCommand("StartWarmup", new InstantCommand(() -> shooter.setWarmup()));
         NamedCommands.registerCommand("EndWarmup", new InstantCommand(() -> shooter.stopWarmup()));
 
-        drivetrain.configureAutoBuilder();
-        configureBindings();
-        autonChooser = AutoBuilder.buildAutoChooser("Testing Auton");
+drivetrain.configureAutoBuilder();
+configureBindings();
+autonChooser = AutoBuilder.buildAutoChooser("Testing Auton");
 
-        SmartDashboard.putData("Auto Path", autonChooser);
+SmartDashboard.putData("Auto Path", autonChooser);
         // RobotModeTriggers.autonomous().onTrue(shooter.getZeroCommand());
         RobotModeTriggers.teleop().onTrue(shooter.getZeroCommand());
 
@@ -110,6 +122,28 @@ public class RobotContainer {
         RobotModeTriggers.teleop().onTrue(new InstantCommand(() -> shooter.stopWarmup()));
 
         Field.writeOnceToNT();
+    }
+
+    private void initializeMapleSimulation() {
+        // Create drivetrain simulation configuration with Kraken X60 motors
+        final DriveTrainSimulationConfig config = DriveTrainSimulationConfig.Default()
+            // Configure for Kraken X60 drive motors (replaces default Falcon 500s)
+            .withSwerveModule(org.ironmaple.simulation.drivesims.COTS.ofMark4(
+                edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1),  // Kraken X60 for drive
+                edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1),  // Kraken X60 for steer
+                org.ironmaple.simulation.drivesims.COTS.WHEELS.COLSONS.cof,
+                2))  // L2 gear ratio
+            .withTrackLengthTrackWidth(Inches.of(20), Inches.of(20))  // 20" x 20" track spacing (front to back, left to right)
+            .withBumperSize(Inches.of(28), Inches.of(28));             // Bumper size (adjust if different from track spacing)
+        
+        // Create the swerve drive simulation starting at origin
+        SwerveDriveSimulation drivetrainSimulation = new SwerveDriveSimulation(
+            config,
+            new Pose2d(0, 0, new Rotation2d())
+        );
+        
+        // Initialize the MapleSimManager with the simulation
+        frc.robot.utils.MapleSimManager.initialize(drivetrainSimulation);
     }
 
     private boolean atGameScheduleTime(double sec, double threshold) {
