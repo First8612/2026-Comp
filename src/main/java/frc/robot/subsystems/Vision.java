@@ -43,6 +43,11 @@ public class Vision extends SubsystemBase {
         mt1Readings = 0;
     }
 
+    public void triggerRewindCapture() {
+        LimelightHelpers.triggerRewindCapture("limelight-front", 165);
+        LimelightHelpers.triggerRewindCapture("limelight-back", 165);
+    }
+
     public void periodic() {
         handleLimelight("limelight-front", frontPoseMT1Publisher, frontPoseMT2Publisher, frontStdDevPublisher);
         handleLimelight("limelight-back", backPoseMT1Publisher, backPoseMT2Publisher, backStdDevPublisher);
