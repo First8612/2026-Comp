@@ -32,13 +32,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Middle (Left)"
+            "pathName": "Start to Middle (Right)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Improved Collect (left to left)"
+            "pathName": "Improved Collect (right to right)"
           }
         },
         {
@@ -50,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle to Aim2 (Left)"
+            "pathName": "Middle to Aim2 (Right)"
           }
         },
         {
@@ -85,21 +85,34 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "ExtendClimb"
+            "pathName": "Aim2 to Climb (Right)"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtendClimb"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Aim2 to Climb (Left)"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Climb to Onclimb (Left)"
+            "pathName": "Climb to Onclimb (Right)"
           }
         },
         {
@@ -112,6 +125,18 @@
           "type": "named",
           "data": {
             "name": "Climb"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSequence"
           }
         }
       ]

@@ -191,14 +191,14 @@ public class Intake extends SubsystemBase {
         return MathUtil.isNear(
             extendedGoal.magnitude(), 
             extendLeftState.position.getValueAsDouble(),
-            0.2);
+            0.05);
     }
 
     public Boolean isRetracted() {
         return MathUtil.isNear(
             retractedGoal.magnitude(), 
             extendLeftState.position.getValueAsDouble(),
-            0.1);
+            0.05);
     }
 
     private void intakeExtendSetControl(ControlRequest request) {
