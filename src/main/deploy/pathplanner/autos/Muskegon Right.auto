@@ -54,12 +54,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "RetractIntake"
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -74,8 +68,20 @@
                 "data": {
                   "name": "ShootSequence"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeJostle"
+                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RetractIntake"
           }
         },
         {
