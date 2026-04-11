@@ -133,17 +133,22 @@ SmartDashboard.putData("Auto Path", autonChooser);
                 edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1),  // Kraken X60 for steer
                 org.ironmaple.simulation.drivesims.COTS.WHEELS.COLSONS.cof,
                 2))  // L2 gear ratio
-            .withTrackLengthTrackWidth(Inches.of(20), Inches.of(20))  // 20" x 20" track spacing (front to back, left to right)
-            .withBumperSize(Inches.of(28), Inches.of(28));             // Bumper size (adjust if different from track spacing)
+            .withTrackLengthTrackWidth(Inches.of(20), Inches.of(20))  // 20" x 20" track spacing
+            .withBumperSize(Inches.of(28), Inches.of(28));             // Bumper size
         
-        // Create the swerve drive simulation starting at origin
-        SwerveDriveSimulation drivetrainSimulation = new SwerveDriveSimulation(
+        // Create the base swerve drive simulation
+        SwerveDriveSimulation baseSimulation = new SwerveDriveSimulation(
             config,
             new Pose2d(0, 0, new Rotation2d())
         );
         
-        // Initialize the MapleSimManager with the simulation
-        frc.robot.utils.MapleSimManager.initialize(drivetrainSimulation);
+        // Wrap it in SelfControlledSwerveDriveSimulation to connect to your actual drivetrain
+        // The constructor automatically registers itself with the simulation system
+        // This bridges your real drive commands to the physics simulation by listening to motor outputs
+        new org.ironmaple.simulation.drivesims.SelfControlledSwerveDriveSimulation(baseSimulation);
+        
+        // Initialize the MapleSimManager with the simulation (this registers with the physics arena)
+        frc.robot.utils.MapleSimManager.initialize(baseSimulation);
     }
 
     private boolean atGameScheduleTime(double sec, double threshold) {
