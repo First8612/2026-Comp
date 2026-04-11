@@ -88,7 +88,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("FaceTarget", driveAndFaceTarget);
         NamedCommands.registerCommand("ExtendIntake", Commands.runOnce(() -> intake.extend()));
         NamedCommands.registerCommand("RetractIntake", Commands.runOnce(() -> intake.retract()));
-        NamedCommands.registerCommand("RetractIntakeJostle", intakeJostle);
+        NamedCommands.registerCommand("IntakeJostle", intakeJostle);
         NamedCommands.registerCommand("StartIntake", new InstantCommand(() -> intake.in(), intake));
         NamedCommands.registerCommand("StopIntake", new InstantCommand(() -> intake.stop(), intake));
         NamedCommands.registerCommand("ExtendClimb", Commands.run(() -> climber.raiseClimb()));
@@ -99,7 +99,7 @@ public class RobotContainer {
         new EventTrigger("ExtendIntake").onTrue(Commands.runOnce(() -> intake.extend()));
         new EventTrigger("StartIntake").onTrue(Commands.runOnce(() -> intake.in()));
         new EventTrigger("RetractIntake").onTrue(Commands.runOnce(() -> intake.retract()));
-        new EventTrigger("RetractIntakeJostle").onTrue(intakeJostle);
+        new EventTrigger("IntakeJostle").onTrue(intakeJostle);
         new EventTrigger("StopIntake").onTrue(new InstantCommand(() -> intake.stop(), intake));
         new EventTrigger("ExtendClimb").onTrue(Commands.run(() -> climber.raiseClimb()));
 
