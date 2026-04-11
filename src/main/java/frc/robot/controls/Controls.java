@@ -70,6 +70,10 @@ public class Controls {
         return operator.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, 0.8);
     }
 
+    public Trigger retractIntakeJostle() {
+        return operator.rightBumper().and(operator.rightTrigger());
+    }
+
     public Trigger shoot() {
         return operator.x();
     }

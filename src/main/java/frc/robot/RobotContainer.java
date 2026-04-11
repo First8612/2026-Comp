@@ -70,6 +70,12 @@ public class RobotContainer {
     private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, false, climber::isAtClimb);
     private final ShootSequence shootSimple = new ShootSequence(shooter, storage, targetTracker, true, climber::isAtClimb);
     private final MatchTimer matchTimer = new MatchTimer();
+    private final Command intakeJostle = Commands.repeatingSequence(
+        Commands.runOnce(intake::retract),
+        Commands.waitSeconds(0.75),
+        Commands.runOnce(intake::extend),
+        Commands.waitSeconds(0.75)
+    );
 
     SendableChooser<Command> autonChooser;
 
@@ -82,6 +88,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("FaceTarget", driveAndFaceTarget);
         NamedCommands.registerCommand("ExtendIntake", Commands.runOnce(() -> intake.extend()));
         NamedCommands.registerCommand("RetractIntake", Commands.runOnce(() -> intake.retract()));
+        NamedCommands.registerCommand("RetractIntakeJostle", intakeJostle);
         NamedCommands.registerCommand("StartIntake", new InstantCommand(() -> intake.in(), intake));
         NamedCommands.registerCommand("StopIntake", new InstantCommand(() -> intake.stop(), intake));
         NamedCommands.registerCommand("ExtendClimb", Commands.run(() -> climber.raiseClimb()));
@@ -92,6 +99,7 @@ public class RobotContainer {
         new EventTrigger("ExtendIntake").onTrue(Commands.runOnce(() -> intake.extend()));
         new EventTrigger("StartIntake").onTrue(Commands.runOnce(() -> intake.in()));
         new EventTrigger("RetractIntake").onTrue(Commands.runOnce(() -> intake.retract()));
+        new EventTrigger("RetractIntakeJostle").onTrue(intakeJostle);
         new EventTrigger("StopIntake").onTrue(new InstantCommand(() -> intake.stop(), intake));
         new EventTrigger("ExtendClimb").onTrue(Commands.run(() -> climber.raiseClimb()));
         new EventTrigger("StartWarmup").onTrue(new InstantCommand(() -> shooter.setWarmup()));
@@ -142,6 +150,7 @@ public class RobotContainer {
         controls.horn().whileTrue(new DixieHornCommand());
         controls.intakeExtend().onTrue(intake.runOnce(intake::extend));
         controls.intakeRetract().onTrue(intake.runOnce(intake::retract));
+        controls.retractIntakeJostle().whileTrue(intakeJostle);
         controls.fieldReset().onTrue(drivetrain.runOnce(() -> {
             drivetrain.seedFieldCentric();
             vision.reset();
