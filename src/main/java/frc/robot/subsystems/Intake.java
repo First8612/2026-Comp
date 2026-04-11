@@ -22,6 +22,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -59,6 +61,8 @@ public class Intake extends SubsystemBase {
     private boolean extending = false;
     private double speed = 0;
     private Climber climb;
+
+    private Debouncer extendDebounce = new Debouncer(0.2, DebounceType.kRising);
     // extendRatio = 16 / 3;
 
     public Intake() {
@@ -221,7 +225,7 @@ public class Intake extends SubsystemBase {
 
         if(isExtended()) {
             intakeMotor.set(speed);
-            if(extended) {
+            if(extendDebounce.calculate(extended)) {
                 intakeExtendLeft.set(0.05);
                 intakeExtendRight.set(0.05);
             }
