@@ -102,6 +102,7 @@ public class RobotContainer {
         new EventTrigger("IntakeJostle").onTrue(intakeJostle);
         new EventTrigger("StopIntake").onTrue(new InstantCommand(() -> intake.stop(), intake));
         new EventTrigger("ExtendClimb").onTrue(Commands.run(() -> climber.raiseClimb()));
+        new EventTrigger("StartWarmup").onTrue(new InstantCommand(() -> shooter.setWarmup()));
 
         drivetrain.configureAutoBuilder();
         configureBindings();
@@ -160,7 +161,8 @@ public class RobotContainer {
         controls.trenchRun().whileTrue(new DriveTrenchRun(drivetrain, controls::getDriveRequest));
         
         controls.intake().whileTrue(Commands.startEnd(() -> intake.in(), () -> intake.stop(), intake));
-        controls.outake().whileTrue(Commands.startEnd(() -> {intake.out(); storage.conveyOut();}, () -> {intake.stop(); storage.conveyStop();}, intake));
+
+        controls.outake().whileTrue(Commands.startEnd(() -> {intake.out(); storage.conveyOut();}, () -> {intake.stop(); storage.conveyStop();}, intake, storage));
 
         controls.feedOut().whileTrue(Commands.startEnd(
             () -> shooter.feedReverse(true),
