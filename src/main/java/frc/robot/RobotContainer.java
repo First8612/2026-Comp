@@ -147,6 +147,7 @@ public class RobotContainer {
         controls.xLock().whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.SwerveDriveBrake()));
         controls.shoot().whileTrue(shoot);
         controls.shootSimiple().whileTrue(shootSimple);
+        controls.warmup().onTrue(new InstantCommand(() -> shooter.setWarmup()));
         controls.horn().whileTrue(new DixieHornCommand());
         controls.intakeExtend().onTrue(intake.runOnce(intake::extend));
         controls.intakeRetract().onTrue(intake.runOnce(intake::retract));

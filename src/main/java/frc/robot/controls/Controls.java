@@ -135,6 +135,10 @@ public class Controls {
         return operator.povRight();
     }
 
+    public Trigger warmup() {
+        return  operator.povDown();
+    }
+
     // Events
     public void setRumble(double value) {
         driver.setRumble(RumbleType.kBothRumble, value);
