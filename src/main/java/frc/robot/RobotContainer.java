@@ -92,7 +92,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeJostle", intakeJostle);
         NamedCommands.registerCommand("StartIntake", new InstantCommand(() -> intake.in(), intake));
         NamedCommands.registerCommand("StopIntake", new InstantCommand(() -> intake.stop(), intake));
-        NamedCommands.registerCommand("ExtendClimb", Commands.run(() -> climber.raiseClimb()));
+        NamedCommands.registerCommand("ExtendClimb", Commands.runOnce(() -> climber.raiseClimb()));
         NamedCommands.registerCommand("Climb", new InstantCommand(() -> climber.useClimb()));
         NamedCommands.registerCommand("StartWarmup", new InstantCommand(() -> shooter.setWarmup()));
         NamedCommands.registerCommand("EndWarmup", new InstantCommand(() -> shooter.stopWarmup()));
@@ -102,7 +102,7 @@ public class RobotContainer {
         new EventTrigger("RetractIntake").onTrue(Commands.runOnce(() -> intake.retract()));
         new EventTrigger("IntakeJostle").onTrue(intakeJostle);
         new EventTrigger("StopIntake").onTrue(new InstantCommand(() -> intake.stop(), intake));
-        new EventTrigger("ExtendClimb").onTrue(Commands.run(() -> climber.raiseClimb()));
+        new EventTrigger("ExtendClimb").onTrue(Commands.runOnce(() -> climber.raiseClimb()));
         new EventTrigger("StartWarmup").onTrue(new InstantCommand(() -> shooter.setWarmup()));
 
         drivetrain.configureAutoBuilder();

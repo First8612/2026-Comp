@@ -51,6 +51,7 @@ public class Intake extends SubsystemBase {
     private TalonFXState extendRightState;
     private CANCoderState extendEncoderLeftState;
     private CANCoderState extendEncoderRightState;
+    private TalonFXState intakeMotorState;
 
     // these are off the absolute encoder.
     // to use KG in feed-forward, the horizontal angle should be "0".
@@ -146,6 +147,7 @@ public class Intake extends SubsystemBase {
         extendRightState = TalonFXState.capture(intakeExtendRight);
         extendEncoderLeftState = CANCoderState.capture(extendEncoderLeft);
         extendEncoderRightState = CANCoderState.capture(extendEncoderRight);
+        intakeMotorState = TalonFXState.capture(intakeMotor);
     }
 
     public void getClimber(Climber cl) {
@@ -222,6 +224,7 @@ public class Intake extends SubsystemBase {
         extendRightState.addTo(signals);
         extendEncoderLeftState.addTo(signals);
         extendEncoderRightState.addTo(signals);
+        intakeMotorState.addTo(signals);
         BaseStatusSignal.refreshAll(signals.toArray(new StatusSignal<?>[0]));
 
         if(isExtended()) {
@@ -248,5 +251,6 @@ public class Intake extends SubsystemBase {
         NT.putTalonFX("ExtendMotorRight", extendRightState);
         NT.putCANCoder("ExtendEncoderLeft", extendEncoderLeftState);
         NT.putCANCoder("ExtendEncoderRight", extendEncoderRightState);
+        NT.putTalonFX("IntakeMotor", intakeMotorState);
     }
 }
