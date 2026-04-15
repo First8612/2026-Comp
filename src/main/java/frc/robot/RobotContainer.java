@@ -69,6 +69,7 @@ public class RobotContainer {
     private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(controls, drivetrain, targetTracker);
     private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, false, climber::isAtClimb);
     private final ShootSequence shootSimple = new ShootSequence(shooter, storage, targetTracker, true, climber::isAtClimb);
+    private final ShootSequence shootCorner = new ShootSequence(shooter, storage, targetTracker, true, climber::isAtClimb, 5.6);
     private final MatchTimer matchTimer = new MatchTimer();
     private final Command intakeJostle = Commands.repeatingSequence(
         Commands.runOnce(intake::retract),
@@ -167,9 +168,7 @@ public class RobotContainer {
             () -> {intake.out(); storage.conveyOut(); shooter.enableFeeding(); shooter.feedReverse(true);}, 
             () -> {intake.stop(); storage.conveyStop(); shooter.enableFeeding(false);}, intake, storage));
 
-        controls.feedOut().whileTrue(Commands.startEnd(
-            () -> shooter.feedReverse(true),
-            () -> shooter.feedReverse(false)));
+        controls.corner().whileTrue(shootCorner);
 
         controls.raiseClimb().onTrue(new InstantCommand(() -> {climber.raiseClimb(); /*SmartDashboard.putBoolean("Climber/Putting Up", true);*/}));
         controls.lowerClimb().onTrue(new InstantCommand(() -> {climber.lowerClimb(); /*SmartDashboard.putBoolean("Climber/Putting Down", true);*/}));

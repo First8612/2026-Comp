@@ -102,7 +102,7 @@ public class Shooter extends SubsystemBase {
         shootCalc.put(1.8, new double[] { 0.0, 43.5 });
         shootCalc.put(2.7, new double[] { 0.0, 46 });
         shootCalc.put(4.2, new double[] { 0.5, 53.5 });
-        shootCalc.put(5.6, new double[] { 1.35, 62 });
+        shootCalc.put(5.6, new double[] { 1.0, 62 });
         shootCalc.put(100.0, new double[] { 2.8, 66.5 });
         shootCalc.put(10000.0, new double[] { 2.8, 66.5 });
 
@@ -130,6 +130,14 @@ public class Shooter extends SubsystemBase {
                         withKI(0).
                         withKD(0)
                 );
+        feedMotorRight.getConfigurator().apply(
+            new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(60)
+        );
+        feedMotorLeft.getConfigurator().apply(
+            new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(60)
+        );
 
         shootMotorLeft.getConfigurator().apply(
                 new MotorOutputConfigs()
@@ -137,6 +145,10 @@ public class Shooter extends SubsystemBase {
                         .withNeutralMode(NeutralModeValue.Coast)
                         .withPeakReverseDutyCycle(0));
         shootMotorLeft.getConfigurator().apply(new VoltageConfigs().withPeakReverseVoltage(0));
+        shootMotorLeft.getConfigurator().apply(
+            new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(60)
+        );
 
         shootMotorRight.getConfigurator().apply(
                 new MotorOutputConfigs()
@@ -144,6 +156,10 @@ public class Shooter extends SubsystemBase {
                         .withNeutralMode(NeutralModeValue.Coast)
                         .withPeakReverseDutyCycle(0));
         shootMotorRight.setControl(shootFollow);
+        shootMotorRight.getConfigurator().apply(
+            new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(60)
+        );
 
         feedMotorLeft.setControl(feedFollow);
 

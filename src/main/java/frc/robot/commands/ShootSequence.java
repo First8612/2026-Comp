@@ -16,6 +16,56 @@ public class ShootSequence extends ParallelCommandGroup {
         Storage storage,
         TargetTracker targetTracker,
         boolean unsmart,
+        BooleanSupplier hasClimbedSupplier,
+        double unsmartDist
+    ) {
+        super();
+
+        var aimCommand = Commands.runOnce(shooter::enableAiming, shooter);
+        if (unsmart) {
+            aimCommand = Commands.runOnce(() -> shooter.enableAiming(unsmartDist), shooter);
+        }
+
+        // var finishShootingDeadline =                 
+        //     Commands.sequence(
+        //         new StorageConveyUntilEmpty(storage),
+        //         Commands.waitSeconds(1)
+        //     );
+        // if (unsmart) {
+        //     finishShootingDeadline = Commands.waitSeconds(10);
+        // }
+        var finishShootingDeadline = Commands.waitSeconds(999);
+
+
+        var mainSequence = new SequentialCommandGroup();
+        mainSequence.addCommands(
+            //     // warm up the shooter, and enable auto-aiming.
+            //     // driveAndFaceTargetCommand will continue to keep robot pointed at target
+            Commands.runOnce(setStatus("Start")),
+            aimCommand,
+
+            Commands.runOnce(setStatus("WaitingForReady")),
+            new WaitForReadyToShoot(shooter, targetTracker, unsmart || targetTracker.getIsPassing(), hasClimbedSupplier),
+
+            // shoot fuel until storage is empty + 1sec.
+            Commands.runOnce(setStatus("Shooting")),
+            Commands.runOnce(shooter::stopWarmup, shooter),
+            Commands.deadline(
+                finishShootingDeadline,
+                new ShootFuel(shooter, storage)
+            ),
+
+            Commands.runOnce(setStatus("Finished"))
+        );
+        this.addCommands(mainSequence);
+        this.addRequirements(storage);
+    }
+
+    public ShootSequence(
+        Shooter shooter,
+        Storage storage,
+        TargetTracker targetTracker,
+        boolean unsmart,
         BooleanSupplier hasClimbedSupplier
     ) {
         super();

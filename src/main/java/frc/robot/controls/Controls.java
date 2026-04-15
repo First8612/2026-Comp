@@ -98,7 +98,7 @@ public class Controls {
         return operator.povDown();
     }
 
-    public Trigger feedOut() {
+    public Trigger corner() {
         return operator.a();
     }
 
