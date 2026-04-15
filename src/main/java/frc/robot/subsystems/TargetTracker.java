@@ -10,8 +10,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.List;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Field;
+import frc.robot.utils.NetworkTableGroup;
 
 public class TargetTracker extends SubsystemBase {
+    private final NetworkTableGroup NT = new NetworkTableGroup("Target", true);
     private Drivetrain drivetrain;
     private State state;
     private StructPublisher<Pose2d> targetLocation = NetworkTableInstance.getDefault()
@@ -33,11 +35,13 @@ public class TargetTracker extends SubsystemBase {
 
         if (state.currentAllianceField.zone.contains(robotPose.getTranslation())) {
             state.currentTarget = state.currentAllianceField.hub;
+            state.isPassing = false;
         } else {
             state.currentTarget = robotPose.nearest(List.of(
                 state.currentAllianceField.passingTargetRight,
                 state.currentAllianceField.passingTargetLeft
             ));
+            state.isPassing = true;
         }
 
         // Directly compute target state
@@ -63,15 +67,20 @@ public class TargetTracker extends SubsystemBase {
         return state.robotToTargetTranslation;
     }
 
+    public Boolean getIsPassing() {
+        return state.isPassing;
+    }
+
     @Override
     public void periodic() {
         super.periodic();
         updateState();
 
         targetLocation.set(state.currentTarget);
-        SmartDashboard.putString("Target/alliance", state.currentAllianceField.name);
-        SmartDashboard.putNumber("Target/robotToTargetAbsoluteRotation", getRobotToTargetRotation().getRotations());
-        SmartDashboard.putNumber("Target/robotToTargetRelativeRotation", getRobotToTargetRelativeRotation().getRotations());
+        NT.putString("alliance", state.currentAllianceField.name);
+        NT.putNumber("robotToTargetAbsoluteRotation", getRobotToTargetRotation().getRotations());
+        NT.putNumber("robotToTargetRelativeRotation", getRobotToTargetRelativeRotation().getRotations());
+        NT.putBoolean("isPassing", state.isPassing);
     }
 
     private static class State {
@@ -80,5 +89,6 @@ public class TargetTracker extends SubsystemBase {
         public Rotation2d robotToTargetRotation;
         public Rotation2d robotToTargetRelativeRotation;
         public Translation2d robotToTargetTranslation;
+        public Boolean isPassing;
     }
 }

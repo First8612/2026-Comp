@@ -163,7 +163,9 @@ public class RobotContainer {
         
         controls.intake().whileTrue(Commands.startEnd(() -> intake.in(), () -> intake.stop(), intake));
 
-        controls.outake().whileTrue(Commands.startEnd(() -> {intake.out(); storage.conveyOut();}, () -> {intake.stop(); storage.conveyStop();}, intake, storage));
+        controls.outake().whileTrue(Commands.startEnd(
+            () -> {intake.out(); storage.conveyOut(); shooter.enableFeeding(); shooter.feedReverse(true);}, 
+            () -> {intake.stop(); storage.conveyStop(); shooter.enableFeeding(false);}, intake, storage));
 
         controls.feedOut().whileTrue(Commands.startEnd(
             () -> shooter.feedReverse(true),

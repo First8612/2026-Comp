@@ -63,7 +63,7 @@ public class Field {
                 ));
 
             var passingTargetYOffset = Inches.of(72);
-            var passingTargetXOffset = Inches.of(-100);
+            var passingTargetXOffset = Inches.of(50);
 
             passingTargetRight = origin.plus(
                 new Transform2d(passingTargetXOffset, passingTargetYOffset, noRotation)

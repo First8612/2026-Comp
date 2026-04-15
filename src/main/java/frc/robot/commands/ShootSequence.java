@@ -44,7 +44,7 @@ public class ShootSequence extends ParallelCommandGroup {
             aimCommand,
 
             Commands.runOnce(setStatus("WaitingForReady")),
-            new WaitForReadyToShoot(shooter, targetTracker, unsmart, hasClimbedSupplier),
+            new WaitForReadyToShoot(shooter, targetTracker, unsmart || targetTracker.getIsPassing(), hasClimbedSupplier),
 
             // shoot fuel until storage is empty + 1sec.
             Commands.runOnce(setStatus("Shooting")),

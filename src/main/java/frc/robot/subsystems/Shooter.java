@@ -39,11 +39,13 @@ public class Shooter extends SubsystemBase {
     private final TalonFX shootMotorLeft = new TalonFX(20, CANBuses.shooter);
     private final TalonFX shootMotorRight = new TalonFX(21, CANBuses.shooter);
     private final TalonFX hoodMotor = new TalonFX(22, CANBuses.shooter);
-    private final TalonFX feedMotor = new TalonFX(23, CANBuses.shooter);
+    private final TalonFX feedMotorRight = new TalonFX(23, CANBuses.shooter);
+    //TODO: Need to configure motor
+    // private final TalonFX feedMotorLeft = new TalonFX(24, CANBuses.shooter);
     private final TalonFXState shootMotorLeftSignals = TalonFXState.capture(shootMotorLeft);
     private final TalonFXState shootMotorRightSignals = TalonFXState.capture(shootMotorRight);
     private final TalonFXState hoodMotorSignals = TalonFXState.capture(hoodMotor);
-    private final TalonFXState feedMotorSignals = TalonFXState.capture(feedMotor);
+    private final TalonFXState feedMotorSignals = TalonFXState.capture(feedMotorRight);
 
     private Follower shootFollow = new Follower(20, MotorAlignmentValue.Opposed);
 
@@ -70,7 +72,7 @@ public class Shooter extends SubsystemBase {
         super();
         this.isClimbedSupplier = isClimbedSupplier;
 
-        //OLD NUMBER
+        //OLD OLD OLD NUMBERS
         // shootCalc.put(0.0, new double[] { 0.0, 49.0 * 1.5 });
         // shootCalc.put(1.2, new double[] { 0.0, 49.0 * 1.5});
         // shootCalc.put(2.7, new double[] { 0.1 * 4, 46.0 * 1.5});
@@ -78,10 +80,12 @@ public class Shooter extends SubsystemBase {
         // shootCalc.put(5.6, new double[] { 0.3 * 4, 58.0 * 1.5});
         // shootCalc.put(200.0, new double[] { 0.3 * 4, 58.0 * 1.5});
 
-        //NEW NUMBERS
+        //OLD OLD NUMBERS
         
         // shootCalc.put(0.0, new double[] { 0.0, 71.0 });
         // shootCalc.put(1.2, new double[] { 0.0, 71.0 });
+
+        //OLD NUMBERS
         
         shootCalc.put(0.0, new double[] { 0.0, 65.0 });
         shootCalc.put(1.8, new double[] { 0.0, 65.0 });
@@ -90,6 +94,19 @@ public class Shooter extends SubsystemBase {
         shootCalc.put(5.6, new double[] { 1.35, 93.0 });
         shootCalc.put(100.0, new double[] { 2.8, 100.0 });
         shootCalc.put(10000.0, new double[] { 2.8, 100.0 });
+
+        //NEW NUMBERS (Back to 1:1 ratio)
+
+        // shootCalc.put(0.0, new double[] { 0.0, 43.5 });
+        // shootCalc.put(1.8, new double[] { 0.0, 43.5 });
+        // shootCalc.put(2.7, new double[] { 0.0, 46 });
+        // shootCalc.put(4.2, new double[] { 0.5, 53.5 });
+        // shootCalc.put(5.6, new double[] { 1.35, 62 });
+        // shootCalc.put(100.0, new double[] { 2.8, 66.5 });
+        // shootCalc.put(10000.0, new double[] { 2.8, 66.5 });
+
+
+
 
         this.targetTracker = targetTracker;
         var mConfig = new MotorOutputConfigs();
@@ -105,7 +122,7 @@ public class Shooter extends SubsystemBase {
                         withKD(0)
                 );
 
-        feedMotor.getConfigurator()
+        feedMotorRight.getConfigurator()
         .apply(new Slot0Configs().
                         withKV(0.135).
                         withKP(.1).
@@ -146,7 +163,7 @@ public class Shooter extends SubsystemBase {
         );
 
         setDefaultCommand(Commands.runOnce(this::stop, this));
-        DixieHornCommand.enrollSubsystemMotors(this, shootMotorLeft, shootMotorRight, feedMotor);
+        DixieHornCommand.enrollSubsystemMotors(this, shootMotorLeft, shootMotorRight, feedMotorRight);
 
         NT.putBoolean("override/active", overrideAim);
         NT.putNumber("override/hood", hoodOverride);
@@ -258,7 +275,7 @@ public class Shooter extends SubsystemBase {
             flywheelSpeedGoal = 90;
         }
         
-        if (isAiming) {
+        if(isAiming) {
             var distance = targetTracker.getRobotToTargetTranslation().getNorm();
 
             var aimingDistOverride = this.aimingDistOverride;
@@ -292,14 +309,15 @@ public class Shooter extends SubsystemBase {
             // Cruising
             shootMotorLeft.setControl(new VelocityVoltage(flywheelSpeedGoal).withSlot(0));
         }
-        if(targetTracker.getRobotToTargetTranslation().getNorm() > 100 && isFeeding) {
-            feedMotor.setControl(new VelocityVoltage(30.0).withSlot(0));
+
+        if(targetTracker.getIsPassing() && isFeeding) {
+            feedMotorRight.setControl(new VelocityVoltage(30.0).withSlot(0));
         }
         else if (isFeeding) {
             var speedGoal = isFeedReversed ? -10.0 : 30.0;
-            feedMotor.setControl(new VelocityVoltage(speedGoal).withSlot(0));
+            feedMotorRight.setControl(new VelocityVoltage(speedGoal).withSlot(0));
         } else {
-            feedMotor.setControl(new CoastOut());
+            feedMotorRight.setControl(new CoastOut());
         }
         
         NT.putNumber("Distance", targetTracker.getRobotToTargetTranslation().getNorm());
@@ -311,6 +329,6 @@ public class Shooter extends SubsystemBase {
         NT.putNumber("shootMotor/targetVelocity", flywheelSpeedGoal);
         NT.putTalonFX("hood/motor", hoodMotor);
         NT.putBoolean("hood/ready", hoodReady());
-        NT.putTalonFX("feed/motor", feedMotor);
+        NT.putTalonFX("feed/motor", feedMotorRight);
     }
 }

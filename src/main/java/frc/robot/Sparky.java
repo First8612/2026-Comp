@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-public class Shocky extends TimedRobot {
+public class Sparky extends TimedRobot {
     private Command m_autonomousCommand;
 
     private final RobotContainer m_robotContainer;
@@ -22,7 +22,7 @@ public class Shocky extends TimedRobot {
             .withTimestampReplay()
             .withJoystickReplay();
 
-    public Shocky() {
+    public Sparky() {
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
         DriverStation.silenceJoystickConnectionWarning(true);
