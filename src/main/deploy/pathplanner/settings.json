@@ -4,13 +4,15 @@
   "holonomicMode": true,
   "pathFolders": [
     "Aiming Paths",
-    "Collection Paths",
     "Climbing Paths",
+    "Collection Paths",
+    "New Folder",
     "Outpost Paths",
     "Traversal Paths"
   ],
   "autoFolders": [
     "Disruption Autons",
+    "Deopt",
     "Simple Autons"
   ],
   "defaultMaxVel": 2.5,
