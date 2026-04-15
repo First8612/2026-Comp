@@ -41,13 +41,14 @@ public class Shooter extends SubsystemBase {
     private final TalonFX hoodMotor = new TalonFX(22, CANBuses.shooter);
     private final TalonFX feedMotorRight = new TalonFX(23, CANBuses.shooter);
     //TODO: Need to configure motor
-    // private final TalonFX feedMotorLeft = new TalonFX(24, CANBuses.shooter);
+    private final TalonFX feedMotorLeft = new TalonFX(24, CANBuses.shooter);
     private final TalonFXState shootMotorLeftSignals = TalonFXState.capture(shootMotorLeft);
     private final TalonFXState shootMotorRightSignals = TalonFXState.capture(shootMotorRight);
     private final TalonFXState hoodMotorSignals = TalonFXState.capture(hoodMotor);
     private final TalonFXState feedMotorSignals = TalonFXState.capture(feedMotorRight);
 
     private Follower shootFollow = new Follower(20, MotorAlignmentValue.Opposed);
+    private Follower feedFollow = new Follower(23, MotorAlignmentValue.Opposed);
 
     Boolean isAiming = false;
     Optional<Double> aimingDistOverride = Optional.empty();
@@ -87,23 +88,23 @@ public class Shooter extends SubsystemBase {
 
         //OLD NUMBERS
         
-        shootCalc.put(0.0, new double[] { 0.0, 65.0 });
-        shootCalc.put(1.8, new double[] { 0.0, 65.0 });
-        shootCalc.put(2.7, new double[] { 0.0, 69.0 });
-        shootCalc.put(4.2, new double[] { 0.5, 80.0 });
-        shootCalc.put(5.6, new double[] { 1.35, 93.0 });
-        shootCalc.put(100.0, new double[] { 2.8, 100.0 });
-        shootCalc.put(10000.0, new double[] { 2.8, 100.0 });
+        // shootCalc.put(0.0, new double[] { 0.0, 65.0 });
+        // shootCalc.put(1.8, new double[] { 0.0, 65.0 });
+        // shootCalc.put(2.7, new double[] { 0.0, 69.0 });
+        // shootCalc.put(4.2, new double[] { 0.5, 80.0 });
+        // shootCalc.put(5.6, new double[] { 1.35, 93.0 });
+        // shootCalc.put(100.0, new double[] { 2.8, 100.0 });
+        // shootCalc.put(10000.0, new double[] { 2.8, 100.0 });
 
         //NEW NUMBERS (Back to 1:1 ratio)
 
-        // shootCalc.put(0.0, new double[] { 0.0, 43.5 });
-        // shootCalc.put(1.8, new double[] { 0.0, 43.5 });
-        // shootCalc.put(2.7, new double[] { 0.0, 46 });
-        // shootCalc.put(4.2, new double[] { 0.5, 53.5 });
-        // shootCalc.put(5.6, new double[] { 1.35, 62 });
-        // shootCalc.put(100.0, new double[] { 2.8, 66.5 });
-        // shootCalc.put(10000.0, new double[] { 2.8, 66.5 });
+        shootCalc.put(0.0, new double[] { 0.0, 43.5 });
+        shootCalc.put(1.8, new double[] { 0.0, 43.5 });
+        shootCalc.put(2.7, new double[] { 0.0, 46 });
+        shootCalc.put(4.2, new double[] { 0.5, 53.5 });
+        shootCalc.put(5.6, new double[] { 1.35, 62 });
+        shootCalc.put(100.0, new double[] { 2.8, 66.5 });
+        shootCalc.put(10000.0, new double[] { 2.8, 66.5 });
 
 
 
@@ -143,6 +144,8 @@ public class Shooter extends SubsystemBase {
                         .withNeutralMode(NeutralModeValue.Coast)
                         .withPeakReverseDutyCycle(0));
         shootMotorRight.setControl(shootFollow);
+
+        feedMotorLeft.setControl(feedFollow);
 
         /*
          * NOTES: (with two brass flywheels)
@@ -330,5 +333,6 @@ public class Shooter extends SubsystemBase {
         NT.putTalonFX("hood/motor", hoodMotor);
         NT.putBoolean("hood/ready", hoodReady());
         NT.putTalonFX("feed/motor", feedMotorRight);
+        NT.putBoolean("feed/feeding", isFeeding);
     }
 }

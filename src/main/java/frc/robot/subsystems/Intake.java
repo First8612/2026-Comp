@@ -84,13 +84,13 @@ public class Intake extends SubsystemBase {
             // simulation doesn't separate devices by CANivore, so these incoders conflict with drive train encoders
             extendEncoderLeft.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
-                    .withMagnetOffset(Rotations.of(-.703 - 0.337))
+                    .withMagnetOffset(Rotations.of(-.703 - 0.337 + 0.151))
                     .withSensorDirection(SensorDirectionValue.Clockwise_Positive)));
 
             extendEncoderRight.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
-                    .withMagnetOffset(Rotations.of(-.981 + 0.008))
-                    .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)));
+                    .withMagnetOffset(Rotations.of(-.981 + 0.008 + 0.295 + 0.356 + 0.993))
+                    .withSensorDirection(SensorDirectionValue.Clockwise_Positive)));
         }
 
         intakeExtendSlot0Config = new Slot0Configs()
@@ -103,6 +103,7 @@ public class Intake extends SubsystemBase {
         intakeExtendSlot1Config = new Slot1Configs()
                 .withGravityType(GravityTypeValue.Arm_Cosine)
                 .withKG(-0.8)
+
                 .withKP(100)
                 .withKI(0)
                 .withKD(0);
@@ -139,7 +140,7 @@ public class Intake extends SubsystemBase {
                     .withNeutralMode(NeutralModeValue.Brake))
                 .withCurrentLimits(intakeCurrentLimits)
                 .withSlot0(intakeExtendSlot0Config));
-
+        intakeMotor.getConfigurator().apply(new MotorOutputConfigs().withPeakReverseDutyCycle(-1).withInverted(InvertedValue.CounterClockwise_Positive));
         // Initialize the TalonFXState objects by capturing current signals
         extendLeftState = TalonFXState.capture(intakeExtendLeft);
         extendRightState = TalonFXState.capture(intakeExtendRight);
