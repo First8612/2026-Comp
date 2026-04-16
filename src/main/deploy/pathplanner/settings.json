@@ -6,15 +6,11 @@
     "Aiming Paths",
     "Climbing Paths",
     "Collection Paths",
-    "New Folder",
+    "Brendon's Stuff",
     "Outpost Paths",
     "Traversal Paths"
   ],
-  "autoFolders": [
-    "Disruption Autons",
-    "Deopt",
-    "Simple Autons"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 2.5,
   "defaultMaxAccel": 2.0,
   "defaultMaxAngVel": 540.0,

@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "deopt midle"
+            "pathName": "Depot Middle"
           }
         },
         {
@@ -88,6 +88,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Deopt",
+  "folder": null,
   "choreoAuto": false
 }
