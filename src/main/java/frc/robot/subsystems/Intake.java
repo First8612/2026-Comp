@@ -234,7 +234,7 @@ public class Intake extends SubsystemBase {
                 intakeExtendRight.set(0.05);
             }
         }else{
-            intakeMotor.set(0);
+            intakeMotor.set(speed);
         }
 
         // if(extended && isExtended()) {
