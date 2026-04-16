@@ -20,28 +20,28 @@
         "y": 6.11035397777943
       },
       "prevControl": {
-        "x": 2.922783362389825,
-        "y": 6.1018747981254435
+        "x": 2.900147727272727,
+        "y": 5.941761363636363
       },
       "nextControl": {
-        "x": 1.595358622547562,
-        "y": 6.118905971313911
+        "x": 1.6174101149853928,
+        "y": 6.280600008690249
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.570806818181818,
+        "x": 0.42651136363636344,
         "y": 6.11035397777943
       },
       "prevControl": {
-        "x": 0.29253441266941527,
-        "y": 6.118245796924665
+        "x": 0.4265113636363635,
+        "y": 6.766306818181818
       },
       "nextControl": {
-        "x": 0.8207063422370942,
-        "y": 6.103266814951722
+        "x": 0.4265113636363635,
+        "y": 5.445035230979444
       },
       "isLocked": false,
       "linkedName": null
@@ -52,8 +52,8 @@
         "y": 4.0
       },
       "prevControl": {
-        "x": 1.7505115283145063,
-        "y": 6.779103002378121
+        "x": 2.6837045454545443,
+        "y": 6.457102272727273
       },
       "nextControl": null,
       "isLocked": false,
@@ -63,15 +63,15 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.4868035190615834,
-      "rotationDegrees": -148.4814146937811
+      "rotationDegrees": -136.93461078032732
     },
     {
       "waypointRelativePos": 1.997067448680352,
-      "rotationDegrees": -160.6410058243052
+      "rotationDegrees": -92.8026919078995
     },
     {
       "waypointRelativePos": 2.208211143695015,
-      "rotationDegrees": -134.7978421425489
+      "rotationDegrees": -90.58225383248669
     }
   ],
   "constraintZones": [
@@ -89,7 +89,18 @@
       }
     }
   ],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.62,
+        "y": 4.03
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 2.5621890547263684,
+      "maxWaypointRelativePos": 3.0,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [
     {
       "name": "ExtendIntake",

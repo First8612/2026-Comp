@@ -291,7 +291,7 @@ public class Shooter extends SubsystemBase {
         flywheelSpeedGoal = 0;
 
         if(warmingUp) {
-            flywheelSpeedGoal = 90;
+            flywheelSpeedGoal = 60;
         }
         
         if(isAiming) {

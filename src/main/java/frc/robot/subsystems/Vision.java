@@ -88,7 +88,6 @@ public class Vision extends SubsystemBase {
         var latency = drivetrainState.Timestamp - poseEstimate.timestampSeconds;
         // latencyPublisher.set(latency);
 
-
         if (poseEstimate.tagCount != 0) {
 
             // stolen from https://github.com/Enigma2075/FRC2025/blob/05b738aa4bcf2dd822304b07f8c74f97dc0b25d0/src/main/java/frc/robot/subsystems/Vision.java#L287-L297
