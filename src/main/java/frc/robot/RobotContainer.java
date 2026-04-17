@@ -173,6 +173,7 @@ public class RobotContainer {
         controls.raiseClimb().onTrue(new InstantCommand(() -> {climber.raiseClimb(); /*SmartDashboard.putBoolean("Climber/Putting Up", true);*/}));
         controls.lowerClimb().onTrue(new InstantCommand(() -> {climber.lowerClimb(); /*SmartDashboard.putBoolean("Climber/Putting Down", true);*/}));
         controls.useClimb().onTrue(new InstantCommand(() -> {climber.useClimb();}));
+        controls.overrideClimb().onTrue(new InstantCommand(() -> {climber.activateOverride();}));
         controls.manualReset().onTrue(climber.getClimberZeroCommand());
         // controls.manualClimb().whileTrue(new RunCommand(() -> climber.manualClimb(controls.getClimbManual()), climber));
 

@@ -127,6 +127,10 @@ public class Controls {
         return operator.getLeftY();
     }
 
+    public Trigger overrideClimb() {
+        return operator.leftBumper().and(operator.rightBumper());
+    }
+
     public Trigger zeroHood() {
         return operator.leftBumper().and(operator.b());
     }

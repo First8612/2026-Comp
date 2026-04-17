@@ -50,7 +50,7 @@ public class Vision extends SubsystemBase {
 
     public void periodic() {
         handleLimelight("limelight-front", frontPoseMT1Publisher, frontPoseMT2Publisher, frontStdDevPublisher);
-        handleLimelight("limelight-back", backPoseMT1Publisher, backPoseMT2Publisher, backStdDevPublisher);
+        //handleLimelight("limelight-back", backPoseMT1Publisher, backPoseMT2Publisher, backStdDevPublisher);
 
         useMT2Publisher.set(useMT2);
     }

@@ -31,7 +31,7 @@ public class Climber extends SubsystemBase{
 
     private double currClimbGoal = 0;
     private boolean hasReset = false;
-
+    private boolean overrideIntake = false;
     public Climber(Intake intake) {
         super();
 
@@ -119,8 +119,12 @@ public class Climber extends SubsystemBase{
         currClimbGoal += by;
     }
 
+    public void activateOverride() {
+        overrideIntake = true;
+    }
+
     public void raiseClimb() {
-        if(intake.isRetracted()) {
+        if(intake.isRetracted() || overrideIntake) {
             changeMotorLimits(30);
             currClimbGoal = 70;
         }
@@ -132,7 +136,7 @@ public class Climber extends SubsystemBase{
     }
 
     public void useClimb() {
-        if(intake.isRetracted()) {
+        if(intake.isRetracted() || overrideIntake) {
             changeMotorLimits(200);
             currClimbGoal = 33;
         }
