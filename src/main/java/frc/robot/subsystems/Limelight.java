@@ -61,7 +61,8 @@ public class Limelight extends SubsystemBase {
     m_limelightName = limelightName;
     m_drivetrain = drivetrain;
     m_stdDevFactor = stdDevFactor;
-    NT = new NetworkTableGroup(limelightName, true);
+
+    NT = new NetworkTableGroup("Vision/" + limelightName, true);
   }
 
   public Limelight(String limelightName, Drivetrain drivetrain) {
@@ -78,11 +79,11 @@ public class Limelight extends SubsystemBase {
       addVisionMeasurement(poseEstimate);
     }
 
-    // need to adapt this
-    // Logger.recordOutput(m_limelightName + "/Pose", lastPoseEstimate.pose);
-    // Logger.recordOutput(m_limelightName + "/TimestampSeconds", lastPoseEstimate.timestampSeconds);
-    // Logger.recordOutput(m_limelightName + "/AvgTagDist", lastPoseEstimate.avgTagDist);
-    // Logger.recordOutput(m_limelightName + "/TagCount", lastPoseEstimate.tagCount);
+    NT.putPose("Pose", lastPoseEstimate.pose);
+    NT.putNumber("TimestampSeconds", lastPoseEstimate.timestampSeconds);
+    NT.putBoolean("IsMetaTag2", lastPoseEstimate.isMegaTag2);
+    NT.putNumber("AvgTagDist", lastPoseEstimate.avgTagDist);
+    NT.putNumber("TagCount", lastPoseEstimate.tagCount);
   }
 
   private void updateRobotOrientation() {

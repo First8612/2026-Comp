@@ -3,12 +3,19 @@ package frc.robot.utils;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.struct.Struct;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.util.HashMap;
+import java.util.Map;
 
 public class NetworkTableGroup {
     private final String groupName;
     private final boolean enabled;
+    private final Map<String, StructPublisher<?>> structPublishers = new HashMap<>();
 
     public NetworkTableGroup(String name, Boolean enabled) {
         super();
@@ -73,10 +80,24 @@ public class NetworkTableGroup {
         putString(name, value);
     }
 
+    public void putPose(String name, Pose2d pose) {
+        putStruct(name, pose, Pose2d.struct);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> void putStruct(String name, T value, Struct<T> struct) {
+        if (!enabled) return;
+
+        StructPublisher<T> publisher = (StructPublisher<T>) structPublishers.computeIfAbsent(
+            "SmartDashboard/" + groupName + "/" + name,
+            k -> NetworkTableInstance.getDefault().getStructTopic(k, struct).publish());
+            
+        publisher.set(value);
+    }
+
     public void putData(String name, Sendable value) {
         if (!enabled) return;
         
         SmartDashboard.putData(name, value);
     }
-
 }
