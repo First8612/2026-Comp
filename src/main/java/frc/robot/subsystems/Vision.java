@@ -45,12 +45,12 @@ public class Vision extends SubsystemBase {
 
     public void triggerRewindCapture() {
         LimelightHelpers.triggerRewindCapture("limelight-front", 165);
-        LimelightHelpers.triggerRewindCapture("limelight-back", 165);
+        //LimelightHelpers.triggerRewindCapture("limelight-back", 165);
     }
 
     public void periodic() {
-        handleLimelight("limelight-front", frontPoseMT1Publisher, frontPoseMT2Publisher, frontStdDevPublisher);
-        //handleLimelight("limelight-back", backPoseMT1Publisher, backPoseMT2Publisher, backStdDevPublisher);
+        handleLimelight("limelight-back", backPoseMT1Publisher, backPoseMT2Publisher, backStdDevPublisher, false, 0.01);
+        handleLimelight("limelight-front", frontPoseMT1Publisher, frontPoseMT2Publisher, frontStdDevPublisher, true, 1);
 
         useMT2Publisher.set(useMT2);
     }
@@ -59,7 +59,9 @@ public class Vision extends SubsystemBase {
         String limelightName, 
         StructPublisher<Pose2d> mt1Publisher, 
         StructPublisher<Pose2d> mt2Publisher, 
-        DoublePublisher stdDevPublisher
+        DoublePublisher stdDevPublisher,
+        Boolean allowRotationFix,
+        double trustFactor
 
     ) {
         var drivetrainState = driveBase.getCachedState();
@@ -91,9 +93,13 @@ public class Vision extends SubsystemBase {
         if (poseEstimate.tagCount != 0) {
 
             // stolen from https://github.com/Enigma2075/FRC2025/blob/05b738aa4bcf2dd822304b07f8c74f97dc0b25d0/src/main/java/frc/robot/subsystems/Vision.java#L287-L297
-            double stdDevFactor = Math.pow(poseEstimate.avgTagDist, 2.0) / poseEstimate.tagCount;
+            double stdDevFactor = (Math.pow(poseEstimate.avgTagDist, 2.0) / poseEstimate.tagCount) / trustFactor;
             double linearStdDev = 0.25 * stdDevFactor * (Math.pow(drivetrainState.Speeds.omegaRadiansPerSecond, 2) + 1);
             double angularStdDev = 2 * stdDevFactor * (Math.pow(drivetrainState.Speeds.omegaRadiansPerSecond, 2) + 1);
+
+            if(!allowRotationFix) {
+                angularStdDev = 9999999;
+            }
 
             driveBase.addVisionMeasurement(
                 poseEstimate.pose, 
