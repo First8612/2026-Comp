@@ -19,8 +19,8 @@ public class Field {
     private static final Distance noDist = Inches.of(0);
     // referencing page 3 of
     // https://firstfrc.blob.core.windows.net/frc2026/FieldAssets/2026-field-dimension-dwgs.pdf
-    private static final Distance fieldLength = Inches.of(651.22);
-    private static final Distance fieldWidth = Inches.of(317.69);
+    public static final Distance fieldLength = Inches.of(651.22);
+    public static final Distance fieldWidth = Inches.of(317.69);
     private static final Distance allianceZoneDepth = Inches.of(158.6);
 
     private static final Distance towerAlignRightY = Meters.of(3.52);

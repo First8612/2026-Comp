@@ -5,18 +5,20 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meter;
-
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utils.FieldInfo;
+import frc.robot.Field;
+import frc.robot.utils.NetworkTableGroup;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.LimelightHelpers.PoseEstimate;
-import org.littletonrobotics.junction.Logger;
 
 public class Limelight extends SubsystemBase {
 
+  // need to utilize this
+  private NetworkTableGroup NT;
   // --- Standard Deviation Formula ---
   // Formula: coefficient * pow(avgTagDist, 1.2) / pow(tagCount, 2.0) * stdDevFactor
   //
@@ -41,7 +43,7 @@ public class Limelight extends SubsystemBase {
   private static final double MAX_ANGULAR_VELOCITY_MT2_DEG_PER_SEC = 200;
 
   private final String m_limelightName;
-  private final CommandSwerveDrivetrain m_drivetrain;
+  private final Drivetrain m_drivetrain;
   private final double m_stdDevFactor;
   private PoseEstimate lastPoseEstimate = new PoseEstimate();
 
@@ -54,14 +56,15 @@ public class Limelight extends SubsystemBase {
    *     to account for camera quality or mounting position (e.g., 2.0 for a camera with a worse
    *     viewing angle).
    */
-  public Limelight(String limelightName, CommandSwerveDrivetrain drivetrain, double stdDevFactor) {
+  public Limelight(String limelightName, Drivetrain drivetrain, double stdDevFactor) {
     super(limelightName);
     m_limelightName = limelightName;
     m_drivetrain = drivetrain;
     m_stdDevFactor = stdDevFactor;
+    NT = new NetworkTableGroup(limelightName, true);
   }
 
-  public Limelight(String limelightName, CommandSwerveDrivetrain drivetrain) {
+  public Limelight(String limelightName, Drivetrain drivetrain) {
     this(limelightName, drivetrain, 1.0);
   }
 
@@ -75,17 +78,19 @@ public class Limelight extends SubsystemBase {
       addVisionMeasurement(poseEstimate);
     }
 
-    Logger.recordOutput(m_limelightName + "/Pose", lastPoseEstimate.pose);
-    Logger.recordOutput(m_limelightName + "/TimestampSeconds", lastPoseEstimate.timestampSeconds);
-    Logger.recordOutput(m_limelightName + "/AvgTagDist", lastPoseEstimate.avgTagDist);
-    Logger.recordOutput(m_limelightName + "/TagCount", lastPoseEstimate.tagCount);
+    // need to adapt this
+    // Logger.recordOutput(m_limelightName + "/Pose", lastPoseEstimate.pose);
+    // Logger.recordOutput(m_limelightName + "/TimestampSeconds", lastPoseEstimate.timestampSeconds);
+    // Logger.recordOutput(m_limelightName + "/AvgTagDist", lastPoseEstimate.avgTagDist);
+    // Logger.recordOutput(m_limelightName + "/TagCount", lastPoseEstimate.tagCount);
   }
 
   private void updateRobotOrientation() {
+    SwerveDriveState drivetrainState = m_drivetrain.getCachedState();
     LimelightHelpers.SetRobotOrientation(
         m_limelightName,
-        m_drivetrain.getPose().getRotation().getDegrees(),
-        Math.toDegrees(m_drivetrain.getRobotSpeeds().omegaRadiansPerSecond),
+        drivetrainState.Pose.getRotation().getDegrees(),
+        Math.toDegrees(drivetrainState.Speeds.omegaRadiansPerSecond),
         0,
         0,
         0,
@@ -137,20 +142,22 @@ public class Limelight extends SubsystemBase {
 
   private boolean isPoseOnField(Pose2d pose) {
     return pose.getX() >= -FIELD_BORDER_MARGIN_METERS
-        && pose.getX() <= FieldInfo.length().in(Meter) + FIELD_BORDER_MARGIN_METERS
+        && pose.getX() <= Field.fieldLength.in(Meter) + FIELD_BORDER_MARGIN_METERS
         && pose.getY() >= -FIELD_BORDER_MARGIN_METERS
-        && pose.getY() <= FieldInfo.width().in(Meter) + FIELD_BORDER_MARGIN_METERS;
+        && pose.getY() <= Field.fieldWidth.in(Meter) + FIELD_BORDER_MARGIN_METERS;
   }
 
   private boolean isRotatingTooFastForMT1() {
+    SwerveDriveState driveState = m_drivetrain.getCachedState();
     double angularVelocityDegPerSec =
-        Math.toDegrees(m_drivetrain.getRobotSpeeds().omegaRadiansPerSecond);
+        Math.toDegrees(driveState.Speeds.omegaRadiansPerSecond);
     return Math.abs(angularVelocityDegPerSec) > MAX_ANGULAR_VELOCITY_MT1_DEG_PER_SEC;
   }
 
   private boolean isRotatingTooFastForMT2() {
+    SwerveDriveState driveState = m_drivetrain.getCachedState();
     double angularVelocityDegPerSec =
-        Math.toDegrees(m_drivetrain.getRobotSpeeds().omegaRadiansPerSecond);
+        Math.toDegrees(driveState.Speeds.omegaRadiansPerSecond);
     return Math.abs(angularVelocityDegPerSec) > MAX_ANGULAR_VELOCITY_MT2_DEG_PER_SEC;
   }
 
@@ -195,5 +202,9 @@ public class Limelight extends SubsystemBase {
 
   public int getTagCount() {
     return lastPoseEstimate.tagCount;
+  }
+
+  public void getLLRewind() {
+    LimelightHelpers.triggerRewindCapture(m_limelightName, 165);
   }
 }
