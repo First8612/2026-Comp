@@ -51,8 +51,8 @@ public class Sparky extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        m_robotContainer.updateDelay();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }  
