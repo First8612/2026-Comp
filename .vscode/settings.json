@@ -60,6 +60,7 @@
   "java.dependency.enableDependencyCheckup": false,
   "files.associations": {
     "*.path": "json",
-    "*.auto": "json"
+    "*.auto": "json",
+    "*.vpr": "json",
   },
 }
