@@ -1,0 +1,63 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.5,
+        "y": 0.65
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.5,
+        "y": 0.65
+      },
+      "isLocked": false,
+      "linkedName": "Middle R"
+    },
+    {
+      "anchor": {
+        "x": 5.5,
+        "y": 7.4
+      },
+      "prevControl": {
+        "x": 6.712975903614457,
+        "y": 7.421855421686747
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Middle L"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.21214165261383314,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 0.7234401349072511,
+      "rotationDegrees": 90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Brendon's Stuff",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
