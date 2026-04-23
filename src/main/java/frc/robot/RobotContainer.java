@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.GoToClimb;
+import frc.robot.commands.Delay;
 import frc.robot.commands.DixieHornCommand;
 import frc.robot.commands.DriveAndFaceTargetCommand;
 import frc.robot.commands.DriveCommand;
@@ -72,6 +73,7 @@ public class RobotContainer {
     private final ShootSequence shootSimple = new ShootSequence(shooter, storage, targetTracker, true, climber::isAtClimb);
     private final ShootSequence shootCorner = new ShootSequence(shooter, storage, targetTracker, true, climber::isAtClimb, 5.6);
     private final MatchTimer matchTimer = new MatchTimer();
+    private final Delay del = new Delay();
     private final Command intakeJostle = Commands.repeatingSequence(
         Commands.runOnce(intake::retract),
         Commands.waitSeconds(0.75),
@@ -97,6 +99,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Climb", new InstantCommand(() -> climber.useClimb()));
         NamedCommands.registerCommand("StartWarmup", new InstantCommand(() -> shooter.setWarmup()));
         NamedCommands.registerCommand("EndWarmup", new InstantCommand(() -> shooter.stopWarmup()));
+        NamedCommands.registerCommand("Delay", del);
         
         new EventTrigger("ExtendIntake").onTrue(Commands.runOnce(() -> intake.extend()));
         new EventTrigger("StartIntake").onTrue(Commands.runOnce(() -> intake.in()));
@@ -111,6 +114,7 @@ public class RobotContainer {
         autonChooser = AutoBuilder.buildAutoChooser("Testing Auton");
 
         SmartDashboard.putData("Auto Path", autonChooser);
+        SmartDashboard.putNumber("Delay/Auto Delay", 0);
         // RobotModeTriggers.autonomous().onTrue(shooter.getZeroCommand());
         RobotModeTriggers.teleop().onTrue(shooter.getZeroCommand());
 
@@ -225,6 +229,11 @@ public class RobotContainer {
         var auton = autonChooser.getSelected();
         auton.addRequirements(drivetrain);
         return auton;
+    }
+    public void updateDelay() {
+        double delay = SmartDashboard.getNumber("Delay/Auto Delay", 0);
+        del.setDelay(delay);
+        SmartDashboard.putNumber("Delay/Update delay", delay);
     }
 
     public void robotPeriodic() {

@@ -138,7 +138,8 @@ public class Climber extends SubsystemBase{
     public void useClimb() {
         if(intake.isRetracted() || overrideIntake) {
             changeMotorLimits(200);
-            currClimbGoal = 33;
+            //Changed setpoint for climb
+            currClimbGoal = 40;
         }
     }
 
