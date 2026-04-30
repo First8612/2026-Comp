@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 3.7,
+        "y": 0.65
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.872916708546753,
-        "y": 7.564023826316292
+        "x": 4.739281702288926,
+        "y": 0.65
       },
       "isLocked": false,
-      "linkedName": "Aim2 L"
+      "linkedName": "Start R"
     },
     {
       "anchor": {
         "x": 4.7166368515205725,
-        "y": 7.375
+        "y": 0.6580000000000004
       },
       "prevControl": {
         "x": 4.212883836446614,
-        "y": 7.377611291561285
+        "y": 0.655388708438715
       },
       "nextControl": {
         "x": 4.966633492778346,
-        "y": 7.3737040988338896
+        "y": 0.659295901166111
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.734045454545454,
+        "y": 1.6232045454545458
+      },
+      "prevControl": {
+        "x": 7.722083628483894,
+        "y": 0.8536604021608667
+      },
+      "nextControl": {
+        "x": 7.764965909090909,
+        "y": 3.612420454545455
       },
       "isLocked": false,
       "linkedName": null
@@ -33,47 +49,31 @@
     {
       "anchor": {
         "x": 6.0146690518783545,
-        "y": 7.24
+        "y": 2.3652954545454543
       },
       "prevControl": {
-        "x": 5.5544689106584455,
-        "y": 7.432081342461337
+        "x": 6.734284090909091,
+        "y": 2.4477499999999996
       },
       "nextControl": {
-        "x": 6.245379275575367,
-        "y": 7.143704659086358
+        "x": 5.034132050878965,
+        "y": 2.2529440884210525
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.0146690518783545,
-        "y": 5.649000000000001
+        "x": 3.1578181818181816,
+        "y": 2.7260340909090917
       },
       "prevControl": {
-        "x": 6.902474224619261,
-        "y": 6.496456902853232
+        "x": 4.50753219538789,
+        "y": 2.2824012159099687
       },
       "nextControl": {
-        "x": 5.3007539565938515,
-        "y": 4.967530355390778
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.2076744186046513,
-        "y": 5.292000000000001
-      },
-      "prevControl": {
-        "x": 4.557388432174359,
-        "y": 5.735632874999124
-      },
-      "nextControl": {
-        "x": 2.3519387702590473,
-        "y": 5.0107311814961815
+        "x": 2.3020825334725776,
+        "y": 3.0073029094129105
       },
       "isLocked": false,
       "linkedName": null
@@ -81,33 +81,37 @@
     {
       "anchor": {
         "x": 2.0,
-        "y": 4.0
+        "y": 3.5
       },
       "prevControl": {
         "x": 2.248816042331434,
-        "y": 4.024301791673086
+        "y": 3.5243017916730857
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Climb L"
+      "linkedName": "Climb R"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.2224448897795597,
-      "rotationDegrees": -90.099
+      "waypointRelativePos": 1.1,
+      "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 2.4248496993987994,
-      "rotationDegrees": -90.0
+      "waypointRelativePos": 1.95,
+      "rotationDegrees": 90.0
     },
     {
-      "waypointRelativePos": 3.0561122244488996,
-      "rotationDegrees": -135.0
+      "waypointRelativePos": 2.8005865102639294,
+      "rotationDegrees": 180.0
     },
     {
-      "waypointRelativePos": 3.8877755511022065,
-      "rotationDegrees": -135.0
+      "waypointRelativePos": 3.196480938416422,
+      "rotationDegrees": 135.0
+    },
+    {
+      "waypointRelativePos": 3.887775551102207,
+      "rotationDegrees": 135.0
     }
   ],
   "constraintZones": [
@@ -129,25 +133,19 @@
   "eventMarkers": [
     {
       "name": "ExtendIntake",
-      "waypointRelativePos": 1.595238095238094,
+      "waypointRelativePos": 1.3,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
       "name": "StartIntake",
-      "waypointRelativePos": 1.6,
+      "waypointRelativePos": 1.3,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
       "name": "RetractIntake",
-      "waypointRelativePos": 2.9,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "ExtendClimb",
-      "waypointRelativePos": 4.4999999999999964,
+      "waypointRelativePos": 3.897180762852404,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -168,7 +166,7 @@
   "folder": "Quick Collection Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -62.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

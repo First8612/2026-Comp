@@ -5,39 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "ExtendIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StartIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Start to Middle (Left)"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Improved Collect (left to left)"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Middle to Aim2 (Left)"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "RetractIntake"
+            "pathName": "Optimized Depot Middle"
           }
         },
         {
@@ -47,7 +17,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.5
+                  "waitTime": 5.0
                 }
               },
               {
@@ -55,14 +25,26 @@
                 "data": {
                   "name": "ShootSequence"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeJostle"
+                }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Quick Collect From Aim2 to Climb L"
+            "name": "RetractIntake"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
@@ -100,12 +82,6 @@
           "type": "named",
           "data": {
             "name": "Climb"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootSequence"
           }
         }
       ]

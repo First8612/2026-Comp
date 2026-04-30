@@ -7,19 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Delay"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "ExtendIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Start to Middle (Left)"
           }
         },
         {
@@ -31,41 +19,17 @@
         {
           "type": "path",
           "data": {
-            "pathName": "L to R delay collect"
+            "pathName": "Quick Collect From Start to Climb L"
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "StopIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Middle to Aim2 (Right)"
-          }
-        },
-        {
-          "type": "sequential",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartWarmup"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeJostle"
+                  "waitTime": 5.0
                 }
               },
               {
@@ -73,20 +37,20 @@
                 "data": {
                   "name": "ShootSequence"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeJostle"
+                }
               }
             ]
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Aim2 to Climb (Right)"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "ExtendClimb"
+            "name": "RetractIntake"
           }
         },
         {
@@ -96,9 +60,28 @@
           }
         },
         {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtendClimb"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Climb to Onclimb (Right)"
+            "pathName": "Climb to Onclimb (Left)"
           }
         },
         {
@@ -111,6 +94,12 @@
           "type": "named",
           "data": {
             "name": "Climb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSequence"
           }
         }
       ]

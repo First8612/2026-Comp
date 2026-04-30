@@ -80,11 +80,11 @@
     },
     {
       "anchor": {
-        "x": 1.7,
+        "x": 2.0,
         "y": 3.5
       },
       "prevControl": {
-        "x": 1.948816042331434,
+        "x": 2.248816042331434,
         "y": 3.5243017916730857
       },
       "nextControl": null,
@@ -165,7 +165,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Quick Collection Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 62.0

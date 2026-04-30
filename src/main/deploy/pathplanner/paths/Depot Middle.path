@@ -36,7 +36,7 @@
         "y": 6.11035397777943
       },
       "prevControl": {
-        "x": 0.4471249999999998,
+        "x": 0.44712499999999983,
         "y": 6.962136363636364
       },
       "nextControl": {
@@ -48,11 +48,11 @@
     },
     {
       "anchor": {
-        "x": 1.7,
+        "x": 2.0,
         "y": 4.0
       },
       "prevControl": {
-        "x": 3.199045454545454,
+        "x": 3.4990454545454543,
         "y": 6.426181818181818
       },
       "nextControl": null,
@@ -140,7 +140,7 @@
   "reversed": false,
   "folder": "Brendon's Stuff",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 0.0
   },
   "useDefaultConstraints": true

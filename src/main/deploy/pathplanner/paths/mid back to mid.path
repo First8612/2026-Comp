@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.582,
-        "y": 5.706939759036145
+        "x": 5.75,
+        "y": 5.67
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.036511043308233,
-        "y": 5.706939759036145
+        "x": 4.2045110433082336,
+        "y": 5.67
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.5055180722891564,
-        "y": 4.013144578313253
+        "x": 2.0,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 2.3799638554216873,
-        "y": 5.22612048192771
+        "x": 2.6527840909090905,
+        "y": 5.426420454545455
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Climb L"
     }
   ],
   "rotationTargets": [],
@@ -47,7 +47,7 @@
   "reversed": false,
   "folder": "Brendon's Stuff",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 180.0
   },
   "useDefaultConstraints": true

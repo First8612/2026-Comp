@@ -1,12 +1,13 @@
 {
-  "robotWidth": 0.841,
-  "robotLength": 0.841,
+  "robotWidth": 0.814,
+  "robotLength": 0.814,
   "holonomicMode": true,
   "pathFolders": [
     "Aiming Paths",
+    "Brendon's Stuff",
     "Climbing Paths",
     "Collection Paths",
-    "Brendon's Stuff",
+    "Quick Collection Paths",
     "Outpost Paths",
     "Traversal Paths"
   ],

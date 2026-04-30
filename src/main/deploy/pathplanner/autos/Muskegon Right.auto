@@ -42,12 +42,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "StopIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Middle to Aim2 (Right)"

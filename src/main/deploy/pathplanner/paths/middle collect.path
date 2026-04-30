@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.614566265060241,
-        "y": 2.505120481927711
+        "x": 5.75,
+        "y": 2.58
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.450421686746989,
-        "y": 2.581614457831323
+        "x": 7.585855421686747,
+        "y": 2.6564939759036124
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.614566265060241,
-        "y": 5.674156626506024
+        "x": 5.75,
+        "y": 5.67
       },
       "prevControl": {
-        "x": 6.6089879518072285,
-        "y": 5.728795180722892
+        "x": 6.744421686746987,
+        "y": 5.724638554216868
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,17 +30,30 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.034064080944353634,
+      "waypointRelativePos": 0.27126099706744866,
       "rotationDegrees": 90.0
     },
     {
-      "waypointRelativePos": 0.8745362563237739,
+      "waypointRelativePos": 0.6392961876832846,
       "rotationDegrees": 90.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "RetractIntake",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "StopIntake",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.5,
     "maxAcceleration": 2.0,
@@ -50,14 +63,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 180.0
   },
   "reversed": false,
   "folder": "Brendon's Stuff",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 1.0,
+    "rotation": 45.0
   },
   "useDefaultConstraints": true
 }

@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 3.7,
+        "y": 0.65
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.872916708546753,
-        "y": 7.564023826316292
+        "x": 4.739281702288926,
+        "y": 0.65
       },
       "isLocked": false,
-      "linkedName": "Aim2 L"
+      "linkedName": "Start R"
     },
     {
       "anchor": {
         "x": 4.7166368515205725,
-        "y": 7.375
+        "y": 0.685
       },
       "prevControl": {
         "x": 4.212883836446614,
-        "y": 7.377611291561285
+        "y": 0.6823887084387147
       },
       "nextControl": {
         "x": 4.966633492778346,
-        "y": 7.3737040988338896
+        "y": 0.6862959011661107
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.0146690518783545,
-        "y": 7.24
+        "x": 6.126181818181818,
+        "y": 1.0151022727272732
       },
       "prevControl": {
-        "x": 5.5544689106584455,
-        "y": 7.432081342461337
+        "x": 5.820282145874023,
+        "y": 0.6212688021047819
       },
       "nextControl": {
-        "x": 6.245379275575367,
-        "y": 7.143704659086358
+        "x": 6.279537229242525,
+        "y": 1.212541169346966
       },
       "isLocked": false,
       "linkedName": null
@@ -49,15 +49,15 @@
     {
       "anchor": {
         "x": 6.0146690518783545,
-        "y": 5.649000000000001
+        "y": 5.292000000000001
       },
       "prevControl": {
         "x": 6.902474224619261,
-        "y": 6.496456902853232
+        "y": 4.444543097146769
       },
       "nextControl": {
         "x": 5.3007539565938515,
-        "y": 4.967530355390778
+        "y": 5.9734696446092235
       },
       "isLocked": false,
       "linkedName": null
@@ -95,19 +95,19 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.2224448897795597,
-      "rotationDegrees": -90.099
+      "rotationDegrees": 0.0
     },
     {
       "waypointRelativePos": 2.4248496993987994,
-      "rotationDegrees": -90.0
+      "rotationDegrees": 90.0
     },
     {
       "waypointRelativePos": 3.0561122244488996,
-      "rotationDegrees": -135.0
+      "rotationDegrees": 135.0
     },
     {
       "waypointRelativePos": 3.8877755511022065,
-      "rotationDegrees": -135.0
+      "rotationDegrees": 135.0
     }
   ],
   "constraintZones": [
@@ -144,12 +144,6 @@
       "waypointRelativePos": 2.9,
       "endWaypointRelativePos": null,
       "command": null
-    },
-    {
-      "name": "ExtendClimb",
-      "waypointRelativePos": 4.4999999999999964,
-      "endWaypointRelativePos": null,
-      "command": null
     }
   ],
   "globalConstraints": {
@@ -168,7 +162,7 @@
   "folder": "Quick Collection Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -62.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

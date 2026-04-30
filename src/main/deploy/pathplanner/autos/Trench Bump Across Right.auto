@@ -7,19 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Delay"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "ExtendIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "right to mid 6 in back"
           }
         },
         {
@@ -31,29 +19,17 @@
         {
           "type": "path",
           "data": {
-            "pathName": "R to L delay collect"
+            "pathName": "Quick Collect From Start to Climb R to L"
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "StopIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Middle to Aim2 (Left)"
-          }
-        },
-        {
-          "type": "sequential",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 5.0
                 }
               },
               {
@@ -72,21 +48,34 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Aim2 to Climb (Left)"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "ExtendClimb"
+            "name": "RetractIntake"
           }
         },
         {
           "type": "wait",
           "data": {
             "waitTime": 0.5
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtendClimb"
+                }
+              }
+            ]
           }
         },
         {
@@ -105,6 +94,12 @@
           "type": "named",
           "data": {
             "name": "Climb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSequence"
           }
         }
       ]

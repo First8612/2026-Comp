@@ -8,11 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.8113253012048185,
-        "y": 7.432783132530123
+        "x": 7.332079545454545,
+        "y": 7.425943181818181
       },
       "isLocked": false,
       "linkedName": "Middle L"
+    },
+    {
+      "anchor": {
+        "x": 5.9612727272727275,
+        "y": 4.055613636363637
+      },
+      "prevControl": {
+        "x": 5.9612727272727275,
+        "y": 5.750331994233168
+      },
+      "nextControl": {
+        "x": 5.9612727272727275,
+        "y": 2.3608952784941053
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +36,8 @@
         "y": 0.65
       },
       "prevControl": {
-        "x": 6.461638554216868,
-        "y": 0.6718554216867471
+        "x": 7.445454545454545,
+        "y": 0.6440568181818185
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,11 +46,11 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.20809443507588712,
+      "waypointRelativePos": 0.7,
       "rotationDegrees": -90.0
     },
     {
-      "waypointRelativePos": 0.7598650927487338,
+      "waypointRelativePos": 1.3,
       "rotationDegrees": -90.0
     }
   ],
@@ -42,21 +58,21 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.5,
     "rotation": 0.0
   },
   "reversed": false,
   "folder": "Brendon's Stuff",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 1.5,
     "rotation": 0.0
   },
   "useDefaultConstraints": false

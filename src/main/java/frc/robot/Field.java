@@ -21,7 +21,7 @@ public class Field {
     // https://firstfrc.blob.core.windows.net/frc2026/FieldAssets/2026-field-dimension-dwgs.pdf
     public static final Distance fieldLength = Inches.of(651.22);
     public static final Distance fieldWidth = Inches.of(317.69);
-    private static final Distance allianceZoneDepth = Inches.of(158.6);
+    private static final Distance allianceZoneDepth = Inches.of(176.6);
 
     private static final Distance towerAlignRightY = Meters.of(3.52);
     private static final Distance towerAlignLeftY = Meters.of(3.90);

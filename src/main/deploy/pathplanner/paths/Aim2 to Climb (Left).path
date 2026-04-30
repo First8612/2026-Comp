@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 1.7,
+        "x": 2.0,
         "y": 4.0
       },
       "prevControl": {
-        "x": 1.9251704545454544,
+        "x": 2.2251704545454545,
         "y": 4.199909090909091
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Climb L"
     }
   ],
   "rotationTargets": [],
