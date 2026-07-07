@@ -34,6 +34,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LightStrip;
+import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.PositionAccuracyEstimator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
@@ -61,10 +62,10 @@ public class RobotContainer {
     private final Intake intake = new Intake();
     private final Climber climber = new Climber(intake);
     private final Shooter shooter = new Shooter(targetTracker, climber::isAtClimb);
-    private final Vision vision = new Vision(drivetrain);
+    //private final Vision vision = new Vision(drivetrain);
     private final PositionAccuracyEstimator positionAccuracyEstimator = new PositionAccuracyEstimator(drivetrain::getCachedState);
     private final LightStrip lights = new LightStrip(positionAccuracyEstimator::getEstimation);
-
+    private final PhotonVision pvision = new PhotonVision();
     // commands
     private final DriveAndFaceTargetCommand driveAndFaceTarget = new DriveAndFaceTargetCommand(controls, drivetrain, targetTracker);
     private final ShootSequence shoot = new ShootSequence(shooter, storage, targetTracker, false, climber::isAtClimb);
@@ -146,7 +147,7 @@ public class RobotContainer {
         controls.intakeRetract().onTrue(intake.runOnce(intake::retract));
         controls.fieldReset().onTrue(drivetrain.runOnce(() -> {
             drivetrain.seedFieldCentric();
-            vision.reset();
+            //vision.reset();
         }));
         controls.goToClimb().whileTrue(new GoToClimb(drivetrain));
         controls.conveyIn().whileTrue(new RunCommand(() -> storage.conveyIn(), storage));
@@ -219,6 +220,15 @@ public class RobotContainer {
     }
 
     public void robotPeriodic() {
+        var visionEst = pvision.getEstimatedGlobalPose();
+        visionEst.ifPresent(
+                est -> {
+                    // Change our trust in the measurement based on the tags we can see
+                    var estStdDevs = pvision.getEstimationStdDevs();
+
+                    drivetrain.addVisionMeasurement(
+                            est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+        });
         loop.poll();
 
         robotNT.putNumber("batteryVoltage", RobotController.getBatteryVoltage());
