@@ -57,6 +57,10 @@ public class Controls {
         return driver.leftBumper();
     }
 
+    public Trigger xLock() {
+        return driver.x();
+    }
+
     // Operator ******************************
     public Trigger intakeRetract() {
         return operator.axisGreaterThan(XboxController.Axis.kRightTrigger.value, 0.8);
@@ -64,6 +68,10 @@ public class Controls {
 
     public Trigger intakeExtend() {
         return operator.axisGreaterThan(XboxController.Axis.kLeftTrigger.value, 0.8);
+    }
+
+    public Trigger retractIntakeJostle() {
+        return operator.rightBumper().and(operator.rightTrigger());
     }
 
     public Trigger shoot() {
@@ -78,6 +86,10 @@ public class Controls {
         return operator.rightBumper();
     }
 
+    public Trigger outake() {
+        return operator.b();
+    }
+
     public Trigger conveyIn() {
         return operator.povUp();
     }
@@ -86,7 +98,7 @@ public class Controls {
         return operator.povDown();
     }
 
-    public Trigger feedOut() {
+    public Trigger corner() {
         return operator.a();
     }
 
@@ -116,11 +128,15 @@ public class Controls {
     }
 
     public Trigger zeroHood() {
-        return operator.b();
+        return operator.leftBumper().and(operator.b());
     }
 
     public Trigger changeColor() {
         return operator.povRight();
+    }
+
+    public Trigger warmup() {
+        return  operator.povDown();
     }
 
     // Events

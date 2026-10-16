@@ -5,28 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.2
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ExtendIntake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartIntake"
-                }
-              }
-            ]
+            "name": "ExtendIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartIntake"
           }
         },
         {
@@ -80,8 +67,30 @@
         },
         {
           "type": "path",
+<<<<<<< HEAD:src/main/deploy/pathplanner/autos/Disruption Right Auton With Climb.auto
+=======
           "data": {
-            "pathName": "Aim2 to Climb (Right)"
+            "pathName": "Quick Collect From Aim2 to Climb R"
+          }
+        },
+        {
+          "type": "deadline",
+>>>>>>> e1c97daf289a36e2d2c85d045a7b15af15fe7d97:src/main/deploy/pathplanner/autos/Escanaba Right.auto
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtendClimb"
+                }
+              }
+            ]
           }
         },
         {
@@ -119,6 +128,12 @@
           "type": "named",
           "data": {
             "name": "Climb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSequence"
           }
         }
       ]

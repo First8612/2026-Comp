@@ -5,28 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.2
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ExtendIntake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartIntake"
-                }
-              }
-            ]
+            "name": "ExtendIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartIntake"
           }
         },
         {
@@ -81,7 +68,26 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Aim2 to Climb (Left)"
+            "pathName": "Quick Collect From Aim2 to Climb L"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtendClimb"
+                }
+              }
+            ]
           }
         },
         {
@@ -119,6 +125,12 @@
           "type": "named",
           "data": {
             "name": "Climb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSequence"
           }
         }
       ]
