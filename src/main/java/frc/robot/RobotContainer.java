@@ -220,15 +220,15 @@ public class RobotContainer {
     }
 
     public void robotPeriodic() {
-        var visionEst = pvision.getEstimatedGlobalPose();
-        visionEst.ifPresent(
-                est -> {
-                    // Change our trust in the measurement based on the tags we can see
-                    var estStdDevs = pvision.getEstimationStdDevs();
+        // var visionEst = pvision.getEstimatedGlobalPose();
+        // visionEst.ifPresent(
+        //         est -> {
+        //             // Change our trust in the measurement based on the tags we can see
+        //             var estStdDevs = pvision.getEstimationStdDevs();
 
-                    drivetrain.addVisionMeasurement(
-                            est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-        });
+        //             drivetrain.addVisionMeasurement(
+        //                     est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+        // });
         loop.poll();
 
         robotNT.putNumber("batteryVoltage", RobotController.getBatteryVoltage());

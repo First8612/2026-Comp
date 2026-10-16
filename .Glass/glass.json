@@ -28,6 +28,7 @@
       "/SmartDashboard/Module 2": "Mechanism2d",
       "/SmartDashboard/Module 3": "Mechanism2d",
       "/SmartDashboard/PathPlanner": "Alerts",
+      "/SmartDashboard/PhotonAlerts": "Alerts",
       "/SmartDashboard/Shooter/hoodController": "PIDController",
       "/SmartDashboard/Shooter/shootController": "PIDController",
       "/SmartDashboard/Shooter/system": "Subsystem"
