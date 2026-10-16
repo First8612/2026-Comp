@@ -90,7 +90,7 @@ public class Intake extends SubsystemBase {
 
             extendEncoderRight.getConfigurator().apply(new CANcoderConfiguration()
                 .withMagnetSensor(new MagnetSensorConfigs()
-                    .withMagnetOffset(Rotations.of(-.981 + 0.008 + 0.295 + 0.356 + 0.993))
+                    .withMagnetOffset(Rotations.of(-.981 + 0.008 + 0.295 + 0.356 + 0.993-0.166))
                     .withSensorDirection(SensorDirectionValue.Clockwise_Positive)));
         }
 
