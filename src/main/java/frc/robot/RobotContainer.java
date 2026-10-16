@@ -225,14 +225,14 @@ public class RobotContainer {
     }
 
     public void robotPeriodic() {
-        robotNT.putNumber("batteryVoltage", RobotController.getBatteryVoltage());
-        robotNT.putNumber("batteryVoltage", RobotController.getBatteryVoltage());
-        robotNT.putNumber("inputVoltage", RobotController.getInputVoltage());
-        robotNT.putNumber("inputCurrent", RobotController.getInputCurrent());
-        robotNT.putNumber("brownoutVoltage", RobotController.getBrownoutVoltage());
-        robotNT.putNumber("cpuTemp", RobotController.getCPUTemp());
-        robotNT.putNumber("pitch", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
-        robotNT.putNumber("roll", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
-        robotNT.putNumber("yaw", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
+        // robotNT.putNumber("batteryVoltage", RobotController.getBatteryVoltage());
+        // robotNT.putNumber("batteryVoltage", RobotController.getBatteryVoltage());
+        // robotNT.putNumber("inputVoltage", RobotController.getInputVoltage());
+        // robotNT.putNumber("inputCurrent", RobotController.getInputCurrent());
+        // robotNT.putNumber("brownoutVoltage", RobotController.getBrownoutVoltage());
+        // robotNT.putNumber("cpuTemp", RobotController.getCPUTemp());
+        // robotNT.putNumber("pitch", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
+        // robotNT.putNumber("roll", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
+        // robotNT.putNumber("yaw", drivetrain.getPigeon2().getPitch(true).getValueAsDouble());
     }
 }
