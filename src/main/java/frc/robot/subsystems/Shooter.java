@@ -98,13 +98,13 @@ public class Shooter extends SubsystemBase {
 
         //NEW NUMBERS (Back to 1:1 ratio)
 
-        shootCalc.put(0.0, new double[] { 0.0, 43.5 });
-        shootCalc.put(1.8, new double[] { 0.0, 43.5 });
-        shootCalc.put(2.7, new double[] { 0.0, 46.5 });
-        shootCalc.put(4.2, new double[] { 0.5, 53.5 });
-        shootCalc.put(5.6, new double[] { 1.0, 62.5 });
-        shootCalc.put(100.0, new double[] { 2.8, 66.5 });
-        shootCalc.put(10000.0, new double[] { 2.8, 66.5 });
+        shootCalc.put(0.0, new double[] { 0.0, 46 });
+        shootCalc.put(1.8, new double[] { 0.0, 46 });
+        shootCalc.put(2.7, new double[] { 0.0, 56 });
+        shootCalc.put(4.2, new double[] { 0.5, 60 });
+        shootCalc.put(5.6, new double[] { 1.0, 67 });
+        shootCalc.put(100.0, new double[] { 2.8, 70 });
+        shootCalc.put(10000.0, new double[] { 2.8, 70 });
 
 
 
@@ -132,11 +132,11 @@ public class Shooter extends SubsystemBase {
                 );
         feedMotorRight.getConfigurator().apply(
             new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(60)
+            .withStatorCurrentLimit(100)
         );
         feedMotorLeft.getConfigurator().apply(
             new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(60)
+            .withStatorCurrentLimit(100)
         );
 
         shootMotorLeft.getConfigurator().apply(
@@ -147,7 +147,7 @@ public class Shooter extends SubsystemBase {
         shootMotorLeft.getConfigurator().apply(new VoltageConfigs().withPeakReverseVoltage(0));
         shootMotorLeft.getConfigurator().apply(
             new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(60)
+            .withStatorCurrentLimit(40)
         );
 
         shootMotorRight.getConfigurator().apply(
@@ -158,7 +158,7 @@ public class Shooter extends SubsystemBase {
         shootMotorRight.setControl(shootFollow);
         shootMotorRight.getConfigurator().apply(
             new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(60)
+            .withStatorCurrentLimit(40)
         );
 
         feedMotorLeft.setControl(feedFollow);

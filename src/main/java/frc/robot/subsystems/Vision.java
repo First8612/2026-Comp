@@ -49,14 +49,14 @@ public class Vision extends SubsystemBase {
     }
 
     public void periodic() {
-        // handleLimelight("limelight-front", frontPoseMT1Publisher, frontPoseMT2Publisher, frontStdDevPublisher);
+        handleLimelight("limelight-front", frontPoseMT1Publisher, frontPoseMT2Publisher, frontStdDevPublisher);
         // handleLimelight("limelight-back", backPoseMT1Publisher, backPoseMT2Publisher, backStdDevPublisher);
 
         useMT2Publisher.set(useMT2);
     }
 
     private void handleLimelight(
-        String limelightName, 
+        String limelightName,
         StructPublisher<Pose2d> mt1Publisher, 
         StructPublisher<Pose2d> mt2Publisher, 
         DoublePublisher stdDevPublisher
